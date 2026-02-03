@@ -1,10 +1,7 @@
 from pathlib import Path
 from typing import Optional
-from dotenv import find_dotenv, load_dotenv
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
-load_dotenv(find_dotenv("../../../../.env")) # To point the root .env (LogPose uses 1 .env to manage all of its env vars)
+from pydantic_settings import BaseSettings, SettingsConfigDict  # ty: ignore[unresolved-import]
 
 class Settings(BaseSettings):
     """Application settings with environment variable support."""
