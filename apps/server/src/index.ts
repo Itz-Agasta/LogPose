@@ -1,10 +1,11 @@
 import { env } from "@LogPose/env/server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { apiRouter } from "./routes/router";
 
-import pinoLogger from "./middlewares/logger";
+import pinoLogger, { logger } from "./middlewares/logger";
 
-const app = new Hono().use(pinoLogger);
+const app = new Hono().use(pinoLogger).basePath("/api");
 
 app.use(
   "/*",
@@ -18,9 +19,11 @@ app.get("/", (c) => {
   return c.json("OK form Vyse");
 });
 
+app.route("/", apiRouter);
+
 app.get("/error", (c) => {
   c.status(422);
-  c.var.logger.warn("error");
+  logger.warn("error");
   throw new Error("oh no");
 });
 

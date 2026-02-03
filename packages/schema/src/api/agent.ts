@@ -8,7 +8,7 @@ export const agentQueryInputSchema = z.object({
     .string()
     .min(1, "Query cannot be empty")
     .describe(
-      "The question to analyze. Atlas Agent specializes in: 1) Data Analysis of Argo float oceanographic data, 2) Literature Review from research papers, 3) Hybrid queries combining data + research context, 4) General queries (greetings, casual chat)",
+      "The question to analyze. Agent specializes in: 1) Data Analysis of Argo float oceanographic data, 2) Literature Review from research papers, 3) Hybrid queries combining data + research context, 4) General queries (greetings, casual chat)",
     ),
 });
 
