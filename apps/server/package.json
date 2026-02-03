@@ -12,7 +12,9 @@
   "dependencies": {
     "@LogPose/db": "workspace:*",
     "@LogPose/env": "workspace:*",
+    "@LogPose/schema": "workspace:*",
     "dotenv": "catalog:",
+    "drizzle-orm": "^0.45.1",
     "hono": "^4.8.2",
     "hono-pino": "^0.10.3",
     "pino": "^10.3.0",

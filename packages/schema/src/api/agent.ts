@@ -8,7 +8,7 @@ export const agentQueryInputSchema = z.object({
     .string()
     .min(1, "Query cannot be empty")
     .describe(
-      "The question to analyze. Atlas Agent specializes in: 1) Data Analysis of Argo float oceanographic data, 2) Literature Review from research papers, 3) Hybrid queries combining data + research context, 4) General queries (greetings, casual chat)"
+      "The question to analyze. Atlas Agent specializes in: 1) Data Analysis of Argo float oceanographic data, 2) Literature Review from research papers, 3) Hybrid queries combining data + research context, 4) General queries (greetings, casual chat)",
     ),
 });
 
@@ -34,10 +34,7 @@ export const citationSchema = z.object({
   year: z.number().describe("Publication year"),
   url: z.string().optional().describe("URL to the paper"),
   journal: z.string().optional().describe("Journal name"),
-  relevanceScore: z
-    .number()
-    .optional()
-    .describe("Relevance score (0-1) for this citation"),
+  relevanceScore: z.number().optional().describe("Relevance score (0-1) for this citation"),
 });
 
 /**
@@ -48,14 +45,8 @@ export const scientificResponseSchema = z.object({
   citations: z.array(citationSchema).describe("List of cited papers"),
   timestamp: z.date().describe("Response generation timestamp"),
   tokensUsed: z.number().optional().describe("Total tokens used"),
-  limitations: z
-    .string()
-    .optional()
-    .describe("Known limitations of the response"),
-  futureResearch: z
-    .string()
-    .optional()
-    .describe("Suggestions for future research"),
+  limitations: z.string().optional().describe("Known limitations of the response"),
+  futureResearch: z.string().optional().describe("Suggestions for future research"),
 });
 
 // Export inferred types

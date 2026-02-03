@@ -24,9 +24,7 @@ export const floatLocationsResponseSchema = z.object({
   timestamp: z.string(),
 });
 
-export type FloatLocationsResponse = z.infer<
-  typeof floatLocationsResponseSchema
->;
+export type FloatLocationsResponse = z.infer<typeof floatLocationsResponseSchema>;
 
 /**
  * Schema for detailed float information
