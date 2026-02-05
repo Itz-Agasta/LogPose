@@ -215,8 +215,8 @@ export async function SQLAgent(params: SQLAgentParams): Promise<SQLAgentResult> 
     return {
       success: true,
       sql: cleanedSQL,
-      data: result as unknown as Record<string, unknown>[],
-      rowCount: (result as unknown as Record<string, unknown>[]).length,
+      data: (result as any).rows,
+      rowCount: (result as any).rowCount,
       tokensUsed,
       timings,
     };

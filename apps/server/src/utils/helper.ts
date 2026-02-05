@@ -20,7 +20,9 @@ export function validateSQL(sqlQuery: string): {
 
   const withoutTrailingSemicolons = cleanedSQL.replace(TRAILING_SEMICOLONS_REGEX, "");
 
-  const upperSQL = withoutTrailingSemicolons.toUpperCase();
+  const normalizedSQL = withoutTrailingSemicolons.replace(/\s+/g, " ").trim();
+
+  const upperSQL = normalizedSQL.toUpperCase();
   const startsWithSelectOrWith = upperSQL.startsWith("SELECT") || upperSQL.startsWith("WITH");
 
   const hasExtraSemicolon = upperSQL.includes(";");
@@ -28,7 +30,7 @@ export function validateSQL(sqlQuery: string): {
 
   const isValid = startsWithSelectOrWith && !hasExtraSemicolon && !hasDisallowedKeyword;
 
-  return { isValid, cleaned: withoutTrailingSemicolons };
+  return { isValid, cleaned: normalizedSQL };
 }
 
 /**
