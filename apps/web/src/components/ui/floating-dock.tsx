@@ -7,6 +7,7 @@ import {
     useSpring,
     useTransform,
 } from "motion/react";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -69,13 +70,13 @@ const FloatingDockMobile = ({
                                     delay: (items.length - 1 - idx) * ANIMATION_DELAY_STEP,
                                 }}
                             >
-                                <a
+                                <Link
                                     className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 dark:bg-neutral-900"
                                     href={item.href}
                                     key={item.title}
                                 >
                                     <div className="h-4 w-4">{item.icon}</div>
-                                </a>
+                                </Link>
                             </motion.div>
                         ))}
                     </motion.div>
@@ -182,7 +183,7 @@ function IconContainer({
     const [hovered, setHovered] = useState(false);
 
     return (
-        <a href={href}>
+        <Link href={href}>
             <motion.div
                 className="relative flex aspect-square items-center justify-center rounded-full bg-gray-200 dark:bg-neutral-800"
                 onMouseEnter={() => setHovered(true)}
@@ -209,6 +210,6 @@ function IconContainer({
                     {icon}
                 </motion.div>
             </motion.div>
-        </a>
+        </Link>
     );
 }

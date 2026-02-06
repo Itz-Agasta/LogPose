@@ -1,15 +1,19 @@
 "use client";
 
+import type { MapMouseEvent, GeoJSONSource } from "mapbox-gl";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   FullscreenControl,
   GeolocateControl,
+  Layer,
   Map as MapboxMap,
   Marker,
   NavigationControl,
   ScaleControl,
+  Source,
 } from "react-map-gl/mapbox";
+import type { MapRef } from "react-map-gl/mapbox";
 
 // Import the CSS for mapbox-gl
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -23,22 +27,20 @@ import MapControlPanel, { MAP_STYLES } from "./map-control-panel";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
-type InteractiveArgoMapProps = {
-  floatLocations?: FloatLocationsResponse["data"];
-  isLoading?: boolean;
+// Cluster configuration
+const CLUSTER_MAX_ZOOM = 14;
+const CLUSTER_RADIUS = 50;
+
+// Colors for different float types
+const FLOAT_COLORS: Record<string, { bg: string; border: string; glow: string; fill: string }> = {
+  biogeochemical: { bg: "bg-green-500", border: "border-green-700", glow: "bg-green-400", fill: "#22c55e" },
+  core: { bg: "bg-yellow-500", border: "border-yellow-600", glow: "bg-yellow-400", fill: "#eab308" },
+  deep: { bg: "bg-blue-500", border: "border-blue-700", glow: "bg-blue-400", fill: "#3b82f6" },
+  default: { bg: "bg-gray-500", border: "border-gray-700", glow: "bg-gray-400", fill: "#6b7280" },
 };
-// Get marker colors based on float type
+
 function getMarkerColors(platformType: string) {
-  switch (platformType) {
-    case "biogeochemical":
-      return { bg: "bg-green-500", border: "border-green-700", glow: "bg-green-400", fill: "#22c55e" };
-    case "core":
-      return { bg: "bg-yellow-500", border: "border-yellow-600", glow: "bg-yellow-400", fill: "#eab308" };
-    case "deep":
-      return { bg: "bg-blue-500", border: "border-blue-700", glow: "bg-blue-400", fill: "#3b82f6" };
-    default:
-      return { bg: "bg-gray-500", border: "border-gray-700", glow: "bg-gray-400", fill: "#6b7280" };
-  }
+  return FLOAT_COLORS[platformType] || FLOAT_COLORS.default;
 }
 
 // Boat/Ship SVG icon component
@@ -81,7 +83,6 @@ function ArgoMarker({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          // For keyboard events, just call the click handler with a simulated mouse event
           const rect = e.currentTarget.getBoundingClientRect();
           const simulatedEvent = new MouseEvent("click", {
             clientX: rect.left + rect.width / 2,
@@ -111,18 +112,19 @@ function ArgoMarker({
           {/* Boat icon */}
           <BoatIcon fill={isSelected ? colors.fill : "white"} size={10} />
         </div>
-
-        {/* Simple hover label */}
-        <div className="-top-8 -translate-x-1/2 pointer-events-none absolute left-1/2 transform whitespace-nowrap rounded-lg border border-slate-600/50 bg-slate-800 bg-opacity-95 px-3 py-1.5 text-white text-xs opacity-0 backdrop-blur-sm transition-opacity duration-200 hover:opacity-100">
-          Float {float.floatNumber}
-        </div>
       </div>
     </button>
   );
 }
 
+type InteractiveArgoMapProps = {
+  floatLocations?: FloatLocationsResponse["data"];
+  isLoading?: boolean;
+};
+
 export default function InteractiveArgoMap({ floatLocations = [], isLoading: _isLoading = false }: InteractiveArgoMapProps) {
   const _router = useRouter();
+  const mapRef = useRef<MapRef>(null);
   const [selectedFloat, setSelectedFloat] = useState<ArgoFloat | null>(null);
   const [hoveredFloat, setHoveredFloat] = useState<ArgoFloat | null>(null);
   const [mapStyle, setMapStyle] = useState(MAP_STYLES.satellite);
@@ -136,6 +138,8 @@ export default function InteractiveArgoMap({ floatLocations = [], isLoading: _is
     y: number;
   } | null>(null);
   const [isControlPanelOpen, setIsControlPanelOpen] = useState(false);
+  const [cursor, setCursor] = useState<string>("grab");
+  const [visibleFloatIds, setVisibleFloatIds] = useState<Set<string>>(new Set());
 
   // Map API response to ArgoFloat format
   const floats: ArgoFloat[] = useMemo(() =>
@@ -152,23 +156,137 @@ export default function InteractiveArgoMap({ floatLocations = [], isLoading: _is
       sensors: [],
     })), [floatLocations]);
 
-  // FIXME: Have to change this later
-  // Calculate the bounds to fit all floats (focused on Indian Ocean)
-  const bounds = useMemo(() => {
-    if (floats.length === 0) {
-      return null;
-    }
+  // Create a lookup map for quick float retrieval by ID
+  const floatLookup = useMemo(() => {
+    const lookup = new Map<string, ArgoFloat>();
+    floats.forEach((f) => lookup.set(f.id, f));
+    return lookup;
+  }, [floats]);
 
-    // Center on Indian Ocean with appropriate zoom
+  // Convert floats to GeoJSON FeatureCollection for clustering
+  const geojsonData: GeoJSON.FeatureCollection<GeoJSON.Point> = useMemo(() => ({
+    type: "FeatureCollection",
+    features: floats.map((float) => ({
+      type: "Feature",
+      id: float.id,
+      properties: {
+        id: float.id,
+        floatNumber: float.floatNumber,
+        platformType: float.platformType,
+        date: float.date,
+        cycle: float.cycle,
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [float.longitude, float.latitude],
+      },
+    })),
+  }), [floats]);
+
+  // Calculate the bounds to fit all floats (focused on Indian Ocean)
+  const initialViewState = useMemo(() => {
     const DEFAULT_FLAT_MAP_ZOOM = 4.5;
     return {
-      longitude: 75, // Central Indian Ocean longitude
-      latitude: 8, // Slightly north for better view of India's coast
+      longitude: 75,
+      latitude: 8,
       zoom: isGlobe ? 2 : DEFAULT_FLAT_MAP_ZOOM,
     };
-  }, [floats, isGlobe]);
+  }, [isGlobe]);
+
+  // Update visible unclustered points when map moves or data changes
+  const updateVisibleFloats = useCallback(() => {
+    const map = mapRef.current?.getMap();
+    if (!map || !map.isStyleLoaded()) return;
+
+    try {
+      const features = map.querySourceFeatures("floats", {
+        filter: ["!", ["has", "point_count"]],
+      });
+
+      const ids = new Set<string>();
+      features.forEach((f) => {
+        if (f.properties?.id) {
+          ids.add(f.properties.id);
+        }
+      });
+      setVisibleFloatIds(ids);
+    } catch {
+      // Source not ready yet
+    }
+  }, []);
+
+  // Get floats that are currently visible and unclustered
+  const unclusteredFloats = useMemo(() => {
+    return floats.filter((f) => visibleFloatIds.has(f.id));
+  }, [floats, visibleFloatIds]);
+
+  // Handle click on clusters - zoom in to expand
+  const handleClusterClick = useCallback((event: MapMouseEvent) => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    const features = map.queryRenderedFeatures(event.point, {
+      layers: ["clusters"],
+    });
+
+    if (features.length === 0) return;
+
+    const clusterId = features[0].properties?.cluster_id;
+    if (clusterId === undefined) return;
+
+    const source = map.getSource("floats") as GeoJSONSource;
+    source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+      if (err) return;
+
+      const geometry = features[0].geometry;
+      if (geometry.type !== "Point") return;
+
+      map.easeTo({
+        center: geometry.coordinates as [number, number],
+        zoom: zoom ?? 10,
+        duration: 500,
+      });
+    });
+  }, []);
+
+  // Handle hover on clusters
+  const handleMouseMove = useCallback((event: MapMouseEvent) => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    const clusterFeatures = map.queryRenderedFeatures(event.point, {
+      layers: ["clusters"],
+    });
+
+    if (clusterFeatures.length > 0) {
+      setCursor("pointer");
+    } else {
+      setCursor("grab");
+    }
+  }, []);
+
+  // Handle map click
+  const handleMapClick = useCallback((event: MapMouseEvent) => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    // Check if clicked on a cluster
+    const clusterFeatures = map.queryRenderedFeatures(event.point, {
+      layers: ["clusters"],
+    });
+    if (clusterFeatures.length > 0) {
+      handleClusterClick(event);
+      return;
+    }
+
+    // Clicked on empty space - close popups
+    setSelectedFloat(null);
+    setClickPosition(null);
+    setIsControlPanelOpen(false);
+  }, [handleClusterClick]);
 
   const handleMarkerClick = (float: ArgoFloat, event: MouseEvent) => {
+    event.stopPropagation();
     setSelectedFloat(float);
     setClickPosition({ x: event.clientX, y: event.clientY });
   };
@@ -221,24 +339,18 @@ export default function InteractiveArgoMap({ floatLocations = [], isLoading: _is
       <Starfield isVisible={isGlobe} />
 
       <MapboxMap
-        initialViewState={
-          bounds || {
-            longitude: 75,
-            latitude: 8,
-            zoom: 4.5,
-          }
-        }
-        interactiveLayerIds={[]}
+        ref={mapRef}
+        cursor={cursor}
+        initialViewState={initialViewState}
+        interactiveLayerIds={["clusters"]}
         key={isGlobe ? "globe" : "mercator"}
         mapboxAccessToken={MAPBOX_TOKEN}
         mapStyle={mapStyle}
-        onClick={() => {
-          // Close popup when clicking on map
-          setSelectedFloat(null);
-          setClickPosition(null);
-          // Close control panel when clicking on map
-          setIsControlPanelOpen(false);
-        }}
+        onClick={handleMapClick}
+        onMouseMove={handleMouseMove}
+        onMoveEnd={updateVisibleFloats}
+        onLoad={updateVisibleFloats}
+        onSourceData={updateVisibleFloats}
         projection={{ name: isGlobe ? "globe" : "mercator" }}
         style={{ width: "100%", height: "100%" }}
       >
@@ -248,17 +360,68 @@ export default function InteractiveArgoMap({ floatLocations = [], isLoading: _is
         <NavigationControl position="top-right" />
         <ScaleControl position="top-right" />
 
-        {/* Argo Float Markers */}
-        {floats.map((float) => (
+        {/* GeoJSON Source with Clustering */}
+        <Source
+          id="floats"
+          type="geojson"
+          data={geojsonData}
+          cluster={true}
+          clusterMaxZoom={CLUSTER_MAX_ZOOM}
+          clusterRadius={CLUSTER_RADIUS}
+        >
+          {/* Cluster circles layer */}
+          <Layer
+            id="clusters"
+            type="circle"
+            filter={["has", "point_count"]}
+            paint={{
+              "circle-radius": [
+                "step",
+                ["get", "point_count"],
+                15,
+                10, 20,
+                50, 25,
+                100, 30,
+                500, 40,
+              ],
+              "circle-color": [
+                "step",
+                ["get", "point_count"],
+                "#51bbd6",
+                10, "#3b82f6",
+                50, "#8b5cf6",
+                100, "#f59e0b",
+                500, "#ef4444",
+              ],
+              "circle-stroke-width": 2,
+              "circle-stroke-color": "#ffffff",
+              "circle-opacity": 0.9,
+            }}
+          />
+
+          {/* Cluster count labels */}
+          <Layer
+            id="cluster-count"
+            type="symbol"
+            filter={["has", "point_count"]}
+            layout={{
+              "text-field": ["get", "point_count_abbreviated"],
+              "text-size": 12,
+              "text-font": ["DIN Pro Medium", "Arial Unicode MS Bold"],
+            }}
+            paint={{
+              "text-color": "#ffffff",
+            }}
+          />
+        </Source>
+
+        {/* Render unclustered floats as React Markers with boat icons */}
+        {unclusteredFloats.map((float) => (
           <Marker
             anchor="center"
             key={float.id}
             latitude={float.latitude}
             longitude={float.longitude}
-            onClick={(e: any) => {
-              e.originalEvent.stopPropagation();
-              handleMarkerClick(float, e.originalEvent);
-            }}
           >
             <ArgoMarker
               float={float}
