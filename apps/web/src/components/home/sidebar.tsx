@@ -13,7 +13,7 @@ import {
     Search,
     Waves,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import {
     Popover,
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import type { FloatLocationsResponse } from "@LogPose/schema/api/home-page";
 
 export type SidebarFilters = {
     platformId: string;
@@ -48,6 +49,7 @@ export type SidebarFilters = {
 type SidebarProps = {
     className?: string;
     onFiltersChange?: (filters: SidebarFilters) => void;
+    floatLocations?: FloatLocationsResponse["data"];
 };
 
 const timePeriodOptions = [
@@ -58,16 +60,16 @@ const timePeriodOptions = [
     { id: "all", label: "ALL" },
 ];
 
-const statusOptions = [
-    { id: "all", label: "ALL", count: 936 },
-    { id: "active", label: "ACTIVE", count: 692 },
-    { id: "inactive", label: "INACTIVE", count: 234 },
+const defaultStatusOptions = [
+    { id: "all", label: "ALL", statusType: "all" },
+    { id: "active", label: "ACTIVE", statusType: "ACTIVE" },
+    { id: "inactive", label: "INACTIVE", statusType: "INACTIVE" },
 ];
 
-const networkOptions = [
-    { id: "bgcArgo", label: "BGC ARGO", count: 1212 },
-    { id: "coreArgo", label: "CORE ARGO", count: 692 },
-    { id: "deepArgo", label: "DEEP ARGO", count: 234 },
+const defaultNetworkOptions = [
+    { id: "bgcArgo", label: "BGC ARGO", floatType: "biogeochemical" },
+    { id: "coreArgo", label: "CORE ARGO", floatType: "core" },
+    { id: "deepArgo", label: "DEEP ARGO", floatType: "deep" },
 ];
 
 const overlayOptions = [
@@ -84,7 +86,7 @@ const overlayOptions = [
     },
 ];
 
-export function Sidebar({ className, onFiltersChange }: SidebarProps) {
+export function Sidebar({ className, onFiltersChange, floatLocations = [] }: SidebarProps) {
     const [isOpen, setIsOpen] = useState(true);
     const [filters, setFilters] = useState<SidebarFilters>({
         platformId: "",
@@ -92,7 +94,7 @@ export function Sidebar({ className, onFiltersChange }: SidebarProps) {
         customRange: { start: new Date(2020, 0, 1), end: new Date(2022, 0, 1) },
         selectionTool: "",
         status: {
-            all: false,
+            all: true,
             active: false,
             inactive: false,
         },
@@ -107,6 +109,48 @@ export function Sidebar({ className, onFiltersChange }: SidebarProps) {
             salinityGradients: true,
         },
     });
+
+    // Calculate status counts from floatLocations prop
+    const statusCounts = useMemo(() => {
+        const counts: Record<string, number> = {
+            all: floatLocations.length,
+            ACTIVE: 0,
+            INACTIVE: 0,
+            UNKNOWN: 0,
+            DEAD: 0,
+        };
+        for (const float of floatLocations) {
+            counts[float.status] = (counts[float.status] || 0) + 1;
+        }
+        return counts;
+    }, [floatLocations]);
+
+    // Build status options with dynamic counts
+    const statusOptions = defaultStatusOptions.map((option) => ({
+        ...option,
+        count: statusCounts[option.statusType] || 0,
+    }));
+
+    // Calculate network counts from floatLocations prop
+    const networkCounts = useMemo(() => {
+        const counts: Record<string, number> = {
+            biogeochemical: 0,
+            core: 0,
+            deep: 0,
+            oxygen: 0,
+            unknown: 0,
+        };
+        for (const float of floatLocations) {
+            counts[float.floatType] = (counts[float.floatType] || 0) + 1;
+        }
+        return counts;
+    }, [floatLocations]);
+
+    // Build network options with dynamic counts
+    const networkOptions = defaultNetworkOptions.map((option) => ({
+        ...option,
+        count: networkCounts[option.floatType] || 0,
+    }));
 
     const handleFilterUpdate = (newFilters: Partial<SidebarFilters>) => {
         const updatedFilters = { ...filters, ...newFilters };

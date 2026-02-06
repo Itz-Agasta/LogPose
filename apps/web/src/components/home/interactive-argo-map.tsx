@@ -14,8 +14,8 @@ import {
 // Import the CSS for mapbox-gl
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { argoFloatsData } from "@/data/argo-floats";
-import type { ArgoFloat, PopupData, TooltipData } from "@LogPose/schema/float";
+import type { ArgoFloat, PopupData, TooltipData } from "@LogPose/schema/web/float";
+import type { FloatLocationsResponse } from "@LogPose/schema/api/home-page";
 import Starfield from "../ui/starfield";
 import FloatPopup from "./float-popup";
 import FloatTooltip from "./float-tooltip";
@@ -24,8 +24,37 @@ import MapControlPanel, { MAP_STYLES } from "./map-control-panel";
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 type InteractiveArgoMapProps = {
-  floats?: ArgoFloat[];
+  floatLocations?: FloatLocationsResponse["data"];
+  isLoading?: boolean;
 };
+// Get marker colors based on float type
+function getMarkerColors(platformType: string) {
+  switch (platformType) {
+    case "biogeochemical":
+      return { bg: "bg-green-500", border: "border-green-700", glow: "bg-green-400", fill: "#22c55e" };
+    case "core":
+      return { bg: "bg-yellow-500", border: "border-yellow-600", glow: "bg-yellow-400", fill: "#eab308" };
+    case "deep":
+      return { bg: "bg-blue-500", border: "border-blue-700", glow: "bg-blue-400", fill: "#3b82f6" };
+    default:
+      return { bg: "bg-gray-500", border: "border-gray-700", glow: "bg-gray-400", fill: "#6b7280" };
+  }
+}
+
+// Boat/Ship SVG icon component
+function BoatIcon({ fill, size = 16 }: { fill: string; size?: number }) {
+  return (
+    <svg
+      fill={fill}
+      height={size}
+      viewBox="0 0 24 24"
+      width={size}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v-2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.34-.42-.6-.5L20 10.62V6c0-1.1-.9-2-2-2h-3V1H9v3H6c-1.1 0-2 .9-2 2v4.62l-1.29.42c-.26.08-.48.26-.6.5s-.15.52-.06.78L3.95 19zM6 6h12v3.97L12 8 6 9.97V6z" />
+    </svg>
+  );
+}
 
 // Custom marker component for Argo floats
 function ArgoMarker({
@@ -41,12 +70,13 @@ function ArgoMarker({
   onHoverEnd: () => void;
   isSelected: boolean;
 }) {
+  const colors = getMarkerColors(float.platformType);
+
   return (
     <button
       aria-label={`Argo float ${float.id} at ${float.latitude}, ${float.longitude}`}
-      className={`cursor-pointer border-none bg-transparent p-0 transition-transform duration-200 ${
-        isSelected ? "scale-125" : "hover:scale-110"
-      }`}
+      className={`cursor-pointer border-none bg-transparent p-0 transition-transform duration-200 ${isSelected ? "scale-125" : "hover:scale-110"
+        }`}
       onClick={(e) => onClick(e.nativeEvent)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -69,19 +99,17 @@ function ArgoMarker({
       <div className={`relative ${isSelected ? "animate-pulse" : ""}`}>
         {/* Outer glow ring */}
         <div
-          className={`absolute inset-0 rounded-full ${
-            isSelected ? "bg-white" : "bg-green-400"
-          } animate-ping opacity-30`}
+          className={`absolute inset-0 rounded-full ${isSelected ? "bg-white" : colors.glow
+            } animate-ping opacity-30`}
         />
 
         {/* Main marker */}
         <div
-          className={`relative h-6 w-6 rounded-full border-2 ${
-            isSelected ? "border-gray-300 bg-white" : "border-green-700 bg-green-500"
-          } flex items-center justify-center shadow-lg`}
+          className={`relative h-5 w-5 rounded-full border-2 ${isSelected ? "border-gray-300 bg-white" : `${colors.border} ${colors.bg}`
+            } flex items-center justify-center shadow-lg`}
         >
-          {/* Inner dot */}
-          <div className="h-2 w-2 rounded-full bg-white" />
+          {/* Boat icon */}
+          <BoatIcon fill={isSelected ? colors.fill : "white"} size={10} />
         </div>
 
         {/* Simple hover label */}
@@ -93,7 +121,7 @@ function ArgoMarker({
   );
 }
 
-export default function InteractiveArgoMap({ floats = argoFloatsData }: InteractiveArgoMapProps) {
+export default function InteractiveArgoMap({ floatLocations = [], isLoading: _isLoading = false }: InteractiveArgoMapProps) {
   const _router = useRouter();
   const [selectedFloat, setSelectedFloat] = useState<ArgoFloat | null>(null);
   const [hoveredFloat, setHoveredFloat] = useState<ArgoFloat | null>(null);
@@ -108,6 +136,21 @@ export default function InteractiveArgoMap({ floats = argoFloatsData }: Interact
     y: number;
   } | null>(null);
   const [isControlPanelOpen, setIsControlPanelOpen] = useState(false);
+
+  // Map API response to ArgoFloat format
+  const floats: ArgoFloat[] = useMemo(() =>
+    floatLocations.map((loc) => ({
+      id: String(loc.floatId),
+      floatNumber: String(loc.floatId),
+      longitude: loc.longitude,
+      latitude: loc.latitude,
+      date: loc.lastUpdate || new Date().toISOString(),
+      cycle: loc.cycleNumber || 0,
+      platformType: loc.floatType,
+      pi: "",
+      telecomCode: "",
+      sensors: [],
+    })), [floatLocations]);
 
   // FIXME: Have to change this later
   // Calculate the bounds to fit all floats (focused on Indian Ocean)
