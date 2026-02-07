@@ -14,8 +14,7 @@ export interface ToolcallInfoContextValue {
   message: TamboThreadMessage;
 }
 
-export const ToolcallInfoContext =
-  React.createContext<ToolcallInfoContextValue | null>(null);
+export const ToolcallInfoContext = React.createContext<ToolcallInfoContextValue | null>(null);
 
 /**
  * Hook to access the toolcall info context.

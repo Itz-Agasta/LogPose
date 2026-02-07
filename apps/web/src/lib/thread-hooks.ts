@@ -92,13 +92,11 @@ export function useMergeRefs<Instance>(
     return (value) => {
       if (cleanupRef.current) {
         cleanupRef.current();
-        (cleanupRef as React.MutableRefObject<void | (() => void)>).current =
-          undefined;
+        (cleanupRef as React.MutableRefObject<void | (() => void)>).current = undefined;
       }
 
       if (value != null) {
-        (cleanupRef as React.MutableRefObject<void | (() => void)>).current =
-          refEffect(value);
+        (cleanupRef as React.MutableRefObject<void | (() => void)>).current = refEffect(value);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,9 +107,7 @@ export function useMergeRefs<Instance>(
  * @param elementRef - Reference to the component to compare position with
  * @returns Object containing hasCanvasSpace and canvasIsOnLeft
  */
-export function useCanvasDetection(
-  elementRef: React.RefObject<HTMLElement | null>,
-) {
+export function useCanvasDetection(elementRef: React.RefObject<HTMLElement | null>) {
   const [hasCanvasSpace, setHasCanvasSpace] = useState(false);
   const [canvasIsOnLeft, setCanvasIsOnLeft] = useState(false);
 
@@ -159,11 +155,7 @@ export function hasRightClass(className?: string): boolean {
  * @param canvasIsOnLeft - Whether the canvas is on the left
  * @returns Object with isLeftPanel and historyPosition values
  */
-export function usePositioning(
-  className?: string,
-  canvasIsOnLeft = false,
-  hasCanvasSpace = false,
-) {
+export function usePositioning(className?: string, canvasIsOnLeft = false, hasCanvasSpace = false) {
   const isRightClass = hasRightClass(className);
   const isLeftPanel = !isRightClass;
 

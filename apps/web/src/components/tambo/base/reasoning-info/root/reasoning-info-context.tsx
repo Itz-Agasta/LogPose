@@ -13,8 +13,9 @@ interface ReasoningInfoRootContextValue {
   scrollContainerRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export const ReasoningInfoRootContext =
-  React.createContext<ReasoningInfoRootContextValue | null>(null);
+export const ReasoningInfoRootContext = React.createContext<ReasoningInfoRootContextValue | null>(
+  null,
+);
 
 /**
  * Hook to access the reasoning info context.

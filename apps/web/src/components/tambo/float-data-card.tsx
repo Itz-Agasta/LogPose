@@ -16,14 +16,7 @@ type FloatDataCardProps = {
   floatId?: number | null;
   wmoNumber?: string | null;
   status?: "ACTIVE" | "INACTIVE" | "UNKNOWN" | "DEAD" | string | null;
-  floatType?:
-    | "core"
-    | "oxygen"
-    | "biogeochemical"
-    | "deep"
-    | "unknown"
-    | string
-    | null;
+  floatType?: "core" | "oxygen" | "biogeochemical" | "deep" | "unknown" | string | null;
   latitude?: number | null;
   longitude?: number | null;
   cycleNumber?: number | null;
@@ -93,13 +86,9 @@ export default function FloatDataCard({
     }
   };
 
-  const formatCoordinate = (
-    value: number | undefined | null,
-    type: "lat" | "lng",
-  ) => {
+  const formatCoordinate = (value: number | undefined | null, type: "lat" | "lng") => {
     if (value === undefined || value === null) return "—";
-    const direction =
-      type === "lat" ? (value >= 0 ? "N" : "S") : value >= 0 ? "E" : "W";
+    const direction = type === "lat" ? (value >= 0 ? "N" : "S") : value >= 0 ? "E" : "W";
     return `${Math.abs(value).toFixed(4)}° ${direction}`;
   };
 
@@ -112,22 +101,14 @@ export default function FloatDataCard({
             <CardTitle className="text-lg">
               Float {floatId ?? "—"}
               {wmoNumber && (
-                <span className="text-muted-foreground text-sm ml-2">
-                  ({wmoNumber})
-                </span>
+                <span className="text-muted-foreground text-sm ml-2">({wmoNumber})</span>
               )}
             </CardTitle>
           </div>
-          {status && (
-            <Badge className={`${getStatusColor(status)} border`}>
-              {status}
-            </Badge>
-          )}
+          {status && <Badge className={`${getStatusColor(status)} border`}>{status}</Badge>}
         </div>
         {floatType && (
-          <p className="text-sm text-muted-foreground">
-            {getFloatTypeLabel(floatType)}
-          </p>
+          <p className="text-sm text-muted-foreground">{getFloatTypeLabel(floatType)}</p>
         )}
       </CardHeader>
 
@@ -169,18 +150,14 @@ export default function FloatDataCard({
               <IconDroplet className="h-4 w-4 text-blue-400 mb-1" />
               <span className="text-xs text-muted-foreground">Salinity</span>
               <span className="text-sm font-medium">
-                {salinity !== undefined && salinity !== null
-                  ? `${salinity.toFixed(2)} PSU`
-                  : "—"}
+                {salinity !== undefined && salinity !== null ? `${salinity.toFixed(2)} PSU` : "—"}
               </span>
             </div>
             <div className="flex flex-col items-center p-2 rounded-md bg-muted/50">
               <IconAnchor className="h-4 w-4 text-cyan-400 mb-1" />
               <span className="text-xs text-muted-foreground">Depth</span>
               <span className="text-sm font-medium">
-                {depth !== undefined && depth !== null
-                  ? `${depth.toFixed(0)} m`
-                  : "—"}
+                {depth !== undefined && depth !== null ? `${depth.toFixed(0)} m` : "—"}
               </span>
             </div>
           </div>

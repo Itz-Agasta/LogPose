@@ -1,9 +1,6 @@
 import { Slot } from "@radix-ui/react-slot";
 import { TamboThreadMessage } from "@tambo-ai/react";
-import {
-  checkHasContent,
-  convertContentToMarkdown,
-} from "@/lib/thread-hooks";
+import { checkHasContent, convertContentToMarkdown } from "@/lib/thread-hooks";
 import * as React from "react";
 import { BasePropsWithChildrenOrRenderFunction } from "../../types/component-render-or-children";
 import { useRender } from "../../use-render/use-render";
@@ -44,10 +41,7 @@ export interface MessageContentProps extends Omit<
  */
 export const MessageContent = React.forwardRef<
   HTMLDivElement,
-  BasePropsWithChildrenOrRenderFunction<
-    MessageContentProps,
-    MessageContentRenderProps
-  >
+  BasePropsWithChildrenOrRenderFunction<MessageContentProps, MessageContentRenderProps>
 >(({ content: contentProp, markdown = true, asChild, ...props }, ref) => {
   const { message, isLoading } = useMessageRootContext();
   const contentToRender = contentProp ?? message.content;
@@ -57,10 +51,7 @@ export const MessageContent = React.forwardRef<
     [contentToRender],
   );
 
-  const hasContent = React.useMemo(
-    () => checkHasContent(contentToRender),
-    [contentToRender],
-  );
+  const hasContent = React.useMemo(() => checkHasContent(contentToRender), [contentToRender]);
 
   const showLoading = !!isLoading && !hasContent && !message.reasoning;
 

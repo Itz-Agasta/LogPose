@@ -1,9 +1,5 @@
 import { cn } from "@/lib/utils";
-import {
-  useCanvasDetection,
-  usePositioning,
-  useMergeRefs,
-} from "@/lib/thread-hooks";
+import { useCanvasDetection, usePositioning, useMergeRefs } from "@/lib/thread-hooks";
 import * as React from "react";
 import { useRef } from "react";
 
@@ -26,70 +22,67 @@ export interface ThreadContainerProps extends React.HTMLAttributes<HTMLDivElemen
  *
  * It automatically detects canvas presence and adjusts layout accordingly.
  */
-export const ThreadContainer = React.forwardRef<
-  HTMLDivElement,
-  ThreadContainerProps
->(({ className, children, disableSidebarSpacing = false, ...props }, ref) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { hasCanvasSpace, canvasIsOnLeft } = useCanvasDetection(containerRef);
-  const { isLeftPanel, historyPosition } = usePositioning(
-    className,
-    canvasIsOnLeft,
-    hasCanvasSpace,
-  );
-  const mergedRef = useMergeRefs<HTMLDivElement | null>(ref, containerRef);
+export const ThreadContainer = React.forwardRef<HTMLDivElement, ThreadContainerProps>(
+  ({ className, children, disableSidebarSpacing = false, ...props }, ref) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { hasCanvasSpace, canvasIsOnLeft } = useCanvasDetection(containerRef);
+    const { isLeftPanel, historyPosition } = usePositioning(
+      className,
+      canvasIsOnLeft,
+      hasCanvasSpace,
+    );
+    const mergedRef = useMergeRefs<HTMLDivElement | null>(ref, containerRef);
 
-  return (
-    <div
-      ref={mergedRef}
-      className={cn(
-        // Base layout and styling
-        "flex flex-col overflow-hidden bg-background relative",
-        "h-full",
-
-        // Add smooth transitions for layout changes
-        "transition-all duration-200 ease-in-out",
-
-        // Sidebar spacing based on history position (unless disabled)
-        !disableSidebarSpacing &&
-          (historyPosition === "right"
-            ? "mr-[var(--sidebar-width,16rem)]"
-            : "ml-[var(--sidebar-width,16rem)]"),
-
-        // Width constraints based on canvas presence (unless sidebar spacing disabled)
-        !disableSidebarSpacing &&
-          (hasCanvasSpace
-            ? "max-w-3xl"
-            : "w-[calc(100%-var(--sidebar-width,16rem))]"),
-        disableSidebarSpacing && "flex-1",
-
-        // Border styling when canvas is present
-        hasCanvasSpace && (canvasIsOnLeft ? "border-l" : "border-r"),
-        hasCanvasSpace && "border-border",
-
-        // Right alignment when specified
-        !isLeftPanel && "ml-auto",
-
-        // Custom classes passed via props
-        className,
-      )}
-      {...props}
-    >
-      {/* Subtle grid background */}
+    return (
       <div
-        className="absolute inset-0 opacity-[0.02] pointer-events-none"
-        style={{
-          backgroundImage: `
+        ref={mergedRef}
+        className={cn(
+          // Base layout and styling
+          "flex flex-col overflow-hidden bg-background relative",
+          "h-full",
+
+          // Add smooth transitions for layout changes
+          "transition-all duration-200 ease-in-out",
+
+          // Sidebar spacing based on history position (unless disabled)
+          !disableSidebarSpacing &&
+            (historyPosition === "right"
+              ? "mr-[var(--sidebar-width,16rem)]"
+              : "ml-[var(--sidebar-width,16rem)]"),
+
+          // Width constraints based on canvas presence (unless sidebar spacing disabled)
+          !disableSidebarSpacing &&
+            (hasCanvasSpace ? "max-w-3xl" : "w-[calc(100%-var(--sidebar-width,16rem))]"),
+          disableSidebarSpacing && "flex-1",
+
+          // Border styling when canvas is present
+          hasCanvasSpace && (canvasIsOnLeft ? "border-l" : "border-r"),
+          hasCanvasSpace && "border-border",
+
+          // Right alignment when specified
+          !isLeftPanel && "ml-auto",
+
+          // Custom classes passed via props
+          className,
+        )}
+        {...props}
+      >
+        {/* Subtle grid background */}
+        <div
+          className="absolute inset-0 opacity-[0.02] pointer-events-none"
+          style={{
+            backgroundImage: `
             linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px),
             linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)
           `,
-          backgroundSize: '40px 40px',
-        }}
-      />
-      {children}
-    </div>
-  );
-});
+            backgroundSize: "40px 40px",
+          }}
+        />
+        {children}
+      </div>
+    );
+  },
+);
 ThreadContainer.displayName = "ThreadContainer";
 
 /**
@@ -105,11 +98,7 @@ ThreadContainer.displayName = "ThreadContainer";
 export function useThreadContainerContext() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { hasCanvasSpace, canvasIsOnLeft } = useCanvasDetection(containerRef);
-  const { isLeftPanel, historyPosition } = usePositioning(
-    "",
-    canvasIsOnLeft,
-    hasCanvasSpace,
-  );
+  const { isLeftPanel, historyPosition } = usePositioning("", canvasIsOnLeft, hasCanvasSpace);
 
   return {
     containerRef,

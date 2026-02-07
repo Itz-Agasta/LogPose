@@ -12,32 +12,31 @@ export interface ToolcallInfoTriggerProps extends React.ButtonHTMLAttributes<HTM
 /**
  * Trigger button for expanding/collapsing toolcall details.
  */
-export const ToolcallInfoTrigger = React.forwardRef<
-  HTMLButtonElement,
-  ToolcallInfoTriggerProps
->(({ asChild, onClick, children, ...props }, ref) => {
-  const { isExpanded, setIsExpanded, detailsId } = useToolcallInfoContext();
+export const ToolcallInfoTrigger = React.forwardRef<HTMLButtonElement, ToolcallInfoTriggerProps>(
+  ({ asChild, onClick, children, ...props }, ref) => {
+    const { isExpanded, setIsExpanded, detailsId } = useToolcallInfoContext();
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setIsExpanded(!isExpanded);
-    onClick?.(e);
-  };
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      setIsExpanded(!isExpanded);
+      onClick?.(e);
+    };
 
-  const Comp = asChild ? Slot : "button";
+    const Comp = asChild ? Slot : "button";
 
-  return (
-    <Comp
-      ref={ref}
-      type="button"
-      aria-expanded={isExpanded}
-      aria-controls={detailsId}
-      onClick={handleClick}
-      data-slot="toolcall-info-trigger"
-      data-state={isExpanded ? "open" : "closed"}
-      {...props}
-    >
-      {children}
-    </Comp>
-  );
-});
+    return (
+      <Comp
+        ref={ref}
+        type="button"
+        aria-expanded={isExpanded}
+        aria-controls={detailsId}
+        onClick={handleClick}
+        data-slot="toolcall-info-trigger"
+        data-state={isExpanded ? "open" : "closed"}
+        {...props}
+      >
+        {children}
+      </Comp>
+    );
+  },
+);
 ToolcallInfoTrigger.displayName = "ToolcallInfo.Trigger";

@@ -26,16 +26,8 @@ export const components: TamboComponent[] = [
       "Displays detailed information about a specific Argo float including its ID, status, location, type, and recent measurements. Use this when the user asks about a specific float's details, status, or measurements.",
     component: FloatDataCard,
     propsSchema: z.object({
-      floatId: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("The unique identifier of the float"),
-      wmoNumber: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("WMO number of the float"),
+      floatId: z.number().nullable().optional().describe("The unique identifier of the float"),
+      wmoNumber: z.string().nullable().optional().describe("WMO number of the float"),
       status: z
         .string()
         .nullable()
@@ -47,54 +39,20 @@ export const components: TamboComponent[] = [
         .string()
         .nullable()
         .optional()
-        .describe(
-          "Type of Argo float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'",
-        ),
-      latitude: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Current latitude position"),
-      longitude: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Current longitude position"),
-      cycleNumber: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Current cycle number"),
-      lastUpdate: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("ISO date string of last update"),
+        .describe("Type of Argo float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'"),
+      latitude: z.number().nullable().optional().describe("Current latitude position"),
+      longitude: z.number().nullable().optional().describe("Current longitude position"),
+      cycleNumber: z.number().nullable().optional().describe("Current cycle number"),
+      lastUpdate: z.string().nullable().optional().describe("ISO date string of last update"),
       temperature: z
         .number()
         .nullable()
         .optional()
         .describe("Last recorded temperature in Celsius"),
-      salinity: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Last recorded salinity in PSU"),
-      depth: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Last recorded depth in meters"),
-      piName: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Principal investigator name"),
-      institution: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Operating institution"),
+      salinity: z.number().nullable().optional().describe("Last recorded salinity in PSU"),
+      depth: z.number().nullable().optional().describe("Last recorded depth in meters"),
+      piName: z.string().nullable().optional().describe("Principal investigator name"),
+      institution: z.string().nullable().optional().describe("Operating institution"),
     }),
   },
   {
@@ -103,29 +61,17 @@ export const components: TamboComponent[] = [
       "Displays aggregated statistics about ocean data or Argo float network. Use this when the user asks about overall statistics, summaries, or network-wide data.",
     component: OceanStatsCard,
     propsSchema: z.object({
-      title: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Title of the statistics card"),
+      title: z.string().nullable().optional().describe("Title of the statistics card"),
       stats: z
         .array(
           z.object({
-            label: z
-              .string()
-              .nullable()
-              .optional()
-              .describe("Label for the statistic"),
+            label: z.string().nullable().optional().describe("Label for the statistic"),
             value: z
               .union([z.string(), z.number()])
               .nullable()
               .optional()
               .describe("Value of the statistic"),
-            unit: z
-              .string()
-              .nullable()
-              .optional()
-              .describe("Unit of measurement"),
+            unit: z.string().nullable().optional().describe("Unit of measurement"),
             change: z
               .number()
               .nullable()
@@ -141,11 +87,7 @@ export const components: TamboComponent[] = [
         .nullable()
         .optional()
         .describe("Array of statistics to display"),
-      description: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Optional description or context"),
+      description: z.string().nullable().optional().describe("Optional description or context"),
     }),
   },
   {
@@ -157,35 +99,19 @@ export const components: TamboComponent[] = [
       locations: z
         .array(
           z.object({
-            floatId: z
-              .number()
-              .nullable()
-              .optional()
-              .describe("Float identifier"),
-            latitude: z
-              .number()
-              .nullable()
-              .optional()
-              .describe("Latitude coordinate"),
-            longitude: z
-              .number()
-              .nullable()
-              .optional()
-              .describe("Longitude coordinate"),
+            floatId: z.number().nullable().optional().describe("Float identifier"),
+            latitude: z.number().nullable().optional().describe("Latitude coordinate"),
+            longitude: z.number().nullable().optional().describe("Longitude coordinate"),
             status: z
               .string()
               .nullable()
               .optional()
-              .describe(
-                "Float status: 'ACTIVE', 'INACTIVE', 'UNKNOWN', or 'DEAD'",
-              ),
+              .describe("Float status: 'ACTIVE', 'INACTIVE', 'UNKNOWN', or 'DEAD'"),
             floatType: z
               .string()
               .nullable()
               .optional()
-              .describe(
-                "Type of float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'",
-              ),
+              .describe("Type of float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'"),
           }),
         )
         .nullable()
@@ -195,22 +121,22 @@ export const components: TamboComponent[] = [
         .number()
         .nullable()
         .optional()
-        .describe("Center latitude for the map view (optional, auto-calculated from locations if not provided)"),
+        .describe(
+          "Center latitude for the map view (optional, auto-calculated from locations if not provided)",
+        ),
       centerLng: z
         .number()
         .nullable()
         .optional()
-        .describe("Center longitude for the map view (optional, auto-calculated from locations if not provided)"),
+        .describe(
+          "Center longitude for the map view (optional, auto-calculated from locations if not provided)",
+        ),
       zoom: z
         .number()
         .nullable()
         .optional()
         .describe("Initial zoom level 1-18 (optional, auto-calculated based on location spread)"),
-      title: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Custom title for the map card"),
+      title: z.string().nullable().optional().describe("Custom title for the map card"),
       regionName: z
         .string()
         .nullable()
@@ -228,23 +154,13 @@ export const components: TamboComponent[] = [
       columns: z
         .array(
           z.object({
-            key: z
-              .string()
-              .nullable()
-              .optional()
-              .describe("Optional key for the column"),
-            label: z
-              .string()
-              .nullable()
-              .optional()
-              .describe("Display label for the column header"),
+            key: z.string().nullable().optional().describe("Optional key for the column"),
+            label: z.string().nullable().optional().describe("Display label for the column header"),
             align: z
               .string()
               .nullable()
               .optional()
-              .describe(
-                "Text alignment: 'left', 'center', or 'right'. Defaults to 'left'",
-              ),
+              .describe("Text alignment: 'left', 'center', or 'right'. Defaults to 'left'"),
           }),
         )
         .nullable()
@@ -265,11 +181,7 @@ export const components: TamboComponent[] = [
         .nullable()
         .optional()
         .describe("Array of row objects, each containing a cells array"),
-      maxRows: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Maximum number of rows to display"),
+      maxRows: z.number().nullable().optional().describe("Maximum number of rows to display"),
     }),
   },
   {
@@ -440,19 +352,13 @@ DO NOT USE FOR: Current float status, location, battery, fleet counts, metadata`
     }),
     outputSchema: z.object({
       success: z.boolean().describe("Whether the query was successful"),
-      response: z
-        .string()
-        .nullable()
-        .describe("Summary of the profile data retrieved"),
+      response: z.string().nullable().describe("Summary of the profile data retrieved"),
       data: z
         .array(z.record(z.string(), z.unknown()))
         .nullable()
         .describe("Profile data from DuckDB/Parquet files"),
       rowCount: z.number().describe("Number of measurements returned"),
-      sql: z
-        .string()
-        .nullable()
-        .describe("The DuckDB SQL query that was executed"),
+      sql: z.string().nullable().describe("The DuckDB SQL query that was executed"),
       error: z.string().optional().describe("Error message if query failed"),
       timestamp: z.string().optional().describe("Timestamp of the response"),
     }),
@@ -483,9 +389,7 @@ DO NOT USE FOR: Current float status, location, battery, fleet counts, metadata`
     inputSchema: z.object({
       query: z
         .string()
-        .describe(
-          "Research topic or question to search for in oceanographic literature",
-        ),
+        .describe("Research topic or question to search for in oceanographic literature"),
     }),
     outputSchema: z.object({
       success: z.boolean().describe("Whether the search was successful"),

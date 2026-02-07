@@ -13,45 +13,18 @@ import { z } from "zod/v3";
 export const formFieldSchema = z.object({
   id: z.string().describe("Unique identifier for the field"),
   type: z
-    .enum([
-      "text",
-      "number",
-      "select",
-      "textarea",
-      "radio",
-      "checkbox",
-      "slider",
-      "yes-no",
-    ])
+    .enum(["text", "number", "select", "textarea", "radio", "checkbox", "slider", "yes-no"])
     .describe("Type of form field"),
   label: z.string().describe("Display label for the field"),
   placeholder: z.string().optional().describe("Optional placeholder text"),
   options: z.array(z.string()).optional().describe("Options for select fields"),
   required: z.boolean().optional().describe("Whether the field is required"),
-  description: z
-    .string()
-    .optional()
-    .describe("Additional description text for the field"),
-  sliderMin: z
-    .number()
-    .optional()
-    .describe("The minimum value for slider fields"),
-  sliderMax: z
-    .number()
-    .optional()
-    .describe("The maximum value for slider fields"),
-  sliderStep: z
-    .number()
-    .optional()
-    .describe("The step value for slider fields"),
-  sliderDefault: z
-    .number()
-    .optional()
-    .describe("Default value for slider fields"),
-  sliderLabels: z
-    .array(z.string())
-    .optional()
-    .describe("Labels to display under slider"),
+  description: z.string().optional().describe("Additional description text for the field"),
+  sliderMin: z.number().optional().describe("The minimum value for slider fields"),
+  sliderMax: z.number().optional().describe("The maximum value for slider fields"),
+  sliderStep: z.number().optional().describe("The step value for slider fields"),
+  sliderDefault: z.number().optional().describe("Default value for slider fields"),
+  sliderLabels: z.array(z.string()).optional().describe("Labels to display under slider"),
 });
 
 /**
@@ -61,9 +34,7 @@ export const formSchema = z.object({
   fields: z.array(formFieldSchema).describe("Array of form fields to display"),
   onSubmit: z
     .function()
-    .describe(
-      "Callback function called when the form is submitted with form data as argument",
-    ),
+    .describe("Callback function called when the form is submitted with form data as argument"),
   onError: z.string().optional().describe("Optional error message to display"),
   submitText: z
     .string()
@@ -77,39 +48,33 @@ export const formSchema = z.object({
     .enum(["default", "compact", "relaxed"])
     .optional()
     .describe("Spacing layout of the form fields"),
-  className: z
-    .string()
-    .optional()
-    .describe("Additional CSS classes for styling"),
+  className: z.string().optional().describe("Additional CSS classes for styling"),
 });
 
 /**
  * Variants for the Form component
  */
-export const formVariants = cva(
-  "w-full rounded-lg transition-all duration-200",
-  {
-    variants: {
-      variant: {
-        default: "bg-background border border-border",
-        solid: [
-          "shadow-lg shadow-zinc-900/10 dark:shadow-zinc-900/20",
-          "bg-background border border-border",
-        ].join(" "),
-        bordered: ["border-2", "border-border"].join(" "),
-      },
-      layout: {
-        default: "space-y-4",
-        compact: "space-y-2",
-        relaxed: "space-y-6",
-      },
+export const formVariants = cva("w-full rounded-lg transition-all duration-200", {
+  variants: {
+    variant: {
+      default: "bg-background border border-border",
+      solid: [
+        "shadow-lg shadow-zinc-900/10 dark:shadow-zinc-900/20",
+        "bg-background border border-border",
+      ].join(" "),
+      bordered: ["border-2", "border-border"].join(" "),
     },
-    defaultVariants: {
-      variant: "default",
-      layout: "default",
+    layout: {
+      default: "space-y-4",
+      compact: "space-y-2",
+      relaxed: "space-y-6",
     },
   },
-);
+  defaultVariants: {
+    variant: "default",
+    layout: "default",
+  },
+});
 
 /**
  * TypeScript type inferred from the Zod schema
@@ -160,16 +125,7 @@ export type FormProps = z.infer<typeof formSchema>;
  */
 export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
   (
-    {
-      className,
-      variant,
-      layout,
-      fields = [],
-      onSubmit,
-      onError,
-      submitText = "Submit",
-      ...props
-    },
+    { className, variant, layout, fields = [], onSubmit, onError, submitText = "Submit", ...props },
     ref,
   ) => {
     const { isIdle } = useTambo();
@@ -199,9 +155,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
     /**
      * References to dropdown DOM elements for handling click-outside behavior
      */
-    const dropdownRefs = React.useRef<Record<string, HTMLDivElement | null>>(
-      {},
-    );
+    const dropdownRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
 
     /**
      * Filtered list of valid form fields
@@ -295,11 +249,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
      * @param {string} option - The option value that was clicked
      * @param {boolean} checked - Whether the checkbox is now checked
      */
-    const handleCheckboxChange = (
-      fieldId: string,
-      option: string,
-      checked: boolean,
-    ) => {
+    const handleCheckboxChange = (fieldId: string, option: string, checked: boolean) => {
       if (!state) return;
 
       // Get current selections or initialize empty array
@@ -334,11 +284,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
      * @param {string} value - The new slider value
      * @param {FormField} field - The field definition with possible labels
      */
-    const handleSliderChange = (
-      fieldId: string,
-      value: string,
-      field: FormField,
-    ) => {
+    const handleSliderChange = (fieldId: string, value: string, field: FormField) => {
       if (!state) return;
 
       // Format the display value
@@ -404,8 +350,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
       };
 
       document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [setState]);
 
     if (!state) return null;
@@ -426,18 +371,13 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
 
           {validFields.map((field) => (
             <div key={field.id} className="space-y-2">
-              <label
-                className="block text-sm font-medium text-foreground"
-                htmlFor={field.id}
-              >
+              <label className="block text-sm font-medium text-foreground" htmlFor={field.id}>
                 {field.label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
               </label>
 
               {field.description && (
-                <p className="text-sm text-muted-foreground">
-                  {field.description}
-                </p>
+                <p className="text-sm text-muted-foreground">{field.description}</p>
               )}
 
               {field.type === "text" && (
@@ -504,9 +444,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                   >
                     <span
                       className={
-                        state.selectedValues[field.id]
-                          ? "text-foreground"
-                          : "text-muted-foreground"
+                        state.selectedValues[field.id] ? "text-foreground" : "text-muted-foreground"
                       }
                     >
                       {state.selectedValues[field.id] ?? field.placeholder}
@@ -539,8 +477,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                             "w-full px-3 py-2 text-left text-foreground",
                             "hover:bg-muted focus:bg-muted outline-none",
                             "transition-colors duration-200",
-                            state.selectedValues[field.id] === option &&
-                              "bg-muted/50 font-medium",
+                            state.selectedValues[field.id] === option && "bg-muted/50 font-medium",
                           )}
                         >
                           {option}
@@ -583,23 +520,14 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                     const isChecked = selections.includes(option);
 
                     return (
-                      <label
-                        key={option}
-                        className="flex items-center space-x-2"
-                      >
+                      <label key={option} className="flex items-center space-x-2">
                         <input
                           type="checkbox"
                           id={`${field.id}-${option}`}
                           checked={isChecked}
                           value={option}
                           className="h-4 w-4 border-border focus:ring-accent accent-accent"
-                          onChange={(e) =>
-                            handleCheckboxChange(
-                              field.id,
-                              option,
-                              e.target.checked,
-                            )
-                          }
+                          onChange={(e) => handleCheckboxChange(field.id, option, e.target.checked)}
                         />
                         <span>{option}</span>
                       </label>
@@ -629,23 +557,17 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                       state.values[field.id]?.split(" : ")[0] ??
                       field.sliderDefault?.toString() ??
                       (field.sliderLabels && field.sliderLabels.length > 0
-                        ? Math.floor(
-                            (field.sliderLabels.length - 1) / 2,
-                          ).toString()
+                        ? Math.floor((field.sliderLabels.length - 1) / 2).toString()
                         : "5")
                     }
                     required={field.required}
                     className="w-full h-2 bg-muted rounded-lg cursor-pointer accent-accent"
-                    onChange={(e) =>
-                      handleSliderChange(field.id, e.target.value, field)
-                    }
+                    onChange={(e) => handleSliderChange(field.id, e.target.value, field)}
                   />
                   <input
                     type="hidden"
                     name={field.id}
-                    value={
-                      state.values[field.id] ?? getDefaultSliderValue(field)
-                    }
+                    value={state.values[field.id] ?? getDefaultSliderValue(field)}
                   />
                   {field.sliderLabels && field.sliderLabels.length > 0 ? (
                     <div className="flex justify-between text-xs text-muted-foreground">

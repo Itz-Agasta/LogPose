@@ -14,44 +14,40 @@ export type ReasoningInfoContentProps = BaseProps<
  * Collapsible content area for reasoning details.
  * Includes a ref for auto-scrolling behavior.
  */
-export const ReasoningInfoContent = React.forwardRef<
-  HTMLDivElement,
-  ReasoningInfoContentProps
->(({ asChild, forceMount, children, ...props }, ref) => {
-  const { isExpanded, detailsId, scrollContainerRef } =
-    useReasoningInfoRootContext();
+export const ReasoningInfoContent = React.forwardRef<HTMLDivElement, ReasoningInfoContentProps>(
+  ({ asChild, forceMount, children, ...props }, ref) => {
+    const { isExpanded, detailsId, scrollContainerRef } = useReasoningInfoRootContext();
 
-  // Combine refs
-  const combinedRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      (
-        scrollContainerRef as React.MutableRefObject<HTMLDivElement | null>
-      ).current = node;
-      if (typeof ref === "function") {
-        ref(node);
-      } else if (ref) {
-        ref.current = node;
-      }
-    },
-    [ref, scrollContainerRef],
-  );
+    // Combine refs
+    const combinedRef = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        (scrollContainerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        if (typeof ref === "function") {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      },
+      [ref, scrollContainerRef],
+    );
 
-  if (!forceMount && !isExpanded) {
-    return null;
-  }
+    if (!forceMount && !isExpanded) {
+      return null;
+    }
 
-  const Comp = asChild ? Slot : "div";
+    const Comp = asChild ? Slot : "div";
 
-  return (
-    <Comp
-      ref={combinedRef}
-      id={detailsId}
-      data-slot="reasoning-info-content"
-      data-state={isExpanded ? "open" : "closed"}
-      {...props}
-    >
-      {children}
-    </Comp>
-  );
-});
+    return (
+      <Comp
+        ref={combinedRef}
+        id={detailsId}
+        data-slot="reasoning-info-content"
+        data-state={isExpanded ? "open" : "closed"}
+        {...props}
+      >
+        {children}
+      </Comp>
+    );
+  },
+);
 ReasoningInfoContent.displayName = "ReasoningInfo.Content";

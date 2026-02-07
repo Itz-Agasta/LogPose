@@ -13,44 +13,32 @@ const navItems = [
   {
     title: "Ocean Data",
     href: "/profiles",
-    icon: (
-      <IconDatabase className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-    ),
+    icon: <IconDatabase className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
   },
   {
     title: "Analysis Tools",
     href: "/tools/statistics",
-    icon: (
-      <IconChartLine className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-    ),
+    icon: <IconChartLine className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
   },
   {
     title: "Live Floats",
     href: "/",
-    icon: (
-      <IconMapPin className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-    ),
+    icon: <IconMapPin className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
   },
   {
     title: "AI Chat",
     href: "/chat",
-    icon: (
-      <IconMessageCircle className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-    ),
+    icon: <IconMessageCircle className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
   },
   {
     title: "Research",
     href: "/research",
-    icon: (
-      <IconUsers className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-    ),
+    icon: <IconUsers className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
   },
   {
     title: "Documentation",
     href: "/documentation",
-    icon: (
-      <IconFileText className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-    ),
+    icon: <IconFileText className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
   },
 ];
 

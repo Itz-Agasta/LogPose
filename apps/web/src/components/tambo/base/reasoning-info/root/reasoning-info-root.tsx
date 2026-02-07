@@ -17,10 +17,8 @@ export function formatReasoningDuration(durationMS: number): string {
   const hours = Math.floor(minutes / 60);
 
   if (seconds < 1) return "Thought for less than 1 second";
-  if (seconds < 60)
-    return `Thought for ${seconds} ${seconds === 1 ? "second" : "seconds"}`;
-  if (minutes < 60)
-    return `Thought for ${minutes} ${minutes === 1 ? "minute" : "minutes"}`;
+  if (seconds < 60) return `Thought for ${seconds} ${seconds === 1 ? "second" : "seconds"}`;
+  if (minutes < 60) return `Thought for ${minutes} ${minutes === 1 ? "minute" : "minutes"}`;
   return `Thought for ${hours} ${hours === 1 ? "hour" : "hours"}`;
 }
 
@@ -54,10 +52,7 @@ export interface ReasoningInfoRootProps extends React.HTMLAttributes<HTMLDivElem
  * Root primitive for reasoning info.
  * Provides context for child components. Returns null if no reasoning data.
  */
-export const ReasoningInfoRoot = React.forwardRef<
-  HTMLDivElement,
-  ReasoningInfoRootProps
->(
+export const ReasoningInfoRoot = React.forwardRef<HTMLDivElement, ReasoningInfoRootProps>(
   (
     {
       asChild,

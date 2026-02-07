@@ -20,35 +20,33 @@ export type MessageRootProps = BaseProps<
  * Provides context for child components and applies data attributes.
  * Renders nothing for tool response messages.
  */
-export const MessageRoot = React.forwardRef<HTMLDivElement, MessageRootProps>(
-  function MessageRoot(
-    { children, role, message, isLoading, asChild, ...props },
-    ref,
-  ) {
-    const contextValue = React.useMemo(
-      () => ({ role, isLoading, message }),
-      [role, isLoading, message],
-    );
+export const MessageRoot = React.forwardRef<HTMLDivElement, MessageRootProps>(function MessageRoot(
+  { children, role, message, isLoading, asChild, ...props },
+  ref,
+) {
+  const contextValue = React.useMemo(
+    () => ({ role, isLoading, message }),
+    [role, isLoading, message],
+  );
 
-    // Don't render tool response messages as they're shown in tool call dropdowns
-    if (message.role === "tool") {
-      return null;
-    }
+  // Don't render tool response messages as they're shown in tool call dropdowns
+  if (message.role === "tool") {
+    return null;
+  }
 
-    const Comp = asChild ? Slot : "div";
+  const Comp = asChild ? Slot : "div";
 
-    return (
-      <MessageRootContext.Provider value={contextValue}>
-        <Comp
-          ref={ref}
-          data-slot="message-root"
-          data-message-role={role}
-          data-message-id={message.id}
-          {...props}
-        >
-          {children}
-        </Comp>
-      </MessageRootContext.Provider>
-    );
-  },
-);
+  return (
+    <MessageRootContext.Provider value={contextValue}>
+      <Comp
+        ref={ref}
+        data-slot="message-root"
+        data-message-role={role}
+        data-message-id={message.id}
+        {...props}
+      >
+        {children}
+      </Comp>
+    </MessageRootContext.Provider>
+  );
+});

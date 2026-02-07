@@ -10,9 +10,7 @@ interface MessageRootContextValue {
   isLoading?: boolean;
 }
 
-const MessageRootContext = React.createContext<MessageRootContextValue | null>(
-  null,
-);
+const MessageRootContext = React.createContext<MessageRootContextValue | null>(null);
 
 /**
  * Hook to access the message context.

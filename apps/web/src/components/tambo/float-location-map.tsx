@@ -4,12 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IconMapPin } from "@tabler/icons-react";
 import { useMemo, useRef, useCallback, useEffect, useState } from "react";
-import {
-  Map as MapboxMap,
-  Marker,
-  NavigationControl,
-  ScaleControl,
-} from "react-map-gl/mapbox";
+import { Map as MapboxMap, Marker, NavigationControl, ScaleControl } from "react-map-gl/mapbox";
 import type { MapRef } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -23,14 +18,7 @@ type FloatLocation = {
   latitude?: number | null;
   longitude?: number | null;
   status?: "ACTIVE" | "INACTIVE" | "UNKNOWN" | "DEAD" | string | null;
-  floatType?:
-    | "core"
-    | "oxygen"
-    | "biogeochemical"
-    | "deep"
-    | "unknown"
-    | string
-    | null;
+  floatType?: "core" | "oxygen" | "biogeochemical" | "deep" | "unknown" | string | null;
 };
 
 type FloatLocationMapProps = {
@@ -176,15 +164,19 @@ export default function FloatLocationMap({
         loc.latitude !== undefined &&
         loc.latitude !== null &&
         loc.longitude !== undefined &&
-        loc.longitude !== null
+        loc.longitude !== null,
     );
   }, [locations]);
 
   // Calculate bounds and center
   const { center, calculatedZoom } = useMemo(() => {
     // If center is explicitly provided, use it
-    if (centerLat !== undefined && centerLat !== null &&
-        centerLng !== undefined && centerLng !== null) {
+    if (
+      centerLat !== undefined &&
+      centerLat !== null &&
+      centerLng !== undefined &&
+      centerLng !== null
+    ) {
       return {
         center: { lat: centerLat, lng: centerLng },
         calculatedZoom: zoom ?? 6,
@@ -237,8 +229,12 @@ export default function FloatLocationMap({
     if (!mapRef.current || !mapLoaded || validLocations.length === 0) return;
 
     // If explicit center provided, fly to it
-    if (centerLat !== undefined && centerLat !== null &&
-        centerLng !== undefined && centerLng !== null) {
+    if (
+      centerLat !== undefined &&
+      centerLat !== null &&
+      centerLng !== undefined &&
+      centerLng !== null
+    ) {
       mapRef.current.flyTo({
         center: [centerLng, centerLat],
         zoom: zoom ?? 6,
@@ -266,7 +262,7 @@ export default function FloatLocationMap({
         {
           padding: 40,
           duration: 1000,
-        }
+        },
       );
     }
   }, [validLocations, centerLat, centerLng, zoom, mapLoaded]);
@@ -278,16 +274,13 @@ export default function FloatLocationMap({
     return validLocations.reduce(
       (acc, loc) => {
         let status = loc.status;
-        if (
-          !status ||
-          !["ACTIVE", "INACTIVE", "DEAD", "UNKNOWN"].includes(status)
-        ) {
+        if (!status || !["ACTIVE", "INACTIVE", "DEAD", "UNKNOWN"].includes(status)) {
           status = "UNKNOWN";
         }
         acc[status] = (acc[status] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
   }, [validLocations]);
 
@@ -301,7 +294,7 @@ export default function FloatLocationMap({
         acc[type] = (acc[type] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
   }, [validLocations]);
 
@@ -315,9 +308,7 @@ export default function FloatLocationMap({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <IconMapPin className="h-5 w-5 text-primary" />
-            <CardTitle className="text-lg">
-              {title || regionName || "Float Locations"}
-            </CardTitle>
+            <CardTitle className="text-lg">{title || regionName || "Float Locations"}</CardTitle>
           </div>
           <span className="text-sm text-muted-foreground">
             {validLocations.length} float
@@ -325,9 +316,7 @@ export default function FloatLocationMap({
           </span>
         </div>
         {regionName && !title && (
-          <p className="text-sm text-muted-foreground mt-1">
-            Showing floats in {regionName}
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">Showing floats in {regionName}</p>
         )}
       </CardHeader>
 
@@ -401,13 +390,8 @@ export default function FloatLocationMap({
             <p className="text-xs text-muted-foreground font-medium">Status</p>
             <div className="flex flex-wrap gap-2">
               {Object.entries(statusCounts).map(([status, count]) => (
-                <Badge
-                  key={status}
-                  className={`${getStatusBadgeColor(status)} border`}
-                >
-                  <span
-                    className={`w-2 h-2 rounded-full mr-1.5 ${getStatusColor(status)}`}
-                  />
+                <Badge key={status} className={`${getStatusBadgeColor(status)} border`}>
+                  <span className={`w-2 h-2 rounded-full mr-1.5 ${getStatusColor(status)}`} />
                   {status}: {count}
                 </Badge>
               ))}

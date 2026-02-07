@@ -6,8 +6,8 @@
       "default": "./src/*.ts"
     },
     "./float": {
-      "types": "./src/float.ts",
-      "default": "./src/float.ts"
+      "types": "./float.ts",
+      "default": "./float.ts"
     }
   },
   "scripts": {},

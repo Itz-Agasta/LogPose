@@ -75,17 +75,19 @@ export default function Home() {
       }
 
       // Status filter
-      const statusFiltersActive = filters.status.all || filters.status.active || filters.status.inactive;
+      const statusFiltersActive =
+        filters.status.all || filters.status.active || filters.status.inactive;
       if (statusFiltersActive) {
         const statusMatch =
-          (filters.status.all) ||
+          filters.status.all ||
           (filters.status.active && float.status === "ACTIVE") ||
           (filters.status.inactive && float.status === "INACTIVE");
         if (!statusMatch) return false;
       }
 
       // Network/Type filter
-      const networkFiltersActive = filters.network.bgcArgo || filters.network.coreArgo || filters.network.deepArgo;
+      const networkFiltersActive =
+        filters.network.bgcArgo || filters.network.coreArgo || filters.network.deepArgo;
       if (networkFiltersActive) {
         const networkMatch =
           (filters.network.bgcArgo && float.floatType === "biogeochemical") ||

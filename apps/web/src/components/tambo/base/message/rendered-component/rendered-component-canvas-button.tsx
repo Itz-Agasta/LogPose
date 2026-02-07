@@ -49,5 +49,4 @@ export const MessageRenderedComponentCanvasButton = React.forwardRef<
     </button>
   );
 });
-MessageRenderedComponentCanvasButton.displayName =
-  "Message.RenderedComponentCanvasButton";
+MessageRenderedComponentCanvasButton.displayName = "Message.RenderedComponentCanvasButton";

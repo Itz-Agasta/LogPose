@@ -1,7 +1,4 @@
-import type {
-  FloatDetailResponse,
-  FloatLocationsResponse,
-} from "@LogPose/schema/api/home-page";
+import type { FloatDetailResponse, FloatLocationsResponse } from "@LogPose/schema/api/home-page";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -75,9 +72,7 @@ export async function fetchFloatLocations(): Promise<FloatLocationsResponse> {
  * Fetch detailed information for a specific float
  * GET /api/home/float/:floatId
  */
-export async function fetchFloatDetail(
-  floatId: number,
-): Promise<FloatDetailResponse> {
+export async function fetchFloatDetail(floatId: number): Promise<FloatDetailResponse> {
   const response = await fetch(`${API_BASE_URL}/home/float/${floatId}`, {
     method: "GET",
     headers: {
@@ -116,9 +111,7 @@ export async function queryAgent(query: string): Promise<AgentQueryResponse> {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.error || `Failed to query agent: ${response.statusText}`,
-    );
+    throw new Error(errorData.error || `Failed to query agent: ${response.statusText}`);
   }
 
   return response.json();
@@ -204,10 +197,7 @@ export type DuckDBAgentResponse = {
  * @param dryRun - If true, generates SQL without executing
  * @returns SQL agent response with query results
  */
-export async function querySQLAgent(
-  query: string,
-  dryRun = false,
-): Promise<SQLAgentResponse> {
+export async function querySQLAgent(query: string, dryRun = false): Promise<SQLAgentResponse> {
   const response = await fetch(`${API_BASE_URL}/agent/sql/query`, {
     method: "POST",
     headers: {
@@ -218,9 +208,7 @@ export async function querySQLAgent(
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.error || `Failed to query SQL agent: ${response.statusText}`,
-    );
+    throw new Error(errorData.error || `Failed to query SQL agent: ${response.statusText}`);
   }
 
   return response.json();
@@ -255,9 +243,7 @@ export async function queryDuckDBAgent(
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.error || `Failed to query DuckDB agent: ${response.statusText}`,
-    );
+    throw new Error(errorData.error || `Failed to query DuckDB agent: ${response.statusText}`);
   }
 
   return response.json();

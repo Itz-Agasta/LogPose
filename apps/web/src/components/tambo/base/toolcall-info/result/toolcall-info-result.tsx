@@ -23,25 +23,24 @@ export interface ToolcallInfoResultProps extends Omit<
 /**
  * Displays the tool result from the associated tool response.
  */
-export const ToolcallInfoResult = React.forwardRef<
-  HTMLDivElement,
-  ToolcallInfoResultProps
->(({ asChild, children, ...props }, ref) => {
-  const { associatedToolResponse } = useToolcallInfoContext();
+export const ToolcallInfoResult = React.forwardRef<HTMLDivElement, ToolcallInfoResultProps>(
+  ({ asChild, children, ...props }, ref) => {
+    const { associatedToolResponse } = useToolcallInfoContext();
 
-  if (!associatedToolResponse) {
-    return null;
-  }
+    if (!associatedToolResponse) {
+      return null;
+    }
 
-  const Comp = asChild ? Slot : "div";
+    const Comp = asChild ? Slot : "div";
 
-  return (
-    <Comp ref={ref} data-slot="toolcall-info-result" {...props}>
-      {children?.({
-        content: associatedToolResponse.content,
-        hasResult: !!associatedToolResponse.content,
-      })}
-    </Comp>
-  );
-});
+    return (
+      <Comp ref={ref} data-slot="toolcall-info-result" {...props}>
+        {children?.({
+          content: associatedToolResponse.content,
+          hasResult: !!associatedToolResponse.content,
+        })}
+      </Comp>
+    );
+  },
+);
 ToolcallInfoResult.displayName = "ToolcallInfo.Result";

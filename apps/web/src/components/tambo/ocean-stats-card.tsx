@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { IconArrowDown, IconArrowUp, IconMinus } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
@@ -48,18 +42,12 @@ const getTrendColor = (trend?: string | null): string => {
   }
 };
 
-export default function OceanStatsCard({
-  title,
-  stats,
-  description,
-}: OceanStatsCardProps) {
+export default function OceanStatsCard({ title, stats, description }: OceanStatsCardProps) {
   return (
     <Card className="w-full max-w-lg bg-card/80 backdrop-blur-sm border-border/50">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg">{title ?? "Ocean Statistics"}</CardTitle>
-        {description && (
-          <CardDescription className="text-sm">{description}</CardDescription>
-        )}
+        {description && <CardDescription className="text-sm">{description}</CardDescription>}
       </CardHeader>
 
       <CardContent>
@@ -81,18 +69,12 @@ export default function OceanStatsCard({
                       {stat.value !== undefined ? stat.value : "—"}
                     </span>
                     {stat.unit && (
-                      <span className="text-sm text-muted-foreground">
-                        {stat.unit}
-                      </span>
+                      <span className="text-sm text-muted-foreground">{stat.unit}</span>
                     )}
                   </div>
-                  {(stat.change !== undefined && stat.change !== null) ||
-                  stat.trend ? (
+                  {(stat.change !== undefined && stat.change !== null) || stat.trend ? (
                     <div
-                      className={cn(
-                        "flex items-center gap-1 text-xs",
-                        getTrendColor(stat.trend),
-                      )}
+                      className={cn("flex items-center gap-1 text-xs", getTrendColor(stat.trend))}
                     >
                       {TrendIcon && <TrendIcon className="h-3 w-3" />}
                       {stat.change !== undefined && stat.change !== null && (
