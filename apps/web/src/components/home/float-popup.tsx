@@ -91,10 +91,19 @@ export default function FloatPopup({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-base leading-none">Float {data.floatNumber}</h3>
-            <p className="mt-1 text-muted-foreground text-sm">Cycle {data.cycle}</p>
+            <h3 className="font-semibold text-base leading-none">
+              Float {data.floatNumber}
+            </h3>
+            <p className="mt-1 text-muted-foreground text-sm">
+              Cycle {data.cycle}
+            </p>
           </div>
-          <Button className="h-8 w-8 p-0" onClick={onClose} size="sm" variant="ghost">
+          <Button
+            className="h-8 w-8 p-0"
+            onClick={onClose}
+            size="sm"
+            variant="ghost"
+          >
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>
           </Button>
@@ -140,7 +149,11 @@ export default function FloatPopup({
 
         {/* Actions */}
         <div className="flex gap-2">
-          <Button className="flex-1" onClick={() => handleActionClick("Profile")} size="sm">
+          <Button
+            className="flex-1"
+            onClick={() => handleActionClick("Profile")}
+            size="sm"
+          >
             Profile
           </Button>
           <Button

@@ -41,13 +41,18 @@
     "framer-motion": "^12.33.0",
     "highlight.js": "^11.11.1",
     "json-stringify-pretty-compact": "^4.0.0",
+<<<<<<< HEAD
     "leaflet": "^1.9.4",
+=======
+    "liquid-glass-react": "^1.1.1",
+>>>>>>> 84e5536 (modify chat)
     "lucide-react": "^0.546.0",
     "mapbox": "^1.0.0-beta10",
     "mapbox-gl": "^3.18.1",
     "motion": "^12.33.0",
     "next": "^16.1.1",
     "next-themes": "^0.4.6",
+    "ogl": "^1.0.11",
     "radix-ui": "^1.4.3",
     "react": "^19.2.3",
     "react-day-picker": "^9.13.0",

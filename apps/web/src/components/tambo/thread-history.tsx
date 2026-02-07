@@ -153,7 +153,7 @@ const ThreadHistoryHeader = React.forwardRef<HTMLDivElement, React.HTMLAttribute
   ({ className, ...props }, ref) => {
     const { isCollapsed, setIsCollapsed, position = "left" } = useThreadHistoryContext();
 
-    return (
+    return (<>
       <div
         ref={ref}
         className={cn(
@@ -163,38 +163,37 @@ const ThreadHistoryHeader = React.forwardRef<HTMLDivElement, React.HTMLAttribute
         )}
         {...props}
       >
-        <h2
-          className={cn(
-            "text-xs uppercase tracking-wider text-muted-foreground/60 font-medium whitespace-nowrap",
-            isCollapsed
-              ? "opacity-0 max-w-0 overflow-hidden"
-              : "opacity-100 max-w-none transition-all duration-300 delay-75",
-          )}
-        >
-          Conversations
-        </h2>
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className={cn(
-            "p-1.5 hover:bg-muted rounded-md cursor-pointer transition-colors",
-            isCollapsed && "mx-auto",
-          )}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {isCollapsed ? (
-            <ArrowRightToLine
-              className={cn("h-4 w-4 text-muted-foreground", position === "right" && "rotate-180")}
-            />
-          ) : (
-            <ArrowLeftToLine
-              className={cn("h-4 w-4 text-muted-foreground", position === "right" && "rotate-180")}
-            />
-          )}
-        </button>
-      </div>
-    );
-  },
-);
+        Conversations
+      {!isCollapsed && (
+        <h2 className="font-semibold text-sm">Conversations</h2>
+      )}
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className={cn(
+          "p-1.5 hover:bg-muted rounded-md cursor-pointer transition-colors",
+          isCollapsed && "mx-auto",
+        )}
+        aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        {isCollapsed ? (
+          <ArrowRightToLine
+            className={cn(
+              "h-4 w-4 text-muted-foreground",
+              position === "right" && "rotate-180",
+            )}
+          />
+        ) : (
+          <ArrowLeftToLine
+            className={cn(
+              "h-4 w-4 text-muted-foreground",
+              position === "right" && "rotate-180",
+            )}
+          />
+        )}
+      </button>
+    </div >
+  </>);
+});
 ThreadHistoryHeader.displayName = "ThreadHistory.Header";
 
 /**
@@ -244,7 +243,7 @@ const ThreadHistoryNewButton = React.forwardRef<
       title="New thread"
       {...props}
     >
-      <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center">
+      <div className="w-8 h-8 rounded-md bg-green-600 flex items-center justify-center p-2">
         <PlusIcon className="h-4 w-4 text-white" />
       </div>
       <span
@@ -283,7 +282,7 @@ const ThreadHistoryHomeButton = React.forwardRef<
       title="Go to Home"
       {...props}
     >
-      <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+      <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center p-2">
         <Home className="h-4 w-4 text-primary-foreground" />
       </div>
       <span

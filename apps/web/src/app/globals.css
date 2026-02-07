@@ -147,3 +147,17 @@ Animated gradient for thinking text, creates a shimmering effect that moves acro
     animation: thinking-gradient 2s linear infinite;
   }
 }
+
+/* TipTap editor placeholder styling */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--muted-foreground);
+  pointer-events: none;
+  height: 0;
+}
+
+.tiptap:focus p.is-editor-empty:first-child::before {
+  color: var(--muted-foreground);
+  opacity: 0.7;
+}

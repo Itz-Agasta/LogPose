@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useTambo, useTamboComponentState } from "@tambo-ai/react";
+import { useTambo, useTamboComponentState, useTamboThreadInput } from "@tambo-ai/react";
 import { cva } from "class-variance-authority";
 import { Loader2Icon } from "lucide-react";
 import * as React from "react";
@@ -29,12 +29,15 @@ export const formFieldSchema = z.object({
 
 /**
  * Zod schema for Form component props
+ * Note: onSubmit is NOT included in the schema because functions cannot be serialized
+ * when Tambo streams props from the AI. Instead, form submissions are sent back to Tambo.
  */
 export const formSchema = z.object({
   fields: z.array(formFieldSchema).describe("Array of form fields to display"),
-  onSubmit: z
-    .function()
-    .describe("Callback function called when the form is submitted with form data as argument"),
+  formTitle: z
+    .string()
+    .optional()
+    .describe("Optional title to identify this form when data is submitted back to the AI"),
   onError: z.string().optional().describe("Optional error message to display"),
   submitText: z
     .string()
@@ -90,15 +93,23 @@ export interface FormState {
   selectedValues: Record<string, string>;
   yesNoSelections: Record<string, string>;
   checkboxSelections: Record<string, string[]>;
+  isSubmitted: boolean;
 }
 
 /**
  * Props for the Form component
+ * Note: onSubmit is optional - if not provided, form data is sent back to Tambo
  */
-export type FormProps = z.infer<typeof formSchema>;
+export interface FormProps extends Omit<z.infer<typeof formSchema>, 'fields'> {
+  fields?: FormField[];
+  /** Optional callback for local form handling. If not provided, data is sent to Tambo. */
+  onSubmit?: (data: Record<string, string>) => void;
+}
 
 /**
- * A flexible form component that supports various field types and layouts
+ * A flexible form component that supports various field types and layouts.
+ * When rendered by Tambo (AI), form submissions are automatically sent back
+ * to the AI for processing. For local usage, pass an onSubmit callback.
  * @component
  * @example
  * ```tsx
@@ -125,10 +136,21 @@ export type FormProps = z.infer<typeof formSchema>;
  */
 export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
   (
-    { className, variant, layout, fields = [], onSubmit, onError, submitText = "Submit", ...props },
+    {
+      className,
+      variant,
+      layout,
+      fields = [],
+      formTitle,
+      onSubmit,
+      onError,
+      submitText = "Submit",
+      ...props
+    },
     ref,
   ) => {
     const { isIdle } = useTambo();
+    const { setValue, submit } = useTamboThreadInput();
     const isGenerating = !isIdle;
 
     const baseId = React.useId();
@@ -150,6 +172,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
       selectedValues: {},
       yesNoSelections: {},
       checkboxSelections: {},
+      isSubmitted: false,
     });
 
     /**
@@ -177,15 +200,39 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
 
     /**
      * Handles form submission
+     * If onSubmit callback is provided, calls it. Otherwise sends data back to Tambo.
      * @param {React.FormEvent} e - The form submission event
      */
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       const formData = new FormData(e.target as HTMLFormElement);
       const data = Object.fromEntries(
         Array.from(formData.entries()).map(([k, v]) => [k, v.toString()]),
       );
-      onSubmit(data);
+
+      // If a local onSubmit handler is provided, use it
+      if (typeof onSubmit === 'function') {
+        onSubmit(data);
+        return;
+      }
+
+      // Otherwise, send the form data back to Tambo for AI processing
+      const formName = formTitle || 'Form';
+      const formattedData = Object.entries(data)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\n');
+
+      const message = `${formName} submitted with the following data:\n${formattedData}`;
+
+      // Mark form as submitted to show confirmation
+      setState({
+        ...state!,
+        isSubmitted: true,
+      });
+
+      // Send to Tambo using setValue + submit pattern
+      setValue(message);
+      await submit({ streamResponse: true });
     };
 
     /**
@@ -355,6 +402,39 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
 
     if (!state) return null;
 
+    // Show confirmation if form was submitted to Tambo
+    if (state.isSubmitted && !onSubmit) {
+      return (
+        <div
+          className={cn(formVariants({ variant, layout }), className)}
+        >
+          <div className="p-6 text-center space-y-3">
+            <div className="w-12 h-12 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+              <svg
+                className="w-6 h-6 text-primary"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <p className="text-foreground font-medium">
+              {formTitle ? `${formTitle} submitted` : 'Form submitted'}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Your response has been sent.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <form
         ref={ref}
@@ -387,7 +467,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                   name={field.id}
                   placeholder={field.placeholder}
                   required={field.required}
-                  className="w-full px-3 py-2 rounded-lg 
+                  className="w-full px-3 py-2 rounded-lg
                             bg-background border border-border
                             focus:ring-2 focus:ring-accent focus:border-input
                             placeholder:text-muted-foreground

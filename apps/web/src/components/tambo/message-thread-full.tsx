@@ -5,8 +5,6 @@ import {
   MessageInput,
   MessageInputError,
   MessageInputFileButton,
-  MessageInputMcpPromptButton,
-  MessageInputMcpResourceButton,
   MessageInputSubmitButton,
   MessageInputTextarea,
   MessageInputToolbar,
@@ -31,7 +29,7 @@ import { useMergeRefs } from "@/lib/thread-hooks";
 import type { Suggestion } from "@tambo-ai/react";
 import { useTambo, useTamboThreadInput } from "@tambo-ai/react";
 import type { VariantProps } from "class-variance-authority";
-import { IconMap, IconChartLine, IconDatabase } from "@tabler/icons-react";
+import { Sparkles } from "lucide-react";
 import * as React from "react";
 
 /**
@@ -42,223 +40,160 @@ export interface MessageThreadFullProps extends React.HTMLAttributes<HTMLDivElem
 }
 
 /**
- * Abstract orb/wave visualization component
+ * Bolt.new inspired chat input component with animated gradient border
  */
-function AbstractOrb() {
+function BoltChatInput() {
   return (
-    <div className="relative w-64 h-48 mb-6">
-      {/* Outer glow */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-primary/5 to-transparent rounded-full blur-3xl" />
-
-      {/* Wave lines */}
-      <svg
-        viewBox="0 0 200 150"
-        className="w-full h-full"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.6" />
-            <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
-          </linearGradient>
-        </defs>
-
-        {/* Multiple wave paths creating an orb-like effect */}
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="80"
-          ry="60"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.5"
-          fill="none"
-          opacity="0.3"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="70"
-          ry="52"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.5"
-          fill="none"
-          opacity="0.4"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="60"
-          ry="44"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.5"
-          fill="none"
-          opacity="0.5"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="50"
-          ry="36"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.5"
-          fill="none"
-          opacity="0.6"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="40"
-          ry="28"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.7"
-          fill="none"
-          opacity="0.7"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="30"
-          ry="20"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.8"
-          fill="none"
-          opacity="0.8"
+    <div className="w-full max-w-2xl mx-auto px-4">
+      {/* Animated gradient border wrapper */}
+      <div className="relative group">
+        {/* Outer glow on focus/hover */}
+        <div
+          className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-blue-600 via-violet-600 to-blue-600 opacity-0 blur-sm group-focus-within:opacity-75 group-hover:opacity-50 transition-all duration-500"
+          style={{
+            backgroundSize: '200% 100%',
+            animation: 'gradient-shift 3s ease infinite',
+          }}
         />
 
-        {/* Horizontal wave lines */}
-        <path
-          d="M20,75 Q60,55 100,75 T180,75"
-          stroke="url(#waveGradient)"
-          strokeWidth="1"
-          fill="none"
-          opacity="0.6"
-        />
-        <path
-          d="M20,85 Q60,65 100,85 T180,85"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.8"
-          fill="none"
-          opacity="0.5"
-        />
-        <path
-          d="M20,65 Q60,45 100,65 T180,65"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.8"
-          fill="none"
-          opacity="0.5"
+        {/* Gradient border */}
+        <div
+          className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-blue-500/50 via-violet-500/50 to-blue-500/50 opacity-0 group-focus-within:opacity-100 group-hover:opacity-70 transition-opacity duration-300"
+          style={{
+            backgroundSize: '200% 100%',
+            animation: 'gradient-shift 3s ease infinite',
+          }}
         />
 
-        {/* Center highlight */}
-        <circle cx="100" cy="75" r="15" fill="url(#waveGradient)" opacity="0.15" />
-      </svg>
+        {/* Main input container */}
+        <div className="relative rounded-xl bg-[#18181b] border border-zinc-800/80 group-focus-within:border-transparent group-hover:border-transparent transition-colors duration-300">
+          <MessageInput className="!max-w-none !shadow-none [&>div]:!bg-transparent [&>div]:!border-none [&>div]:!rounded-xl [&>div]:!shadow-none">
+            <MessageInputFileButton className="text-zinc-500 hover:text-zinc-300 transition-colors ml-1" />
+            <MessageInputTextarea
+              placeholder="What do you want to explore?"
+              className="text-zinc-100 placeholder:text-zinc-500 text-[15px] leading-relaxed"
+            />
+            <MessageInputToolbar>
+              <MessageInputSubmitButton
+                className="bg-gradient-to-r from-blue-500 to-violet-500 hover:from-blue-400 hover:to-violet-400 text-white shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 transition-all duration-300 mr-1"
+              />
+            </MessageInputToolbar>
+            <MessageInputError />
+          </MessageInput>
+        </div>
+      </div>
+
+      {/* Global animation keyframes */}
+      <style jsx global>{`
+        @keyframes gradient-shift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+      `}</style>
     </div>
   );
 }
 
 /**
- * Suggestion card component with gradient background
+ * Suggestion card component - bolt.new style
  */
 function SuggestionCard({
-  icon: Icon,
-  label,
+  icon,
+  title,
   description,
-  onClick,
+  onClick
 }: {
-  icon: React.ElementType;
-  label: string;
+  icon: React.ReactNode;
+  title: string;
   description: string;
   onClick: () => void;
 }) {
   return (
     <button
-      type="button"
       onClick={onClick}
-      className="group relative flex flex-col items-start p-4 rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] text-left min-h-[100px]"
+      className="group relative flex flex-col items-start p-4 rounded-xl bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 hover:bg-zinc-800/50 transition-all duration-300 text-left"
     >
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
-      <div className="absolute inset-0 bg-card/40 backdrop-blur-sm" />
-      <div className="absolute inset-[1px] rounded-xl border border-primary/20 group-hover:border-primary/40 transition-colors" />
-
-      {/* Content */}
-      <div className="relative z-10">
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-primary/20 text-primary text-xs font-medium mb-3">
-          <Icon className="h-3 w-3" />
-          {label}
+      <div className="flex items-center gap-2 mb-2">
+        <div className="text-zinc-400 group-hover:text-blue-400 transition-colors">
+          {icon}
+        </div>
+        <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">
+          {title}
         </span>
-        <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-          {description}
-        </p>
       </div>
+      <p className="text-xs text-zinc-500 group-hover:text-zinc-400 transition-colors leading-relaxed">
+        {description}
+      </p>
     </button>
   );
 }
 
 /**
- * Welcome screen component shown when there are no messages
+ * Welcome screen with bolt.new inspired design
  */
-function WelcomeScreen({ onSuggestionClick }: { onSuggestionClick: (text: string) => void }) {
+function WelcomeScreen() {
+  const { setValue, submit } = useTamboThreadInput();
+
+  const handleSuggestionClick = React.useCallback((text: string) => {
+    setValue(text);
+    submit({ streamResponse: true });
+  }, [setValue, submit]);
+
   const suggestions = [
     {
-      icon: IconMap,
-      label: "Float Locations",
-      description: "Show me floats in the Bay of Bengal",
+      icon: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>,
+      title: "Find Floats",
+      description: "Locate Argo floats in specific ocean regions",
     },
     {
-      icon: IconChartLine,
-      label: "Data Analysis",
-      description: "Temperature profile for a specific float",
+      icon: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>,
+      title: "Temperature Profiles",
+      description: "Analyze temperature data from float measurements",
     },
     {
-      icon: IconDatabase,
-      label: "Statistics",
-      description: "How many active floats are deployed?",
+      icon: <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>,
+      title: "Network Statistics",
+      description: "Get current status and statistics of the Argo network",
     },
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-4 py-8 relative">
-      {/* Grid background */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px),
-            linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)
-          `,
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      <div className="relative z-10 flex flex-col items-center max-w-4xl mx-auto">
-        {/* Abstract Orb */}
-        <AbstractOrb />
-
-        {/* Greeting */}
-        <div className="w-full text-start mb-8">
-          <h1 className="text-3xl md:text-4xl text-foreground mb-2">
-            Hey! <span className="text-primary">Explorer</span>
-          </h1>
-          <p className="text-2xl md:text-3xl font-light text-muted-foreground">
-            What can I help with?
-          </p>
+    <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
+      {/* Logo and title */}
+      <div className="mb-10 text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-violet-500/20 border border-blue-500/20 mb-6">
+          <Sparkles className="w-8 h-8 text-blue-400" />
         </div>
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-3 tracking-tight">
+          LogPose
+        </h1>
+        <p className="text-zinc-400 text-base md:text-lg max-w-sm mx-auto">
+          AI-powered ocean data exploration
+        </p>
+      </div>
 
-        {/* Suggestion Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mb-8">
+      {/* Chat input */}
+      <BoltChatInput />
+
+      {/* Suggestion cards */}
+      <div className="mt-10 w-full max-w-2xl px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {suggestions.map((suggestion) => (
             <SuggestionCard
-              key={suggestion.label}
+              key={suggestion.title}
               icon={suggestion.icon}
-              label={suggestion.label}
+              title={suggestion.title}
               description={suggestion.description}
-              onClick={() => onSuggestionClick(suggestion.description)}
+              onClick={() => handleSuggestionClick(suggestion.description)}
             />
           ))}
         </div>
       </div>
+
+      {/* Footer hint */}
+      <p className="mt-8 text-xs text-zinc-600">
+        Press <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono text-[10px]">Enter</kbd> to send
+      </p>
     </div>
   );
 }
@@ -266,23 +201,17 @@ function WelcomeScreen({ onSuggestionClick }: { onSuggestionClick: (text: string
 /**
  * A full-screen chat thread component with message history, input, and suggestions
  */
-export const MessageThreadFull = React.forwardRef<HTMLDivElement, MessageThreadFullProps>(
-  ({ className, variant, ...props }, ref) => {
-    const { containerRef, historyPosition } = useThreadContainerContext();
-    const { thread } = useTambo();
-    const { setValue, submit } = useTamboThreadInput();
-    const mergedRef = useMergeRefs<HTMLDivElement | null>(ref, containerRef);
+export const MessageThreadFull = React.forwardRef<
+  HTMLDivElement,
+  MessageThreadFullProps
+>(({ className, variant, ...props }, ref) => {
+  const { containerRef, historyPosition } = useThreadContainerContext();
+  const { thread } = useTambo();
+  const mergedRef = useMergeRefs<HTMLDivElement | null>(ref, containerRef);
 
-    const hasMessages =
-      thread?.messages && thread.messages.filter((m) => m.role !== "system").length > 0;
-
-    const handleSuggestionClick = React.useCallback(
-      (text: string) => {
-        setValue(text);
-        submit({ streamResponse: true });
-      },
-      [setValue, submit],
-    );
+  const hasMessages =
+    thread?.messages &&
+    thread.messages.filter((m) => m.role !== "system").length > 0;
 
     const threadHistorySidebar = (
       <ThreadHistory position={historyPosition}>
@@ -321,26 +250,43 @@ export const MessageThreadFull = React.forwardRef<HTMLDivElement, MessageThreadF
       },
     ];
 
-    return (
-      <div className="flex h-full w-full">
-        {/* Thread History Sidebar - rendered first if history is on the left */}
-        {historyPosition === "left" && threadHistorySidebar}
+  return (
+    <div className="flex h-full w-full overflow-hidden">
+      {/* Thread History Sidebar - rendered first if history is on the left */}
+      {historyPosition === "left" && threadHistorySidebar}
 
-        <ThreadContainer ref={mergedRef} disableSidebarSpacing className={className} {...props}>
-          <ScrollableMessageContainer className="p-4">
-            {hasMessages ? (
+      <ThreadContainer
+        ref={mergedRef}
+        disableSidebarSpacing
+        className={className}
+        {...props}
+      >
+        {hasMessages ? (
+          <>
+            <ScrollableMessageContainer className="p-4 mt-5">
               <ThreadContent variant={variant}>
                 <ThreadContentMessages />
               </ThreadContent>
-            ) : (
-              <WelcomeScreen onSuggestionClick={handleSuggestionClick} />
-            )}
-          </ScrollableMessageContainer>
+            </ScrollableMessageContainer>
 
-          {/* Message suggestions status */}
-          <MessageSuggestions>
-            <MessageSuggestionsStatus />
-          </MessageSuggestions>
+            {/* Message suggestions status */}
+            <MessageSuggestions>
+              <MessageSuggestionsStatus />
+            </MessageSuggestions>
+
+            {/* Message input - bottom positioned when messages exist */}
+            <div className="pb-6 w-full flex justify-center relative z-10">
+              <BoltChatInput />
+            </div>
+
+            <MessageSuggestions initialSuggestions={defaultSuggestions}>
+              <MessageSuggestionsList />
+            </MessageSuggestions>
+          </>
+        ) : (
+          <WelcomeScreen />
+        )}
+      </ThreadContainer>
 
           {/* Message input */}
           <div className="px-4 pb-4 max-w-3xl mx-auto w-full">
@@ -348,8 +294,6 @@ export const MessageThreadFull = React.forwardRef<HTMLDivElement, MessageThreadF
               <MessageInputTextarea placeholder="Ask me anything......." />
               <MessageInputToolbar>
                 <MessageInputFileButton />
-                <MessageInputMcpPromptButton />
-                <MessageInputMcpResourceButton />
                 <MessageInputSubmitButton />
               </MessageInputToolbar>
               <MessageInputError />
@@ -361,9 +305,7 @@ export const MessageThreadFull = React.forwardRef<HTMLDivElement, MessageThreadF
             <MessageSuggestions initialSuggestions={defaultSuggestions}>
               <MessageSuggestionsList />
             </MessageSuggestions>
-          )}
-        </ThreadContainer>
-
+      )}
         {/* Thread History Sidebar - rendered last if history is on the right */}
         {historyPosition === "right" && threadHistorySidebar}
       </div>

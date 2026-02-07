@@ -33,56 +33,62 @@ export const ThreadContainer = React.forwardRef<HTMLDivElement, ThreadContainerP
     );
     const mergedRef = useMergeRefs<HTMLDivElement | null>(ref, containerRef);
 
-    return (
+  return (
+    <div
+      ref={mergedRef}
+      className={cn(
+        // Base layout and styling
+        "flex flex-col overflow-hidden relative",
+        "h-full w-full max-w-full",
+
+        // Add smooth transitions for layout changes
+        "transition-all duration-200 ease-in-out",
+
+        // Sidebar spacing based on history position (unless disabled)
+        !disableSidebarSpacing &&
+          (historyPosition === "right"
+            ? "mr-[var(--sidebar-width,16rem)]"
+            : "ml-[var(--sidebar-width,16rem)]"),
+
+        // Width constraints based on canvas presence (unless sidebar spacing disabled)
+        !disableSidebarSpacing &&
+          (hasCanvasSpace
+            ? "max-w-3xl"
+            : "w-[calc(100%-var(--sidebar-width,16rem))]"),
+        disableSidebarSpacing && "flex-1",
+
+        // Border styling when canvas is present
+        hasCanvasSpace && (canvasIsOnLeft ? "border-l" : "border-r"),
+        hasCanvasSpace && "border-border",
+
+        // Right alignment when specified
+        !isLeftPanel && "ml-auto",
+
+        // Custom classes passed via props
+        className,
+      )}
+      {...props}
+    >
+      {/* Bolt.new inspired gradient background */}
+      <div className="absolute inset-0 bg-[#0a0a0a]" />
+      {/* Subtle radial gradient for depth */}
       <div
-        ref={mergedRef}
-        className={cn(
-          // Base layout and styling
-          "flex flex-col overflow-hidden bg-background relative",
-          "h-full",
-
-          // Add smooth transitions for layout changes
-          "transition-all duration-200 ease-in-out",
-
-          // Sidebar spacing based on history position (unless disabled)
-          !disableSidebarSpacing &&
-            (historyPosition === "right"
-              ? "mr-[var(--sidebar-width,16rem)]"
-              : "ml-[var(--sidebar-width,16rem)]"),
-
-          // Width constraints based on canvas presence (unless sidebar spacing disabled)
-          !disableSidebarSpacing &&
-            (hasCanvasSpace ? "max-w-3xl" : "w-[calc(100%-var(--sidebar-width,16rem))]"),
-          disableSidebarSpacing && "flex-1",
-
-          // Border styling when canvas is present
-          hasCanvasSpace && (canvasIsOnLeft ? "border-l" : "border-r"),
-          hasCanvasSpace && "border-border",
-
-          // Right alignment when specified
-          !isLeftPanel && "ml-auto",
-
-          // Custom classes passed via props
-          className,
-        )}
-        {...props}
-      >
-        {/* Subtle grid background */}
-        <div
-          className="absolute inset-0 opacity-[0.02] pointer-events-none"
-          style={{
-            backgroundImage: `
-            linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px),
-            linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)
-          `,
-            backgroundSize: "40px 40px",
-          }}
-        />
-        {children}
-      </div>
-    );
-  },
-);
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.15), transparent)',
+        }}
+      />
+      {/* Bottom glow effect */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 60% 40% at 50% 120%, rgba(59, 130, 246, 0.08), transparent)',
+        }}
+      />
+      {children}
+    </div>
+  );
+});
 ThreadContainer.displayName = "ThreadContainer";
 
 /**
