@@ -47,7 +47,9 @@ export const McpConfigModal = ({
   });
   const [serverUrl, setServerUrl] = React.useState("");
   const [serverName, setServerName] = React.useState("");
-  const [transportType, setTransportType] = React.useState<MCPTransport>(MCPTransport.HTTP);
+  const [transportType, setTransportType] = React.useState<MCPTransport>(
+    MCPTransport.HTTP,
+  );
   const [savedSuccess, setSavedSuccess] = React.useState(false);
   const [showInstructions, setShowInstructions] = React.useState(false);
 
@@ -174,7 +176,10 @@ function MyApp() {
 
   const modalContent = (
     <motion.div
-      className={cn("fixed inset-0 bg-backdrop flex items-center justify-center z-50", className)}
+      className={cn(
+        "fixed inset-0 bg-backdrop flex items-center justify-center z-50",
+        className,
+      )}
       onClick={handleBackdropClick}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -200,7 +205,9 @@ function MyApp() {
               className="w-full flex items-center justify-between p-2 hover:bg-muted transition-colors cursor-pointer"
               type="button"
             >
-              <span className="text-sm font-semibold text-foreground">Setup Instructions</span>
+              <span className="text-sm font-semibold text-foreground">
+                Setup Instructions
+              </span>
               <ChevronDown
                 className={`w-4 h-4 text-foreground transition-transform duration-200 ${
                   showInstructions ? "rotate-180" : ""
@@ -214,16 +221,19 @@ function MyApp() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Streamdown components={createMarkdownComponents()}>{instructions}</Streamdown>
+                <Streamdown components={createMarkdownComponents()}>
+                  {instructions}
+                </Streamdown>
               </motion.div>
             )}
           </div>
           {/* Description */}
           <div className="mb-6">
             <p className="text-foreground mb-3 text-sm leading-relaxed">
-              Configure <span className="font-semibold text-foreground">client-side</span> MCP
-              servers to extend the capabilities of your tambo application. These servers will be
-              connected{" "}
+              Configure{" "}
+              <span className="font-semibold text-foreground">client-side</span>{" "}
+              MCP servers to extend the capabilities of your tambo application.
+              These servers will be connected{" "}
               <i>
                 <b>from the browser</b>
               </i>{" "}
@@ -263,7 +273,9 @@ function MyApp() {
                   className="block text-sm font-semibold text-foreground mb-2"
                 >
                   Server Name
-                  <span className="text-muted-foreground font-normal ml-1">(optional)</span>
+                  <span className="text-muted-foreground font-normal ml-1">
+                    (optional)
+                  </span>
                 </label>
                 <input
                   id="server-name"
@@ -353,11 +365,13 @@ function MyApp() {
                         <div className="ml-5 space-y-1">
                           {serverInfo.name && (
                             <div className="text-sm text-muted-foreground">
-                              <span className="font-medium">Name:</span> {serverInfo.name}
+                              <span className="font-medium">Name:</span>{" "}
+                              {serverInfo.name}
                             </div>
                           )}
                           <div className="text-sm text-muted-foreground">
-                            <span className="font-medium">Transport:</span> {serverInfo.transport}
+                            <span className="font-medium">Transport:</span>{" "}
+                            {serverInfo.transport}
                           </div>
                         </div>
                       </div>
@@ -374,7 +388,9 @@ function MyApp() {
             </div>
           ) : (
             <div className="text-center p-8 border-2 border-dashed border-muted rounded-lg">
-              <p className="text-muted-foreground text-sm">No MCP servers configured yet</p>
+              <p className="text-muted-foreground text-sm">
+                No MCP servers configured yet
+              </p>
               <p className="text-muted-foreground text-xs mt-1">
                 Add your first server above to get started
               </p>
@@ -394,9 +410,9 @@ function MyApp() {
               >
                 Model Context Protocol (MCP)
               </a>{" "}
-              is a standard that allows applications to communicate with external tools and
-              services. By configuring MCP servers, your tambo application will be able to make
-              calls to these tools.
+              is a standard that allows applications to communicate with
+              external tools and services. By configuring MCP servers, your
+              tambo application will be able to make calls to these tools.
             </p>
           </div>
 
@@ -429,7 +445,9 @@ function MyApp() {
   );
 
   // Use portal to render outside current DOM tree to avoid nested forms
-  return typeof window !== "undefined" ? createPortal(modalContent, document.body) : null;
+  return typeof window !== "undefined"
+    ? createPortal(modalContent, document.body)
+    : null;
 };
 
 /**

@@ -1,5 +1,9 @@
 import { cn } from "@/lib/utils";
-import { useCanvasDetection, usePositioning, useMergeRefs } from "@/lib/thread-hooks";
+import {
+  useCanvasDetection,
+  usePositioning,
+  useMergeRefs,
+} from "@/lib/thread-hooks";
 import * as React from "react";
 import { useRef } from "react";
 
@@ -22,24 +26,26 @@ export interface ThreadContainerProps extends React.HTMLAttributes<HTMLDivElemen
  *
  * It automatically detects canvas presence and adjusts layout accordingly.
  */
-export const ThreadContainer = React.forwardRef<HTMLDivElement, ThreadContainerProps>(
-  ({ className, children, disableSidebarSpacing = false, ...props }, ref) => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const { hasCanvasSpace, canvasIsOnLeft } = useCanvasDetection(containerRef);
-    const { isLeftPanel, historyPosition } = usePositioning(
-      className,
-      canvasIsOnLeft,
-      hasCanvasSpace,
-    );
-    const mergedRef = useMergeRefs<HTMLDivElement | null>(ref, containerRef);
+export const ThreadContainer = React.forwardRef<
+  HTMLDivElement,
+  ThreadContainerProps
+>(({ className, children, disableSidebarSpacing = false, ...props }, ref) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { hasCanvasSpace, canvasIsOnLeft } = useCanvasDetection(containerRef);
+  const { isLeftPanel, historyPosition } = usePositioning(
+    className,
+    canvasIsOnLeft,
+    hasCanvasSpace,
+  );
+  const mergedRef = useMergeRefs<HTMLDivElement | null>(ref, containerRef);
 
   return (
     <div
       ref={mergedRef}
       className={cn(
         // Base layout and styling
-        "flex flex-col overflow-hidden relative",
-        "h-full w-full max-w-full",
+        "flex flex-col overflow-hidden bg-background relative",
+        "h-full",
 
         // Add smooth transitions for layout changes
         "transition-all duration-200 ease-in-out",
@@ -69,20 +75,15 @@ export const ThreadContainer = React.forwardRef<HTMLDivElement, ThreadContainerP
       )}
       {...props}
     >
-      {/* Bolt.new inspired gradient background */}
-      <div className="absolute inset-0 bg-[#0a0a0a]" />
-      {/* Subtle radial gradient for depth */}
+      {/* Subtle grid background */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.15), transparent)',
-        }}
-      />
-      {/* Bottom glow effect */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 60% 40% at 50% 120%, rgba(59, 130, 246, 0.08), transparent)',
+          backgroundImage: `
+            linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px),
+            linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
         }}
       />
       {children}
@@ -104,7 +105,11 @@ ThreadContainer.displayName = "ThreadContainer";
 export function useThreadContainerContext() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { hasCanvasSpace, canvasIsOnLeft } = useCanvasDetection(containerRef);
-  const { isLeftPanel, historyPosition } = usePositioning("", canvasIsOnLeft, hasCanvasSpace);
+  const { isLeftPanel, historyPosition } = usePositioning(
+    "",
+    canvasIsOnLeft,
+    hasCanvasSpace,
+  );
 
   return {
     containerRef,

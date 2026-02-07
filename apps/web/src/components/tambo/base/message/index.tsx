@@ -21,8 +21,14 @@ const Message = {
   RenderedComponentCanvasButton: MessageRenderedComponentCanvasButton,
 };
 
-export type { MessageContentProps, MessageContentRenderProps } from "./content/message-content";
-export type { MessageImageRenderFnProps, MessageImagesProps } from "./images/message-images";
+export type {
+  MessageContentProps,
+  MessageContentRenderProps,
+} from "./content/message-content";
+export type {
+  MessageImageRenderFnProps,
+  MessageImagesProps,
+} from "./images/message-images";
 export type { MessageLoadingIndicatorProps } from "./loading-indicator/message-loading-indicator";
 export type { MessageRenderedComponentProps } from "./rendered-component/rendered-component";
 export type { MessageRootProps } from "./root/message-root";

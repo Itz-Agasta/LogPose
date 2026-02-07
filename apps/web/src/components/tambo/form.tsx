@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useTambo, useTamboComponentState, useTamboThreadInput } from "@tambo-ai/react";
+import { useTambo, useTamboComponentState } from "@tambo-ai/react";
 import { cva } from "class-variance-authority";
 import { Loader2Icon } from "lucide-react";
 import * as React from "react";
@@ -13,31 +13,57 @@ import { z } from "zod/v3";
 export const formFieldSchema = z.object({
   id: z.string().describe("Unique identifier for the field"),
   type: z
-    .enum(["text", "number", "select", "textarea", "radio", "checkbox", "slider", "yes-no"])
+    .enum([
+      "text",
+      "number",
+      "select",
+      "textarea",
+      "radio",
+      "checkbox",
+      "slider",
+      "yes-no",
+    ])
     .describe("Type of form field"),
   label: z.string().describe("Display label for the field"),
   placeholder: z.string().optional().describe("Optional placeholder text"),
   options: z.array(z.string()).optional().describe("Options for select fields"),
   required: z.boolean().optional().describe("Whether the field is required"),
-  description: z.string().optional().describe("Additional description text for the field"),
-  sliderMin: z.number().optional().describe("The minimum value for slider fields"),
-  sliderMax: z.number().optional().describe("The maximum value for slider fields"),
-  sliderStep: z.number().optional().describe("The step value for slider fields"),
-  sliderDefault: z.number().optional().describe("Default value for slider fields"),
-  sliderLabels: z.array(z.string()).optional().describe("Labels to display under slider"),
+  description: z
+    .string()
+    .optional()
+    .describe("Additional description text for the field"),
+  sliderMin: z
+    .number()
+    .optional()
+    .describe("The minimum value for slider fields"),
+  sliderMax: z
+    .number()
+    .optional()
+    .describe("The maximum value for slider fields"),
+  sliderStep: z
+    .number()
+    .optional()
+    .describe("The step value for slider fields"),
+  sliderDefault: z
+    .number()
+    .optional()
+    .describe("Default value for slider fields"),
+  sliderLabels: z
+    .array(z.string())
+    .optional()
+    .describe("Labels to display under slider"),
 });
 
 /**
  * Zod schema for Form component props
- * Note: onSubmit is NOT included in the schema because functions cannot be serialized
- * when Tambo streams props from the AI. Instead, form submissions are sent back to Tambo.
  */
 export const formSchema = z.object({
   fields: z.array(formFieldSchema).describe("Array of form fields to display"),
-  formTitle: z
-    .string()
-    .optional()
-    .describe("Optional title to identify this form when data is submitted back to the AI"),
+  onSubmit: z
+    .function()
+    .describe(
+      "Callback function called when the form is submitted with form data as argument",
+    ),
   onError: z.string().optional().describe("Optional error message to display"),
   submitText: z
     .string()
@@ -51,33 +77,39 @@ export const formSchema = z.object({
     .enum(["default", "compact", "relaxed"])
     .optional()
     .describe("Spacing layout of the form fields"),
-  className: z.string().optional().describe("Additional CSS classes for styling"),
+  className: z
+    .string()
+    .optional()
+    .describe("Additional CSS classes for styling"),
 });
 
 /**
  * Variants for the Form component
  */
-export const formVariants = cva("w-full rounded-lg transition-all duration-200", {
-  variants: {
-    variant: {
-      default: "bg-background border border-border",
-      solid: [
-        "shadow-lg shadow-zinc-900/10 dark:shadow-zinc-900/20",
-        "bg-background border border-border",
-      ].join(" "),
-      bordered: ["border-2", "border-border"].join(" "),
+export const formVariants = cva(
+  "w-full rounded-lg transition-all duration-200",
+  {
+    variants: {
+      variant: {
+        default: "bg-background border border-border",
+        solid: [
+          "shadow-lg shadow-zinc-900/10 dark:shadow-zinc-900/20",
+          "bg-background border border-border",
+        ].join(" "),
+        bordered: ["border-2", "border-border"].join(" "),
+      },
+      layout: {
+        default: "space-y-4",
+        compact: "space-y-2",
+        relaxed: "space-y-6",
+      },
     },
-    layout: {
-      default: "space-y-4",
-      compact: "space-y-2",
-      relaxed: "space-y-6",
+    defaultVariants: {
+      variant: "default",
+      layout: "default",
     },
   },
-  defaultVariants: {
-    variant: "default",
-    layout: "default",
-  },
-});
+);
 
 /**
  * TypeScript type inferred from the Zod schema
@@ -93,23 +125,15 @@ export interface FormState {
   selectedValues: Record<string, string>;
   yesNoSelections: Record<string, string>;
   checkboxSelections: Record<string, string[]>;
-  isSubmitted: boolean;
 }
 
 /**
  * Props for the Form component
- * Note: onSubmit is optional - if not provided, form data is sent back to Tambo
  */
-export interface FormProps extends Omit<z.infer<typeof formSchema>, 'fields'> {
-  fields?: FormField[];
-  /** Optional callback for local form handling. If not provided, data is sent to Tambo. */
-  onSubmit?: (data: Record<string, string>) => void;
-}
+export type FormProps = z.infer<typeof formSchema>;
 
 /**
- * A flexible form component that supports various field types and layouts.
- * When rendered by Tambo (AI), form submissions are automatically sent back
- * to the AI for processing. For local usage, pass an onSubmit callback.
+ * A flexible form component that supports various field types and layouts
  * @component
  * @example
  * ```tsx
@@ -141,7 +165,6 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
       variant,
       layout,
       fields = [],
-      formTitle,
       onSubmit,
       onError,
       submitText = "Submit",
@@ -150,7 +173,6 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
     ref,
   ) => {
     const { isIdle } = useTambo();
-    const { setValue, submit } = useTamboThreadInput();
     const isGenerating = !isIdle;
 
     const baseId = React.useId();
@@ -172,13 +194,14 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
       selectedValues: {},
       yesNoSelections: {},
       checkboxSelections: {},
-      isSubmitted: false,
     });
 
     /**
      * References to dropdown DOM elements for handling click-outside behavior
      */
-    const dropdownRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
+    const dropdownRefs = React.useRef<Record<string, HTMLDivElement | null>>(
+      {},
+    );
 
     /**
      * Filtered list of valid form fields
@@ -200,39 +223,15 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
 
     /**
      * Handles form submission
-     * If onSubmit callback is provided, calls it. Otherwise sends data back to Tambo.
      * @param {React.FormEvent} e - The form submission event
      */
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       const formData = new FormData(e.target as HTMLFormElement);
       const data = Object.fromEntries(
         Array.from(formData.entries()).map(([k, v]) => [k, v.toString()]),
       );
-
-      // If a local onSubmit handler is provided, use it
-      if (typeof onSubmit === 'function') {
-        onSubmit(data);
-        return;
-      }
-
-      // Otherwise, send the form data back to Tambo for AI processing
-      const formName = formTitle || 'Form';
-      const formattedData = Object.entries(data)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join('\n');
-
-      const message = `${formName} submitted with the following data:\n${formattedData}`;
-
-      // Mark form as submitted to show confirmation
-      setState({
-        ...state!,
-        isSubmitted: true,
-      });
-
-      // Send to Tambo using setValue + submit pattern
-      setValue(message);
-      await submit({ streamResponse: true });
+      onSubmit(data);
     };
 
     /**
@@ -296,7 +295,11 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
      * @param {string} option - The option value that was clicked
      * @param {boolean} checked - Whether the checkbox is now checked
      */
-    const handleCheckboxChange = (fieldId: string, option: string, checked: boolean) => {
+    const handleCheckboxChange = (
+      fieldId: string,
+      option: string,
+      checked: boolean,
+    ) => {
       if (!state) return;
 
       // Get current selections or initialize empty array
@@ -331,7 +334,11 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
      * @param {string} value - The new slider value
      * @param {FormField} field - The field definition with possible labels
      */
-    const handleSliderChange = (fieldId: string, value: string, field: FormField) => {
+    const handleSliderChange = (
+      fieldId: string,
+      value: string,
+      field: FormField,
+    ) => {
       if (!state) return;
 
       // Format the display value
@@ -397,43 +404,11 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
       };
 
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }, [setState]);
 
     if (!state) return null;
-
-    // Show confirmation if form was submitted to Tambo
-    if (state.isSubmitted && !onSubmit) {
-      return (
-        <div
-          className={cn(formVariants({ variant, layout }), className)}
-        >
-          <div className="p-6 text-center space-y-3">
-            <div className="w-12 h-12 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-primary"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <p className="text-foreground font-medium">
-              {formTitle ? `${formTitle} submitted` : 'Form submitted'}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Your response has been sent.
-            </p>
-          </div>
-        </div>
-      );
-    }
 
     return (
       <form
@@ -451,13 +426,18 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
 
           {validFields.map((field) => (
             <div key={field.id} className="space-y-2">
-              <label className="block text-sm font-medium text-foreground" htmlFor={field.id}>
+              <label
+                className="block text-sm font-medium text-foreground"
+                htmlFor={field.id}
+              >
                 {field.label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
               </label>
 
               {field.description && (
-                <p className="text-sm text-muted-foreground">{field.description}</p>
+                <p className="text-sm text-muted-foreground">
+                  {field.description}
+                </p>
               )}
 
               {field.type === "text" && (
@@ -467,7 +447,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                   name={field.id}
                   placeholder={field.placeholder}
                   required={field.required}
-                  className="w-full px-3 py-2 rounded-lg
+                  className="w-full px-3 py-2 rounded-lg 
                             bg-background border border-border
                             focus:ring-2 focus:ring-accent focus:border-input
                             placeholder:text-muted-foreground
@@ -524,7 +504,9 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                   >
                     <span
                       className={
-                        state.selectedValues[field.id] ? "text-foreground" : "text-muted-foreground"
+                        state.selectedValues[field.id]
+                          ? "text-foreground"
+                          : "text-muted-foreground"
                       }
                     >
                       {state.selectedValues[field.id] ?? field.placeholder}
@@ -557,7 +539,8 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                             "w-full px-3 py-2 text-left text-foreground",
                             "hover:bg-muted focus:bg-muted outline-none",
                             "transition-colors duration-200",
-                            state.selectedValues[field.id] === option && "bg-muted/50 font-medium",
+                            state.selectedValues[field.id] === option &&
+                              "bg-muted/50 font-medium",
                           )}
                         >
                           {option}
@@ -600,14 +583,23 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                     const isChecked = selections.includes(option);
 
                     return (
-                      <label key={option} className="flex items-center space-x-2">
+                      <label
+                        key={option}
+                        className="flex items-center space-x-2"
+                      >
                         <input
                           type="checkbox"
                           id={`${field.id}-${option}`}
                           checked={isChecked}
                           value={option}
                           className="h-4 w-4 border-border focus:ring-accent accent-accent"
-                          onChange={(e) => handleCheckboxChange(field.id, option, e.target.checked)}
+                          onChange={(e) =>
+                            handleCheckboxChange(
+                              field.id,
+                              option,
+                              e.target.checked,
+                            )
+                          }
                         />
                         <span>{option}</span>
                       </label>
@@ -637,17 +629,23 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                       state.values[field.id]?.split(" : ")[0] ??
                       field.sliderDefault?.toString() ??
                       (field.sliderLabels && field.sliderLabels.length > 0
-                        ? Math.floor((field.sliderLabels.length - 1) / 2).toString()
+                        ? Math.floor(
+                            (field.sliderLabels.length - 1) / 2,
+                          ).toString()
                         : "5")
                     }
                     required={field.required}
                     className="w-full h-2 bg-muted rounded-lg cursor-pointer accent-accent"
-                    onChange={(e) => handleSliderChange(field.id, e.target.value, field)}
+                    onChange={(e) =>
+                      handleSliderChange(field.id, e.target.value, field)
+                    }
                   />
                   <input
                     type="hidden"
                     name={field.id}
-                    value={state.values[field.id] ?? getDefaultSliderValue(field)}
+                    value={
+                      state.values[field.id] ?? getDefaultSliderValue(field)
+                    }
                   />
                   {field.sliderLabels && field.sliderLabels.length > 0 ? (
                     <div className="flex justify-between text-xs text-muted-foreground">

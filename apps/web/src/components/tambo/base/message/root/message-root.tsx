@@ -1,7 +1,7 @@
 import { Slot } from "@radix-ui/react-slot";
-import type { TamboThreadMessage } from "@tambo-ai/react";
+import { TamboThreadMessage } from "@tambo-ai/react";
 import * as React from "react";
-import type { BaseProps } from "../../types/component-render-or-children";
+import { BaseProps } from "../../types/component-render-or-children";
 import { MessageRootContext } from "./message-root-context";
 
 export type MessageRootProps = BaseProps<
