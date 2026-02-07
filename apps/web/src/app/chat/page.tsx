@@ -2,11 +2,11 @@
 
 import { TamboProvider } from "@tambo-ai/react";
 import { components, tools } from "@/lib/tambo";
-import { MessageThreadFull } from "@/components/tambo/message-thread-full";
 import { ModeToggle } from "@/components/mode-toggle";
 import { IconAnchor, IconArrowLeft } from "@tabler/icons-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { MessageThreadFull } from "@/components/tambo";
 
 export default function ChatPage() {
   const apiKey = process.env.NEXT_PUBLIC_TAMBO_API_KEY ?? "";
@@ -46,8 +46,8 @@ export default function ChatPage() {
         </div>
 
         {/* Tambo Message Thread */}
-        <div className="flex-1 overflow-hidden">
-          <MessageThreadFull variant="default" />
+        <div className="flex-1 h-full w-full overflow-hidden">
+          <MessageThreadFull />
         </div>
       </div>
     </TamboProvider>
