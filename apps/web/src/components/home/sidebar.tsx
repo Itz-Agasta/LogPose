@@ -95,14 +95,14 @@ export function Sidebar({ className, onFiltersChange, floatLocations = [] }: Sid
       inactive: false,
     },
     network: {
-      bgcArgo: false,
-      coreArgo: false,
-      deepArgo: false,
+      bgcArgo: true,
+      coreArgo: true,
+      deepArgo: true,
     },
     overlays: {
-      bathymetry: true,
+      bathymetry: false,
       sst: false,
-      salinityGradients: true,
+      salinityGradients: false,
     },
   });
 

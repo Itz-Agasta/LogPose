@@ -1,15 +1,20 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 
 export function ModeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  // Check if we're on the home page
+  const isHomePage = pathname === "/";
 
   useEffect(() => {
     setMounted(true);
@@ -19,8 +24,8 @@ export function ModeToggle() {
     (event: React.MouseEvent<HTMLButtonElement>) => {
       const newTheme = resolvedTheme === "dark" ? "light" : "dark";
 
-      // Check if View Transitions API is supported
-      if (!document.startViewTransition) {
+      // On home page or if View Transitions API is not supported, change theme directly
+      if (isHomePage || !document.startViewTransition) {
         setTheme(newTheme);
         return;
       }
@@ -68,7 +73,7 @@ export function ModeToggle() {
         setIsAnimating(false);
       });
     },
-    [resolvedTheme, setTheme]
+    [resolvedTheme, setTheme, isHomePage]
   );
 
   if (!mounted) {
