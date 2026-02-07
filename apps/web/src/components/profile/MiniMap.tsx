@@ -51,7 +51,7 @@ export function MiniMap({ latitude, longitude, className = "" }: MiniMapProps) {
     >
       <MapContainer
         center={center}
-        zoom={3}
+        zoom={8}
         style={{ height: "100%", width: "100%" }}
         zoomControl={true}
         dragging={true}

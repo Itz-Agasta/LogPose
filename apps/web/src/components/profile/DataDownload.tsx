@@ -4,10 +4,7 @@ import { saveAs } from "file-saver";
 import { Database, Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type {
-  FloatProfileMetadata,
-  ProfileMeasurement,
-} from "@LogPose/schema/api/profile";
+import type { FloatProfileMetadata, ProfileMeasurement } from "@LogPose/schema/api/profile";
 
 interface DataDownloadProps {
   data: ProfileMeasurement[];
@@ -48,10 +45,7 @@ export function DataDownload({ data, metadata }: DataDownloadProps) {
     ].join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    saveAs(
-      blob,
-      `argo_float_${metadata.floatId}_cycle_${metadata.cycleNumber}.csv`,
-    );
+    saveAs(blob, `argo_float_${metadata.floatId}_cycle_${metadata.cycleNumber}.csv`);
   };
 
   const downloadJSON = () => {
@@ -80,10 +74,7 @@ export function DataDownload({ data, metadata }: DataDownloadProps) {
     const blob = new Blob([jsonContent], {
       type: "application/json;charset=utf-8;",
     });
-    saveAs(
-      blob,
-      `argo_float_${metadata.floatId}_cycle_${metadata.cycleNumber}.json`,
-    );
+    saveAs(blob, `argo_float_${metadata.floatId}_cycle_${metadata.cycleNumber}.json`);
   };
 
   // Check which optional params are available
@@ -136,23 +127,14 @@ export function DataDownload({ data, metadata }: DataDownloadProps) {
           </div>
         </div>
 
-        
         {/* Download buttons */
         /*// TODO: Make these Buttons functional */}
         <div className="grid grid-cols-2 gap-3">
-          <Button
-            variant="outline"
-            onClick={downloadCSV}
-            className="flex items-center gap-2"
-          >
+          <Button variant="outline" onClick={downloadCSV} className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             CSV
           </Button>
-          <Button
-            variant="outline"
-            onClick={downloadJSON}
-            className="flex items-center gap-2"
-          >
+          <Button variant="outline" onClick={downloadJSON} className="flex items-center gap-2">
             <Database className="h-4 w-4" />
             JSON
           </Button>

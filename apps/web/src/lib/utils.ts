@@ -1,4 +1,5 @@
 import type { FloatDetailResponse, FloatLocationsResponse } from "@LogPose/schema/api/home-page";
+import type { CycleProfileResponse, FloatProfileResponse } from "@LogPose/schema/api/profile";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -244,6 +245,54 @@ export async function queryDuckDBAgent(
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.error || `Failed to query DuckDB agent: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetch full profile page data for a float (metadata + latest cycle measurements)
+ * GET /api/profile/:floatId
+ *
+ * @param floatId - The float ID to fetch profile data for
+ * @returns Profile metadata and latest cycle measurement data from DuckDB
+ */
+export async function fetchFloatProfile(floatId: number): Promise<FloatProfileResponse> {
+  const response = await fetch(`${API_BASE_URL}/profile/${floatId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch float profile: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetch profile data for a specific cycle of a float
+ * GET /api/profile/:floatId/cycle/:cycleNumber
+ *
+ * @param floatId - The float ID
+ * @param cycleNumber - The cycle number to fetch
+ * @returns Measurement data for the specific cycle
+ */
+export async function fetchCycleProfile(
+  floatId: number,
+  cycleNumber: number,
+): Promise<CycleProfileResponse> {
+  const response = await fetch(`${API_BASE_URL}/profile/${floatId}/cycle/${cycleNumber}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch cycle profile: ${response.statusText}`);
   }
 
   return response.json();

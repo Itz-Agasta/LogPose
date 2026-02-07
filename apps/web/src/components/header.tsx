@@ -1,9 +1,17 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { ModeToggle } from "./mode-toggle";
 
 export default function Header() {
+  const pathname = usePathname();
+
+  // Hide header on profile pages (/float/*) and chat page (/chat) as they have their own headers/theme toggles
+  if (pathname.startsWith("/float") || pathname === "/chat") {
+    return null;
+  }
+
   const links = [{ to: "/", label: "Home" }] as const;
 
   return (

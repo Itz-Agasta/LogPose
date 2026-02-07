@@ -31,13 +31,7 @@ import { useMergeRefs } from "@/lib/thread-hooks";
 import type { Suggestion } from "@tambo-ai/react";
 import { useTambo, useTamboThreadInput } from "@tambo-ai/react";
 import type { VariantProps } from "class-variance-authority";
-import {
-  IconAnchor,
-  IconMap,
-  IconChartLine,
-  IconDatabase,
-  IconWaveSine,
-} from "@tabler/icons-react";
+import { IconMap, IconChartLine, IconDatabase } from "@tabler/icons-react";
 import * as React from "react";
 
 /**

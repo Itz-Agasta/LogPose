@@ -1,10 +1,7 @@
 "use client";
 
 import { Activity, Calendar, Compass, Layers, MapPin } from "lucide-react";
-import type {
-  CycleProfile,
-  FloatProfileMetadata,
-} from "@LogPose/schema/api/profile";
+import type { CycleProfile, FloatProfileMetadata } from "@LogPose/schema/api/profile";
 import { MiniMap } from "@/components/profile/MiniMap";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -131,10 +128,7 @@ export function ProfileSidebar({
                 <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                   Float Type
                 </span>
-                <Badge
-                  variant="outline"
-                  className="w-fit px-3 py-1 text-sm capitalize"
-                >
+                <Badge variant="outline" className="w-fit px-3 py-1 text-sm capitalize">
                   {metadata.floatType}
                 </Badge>
               </div>
@@ -143,9 +137,7 @@ export function ProfileSidebar({
                   <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                     Data Centre
                   </span>
-                  <p className="text-base font-medium text-foreground">
-                    {metadata.dataCentre}
-                  </p>
+                  <p className="text-base font-medium text-foreground">{metadata.dataCentre}</p>
                 </div>
               )}
             </div>
@@ -156,9 +148,7 @@ export function ProfileSidebar({
                   <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                     Platform
                   </span>
-                  <p className="text-base text-foreground">
-                    {metadata.platformType}
-                  </p>
+                  <p className="text-base text-foreground">{metadata.platformType}</p>
                 </div>
               )}
               {metadata.platformMaker && (
@@ -166,9 +156,7 @@ export function ProfileSidebar({
                   <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                     Maker
                   </span>
-                  <p className="text-base text-foreground">
-                    {metadata.platformMaker}
-                  </p>
+                  <p className="text-base text-foreground">{metadata.platformMaker}</p>
                 </div>
               )}
             </div>
@@ -188,9 +176,7 @@ export function ProfileSidebar({
               <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                 Cycle Number
               </span>
-              <p className="text-2xl font-bold text-primary">
-                {currentCycle.cycleNumber}
-              </p>
+              <p className="text-2xl font-bold text-primary">{currentCycle.cycleNumber}</p>
             </div>
 
             <div className="space-y-3">
@@ -242,10 +228,8 @@ export function ProfileSidebar({
             <div className="space-y-3">
               <div className="bg-muted/50 p-4 rounded-lg">
                 <p className="text-base font-mono text-center text-foreground">
-                  {Math.abs(metadata.latitude).toFixed(4)}°
-                  {metadata.latitude >= 0 ? "N" : "S"}{" "}
-                  {Math.abs(metadata.longitude).toFixed(4)}°
-                  {metadata.longitude >= 0 ? "E" : "W"}
+                  {Math.abs(metadata.latitude).toFixed(4)}°{metadata.latitude >= 0 ? "N" : "S"}{" "}
+                  {Math.abs(metadata.longitude).toFixed(4)}°{metadata.longitude >= 0 ? "E" : "W"}
                 </p>
               </div>
             </div>
@@ -274,9 +258,7 @@ export function ProfileSidebar({
           <CardContent className="space-y-4">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Pressure range
-                </span>
+                <span className="text-sm text-muted-foreground">Pressure range</span>
                 <span className="text-sm font-medium text-foreground">
                   {currentCycle.measurements.length > 0
                     ? `${Math.min(...currentCycle.measurements.map((m) => m.pressure)).toFixed(0)} — ${Math.max(...currentCycle.measurements.map((m) => m.pressure)).toFixed(0)} dbar`
@@ -284,9 +266,7 @@ export function ProfileSidebar({
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Temp range
-                </span>
+                <span className="text-sm text-muted-foreground">Temp range</span>
                 <span className="text-sm font-medium text-foreground">
                   {currentCycle.measurements.length > 0
                     ? `${Math.min(...currentCycle.measurements.map((m) => m.temperature)).toFixed(1)} — ${Math.max(...currentCycle.measurements.map((m) => m.temperature)).toFixed(1)} °C`
@@ -294,9 +274,7 @@ export function ProfileSidebar({
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Salinity range
-                </span>
+                <span className="text-sm text-muted-foreground">Salinity range</span>
                 <span className="text-sm font-medium text-foreground">
                   {currentCycle.measurements.length > 0
                     ? `${Math.min(...currentCycle.measurements.map((m) => m.salinity)).toFixed(2)} — ${Math.max(...currentCycle.measurements.map((m) => m.salinity)).toFixed(2)} PSU`
