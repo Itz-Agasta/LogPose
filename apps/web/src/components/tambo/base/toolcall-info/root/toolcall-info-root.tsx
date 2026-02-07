@@ -24,8 +24,21 @@ export type ToolcallInfoRootProps = BaseProps<
  * Root component for toolcall info.
  * Provides context for child components. Returns null if not an assistant message with tool call.
  */
-export const ToolcallInfoRoot = React.forwardRef<HTMLDivElement, ToolcallInfoRootProps>(
-  ({ asChild, message, isLoading, defaultExpanded = false, children, ...props }, ref) => {
+export const ToolcallInfoRoot = React.forwardRef<
+  HTMLDivElement,
+  ToolcallInfoRootProps
+>(
+  (
+    {
+      asChild,
+      message,
+      isLoading,
+      defaultExpanded = false,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
     const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
     const { thread } = useTambo();
     const detailsId = React.useId();
@@ -41,7 +54,10 @@ export const ToolcallInfoRoot = React.forwardRef<HTMLDivElement, ToolcallInfoRoo
         if (nextMessage.role === "tool") {
           return nextMessage;
         }
-        if (nextMessage.role === "assistant" && getToolCallRequest(nextMessage)) {
+        if (
+          nextMessage.role === "assistant" &&
+          getToolCallRequest(nextMessage)
+        ) {
           break;
         }
       }

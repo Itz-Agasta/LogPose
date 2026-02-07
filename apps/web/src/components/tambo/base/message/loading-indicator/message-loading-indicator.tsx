@@ -1,8 +1,10 @@
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
-import type { BaseProps } from "../../types/component-render-or-children";
+import { BaseProps } from "../../types/component-render-or-children";
 
-export type MessageLoadingIndicatorProps = BaseProps<React.HTMLAttributes<HTMLDivElement>>;
+export type MessageLoadingIndicatorProps = BaseProps<
+  React.HTMLAttributes<HTMLDivElement>
+>;
 
 /**
  * MessageLoadingIndicator base component for showing loading state.

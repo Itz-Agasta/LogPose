@@ -40,7 +40,8 @@ export function MessageGenerationStage({
     CANCELLED: "Cancelled",
   };
 
-  const label = stageLabels[stage] || stage.charAt(0).toUpperCase() + stage.slice(1);
+  const label =
+    stageLabels[stage] || stage.charAt(0).toUpperCase() + stage.slice(1);
 
   if (isIdle) {
     return null;

@@ -8,7 +8,8 @@ import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 /**
  * Props for the ScrollableMessageContainer component
  */
-export type ScrollableMessageContainerProps = React.HTMLAttributes<HTMLDivElement>;
+export type ScrollableMessageContainerProps =
+  React.HTMLAttributes<HTMLDivElement>;
 
 /**
  * A scrollable container for message content with auto-scroll functionality.
@@ -58,7 +59,8 @@ export const ScrollableMessageContainer = React.forwardRef<
   const handleScroll = useCallback(() => {
     if (!scrollContainerRef.current) return;
 
-    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+    const { scrollTop, scrollHeight, clientHeight } =
+      scrollContainerRef.current;
     const isAtBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 8; // 8px tolerance for rounding
 
     // If user scrolled up, disable autoscroll

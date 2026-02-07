@@ -10,10 +10,11 @@ export interface ReasoningInfoStatusTextRenderProps {
   stepCount: number;
 }
 
-export type ReasoningInfoStatusTextProps = BasePropsWithChildrenOrRenderFunction<
-  React.HTMLAttributes<HTMLSpanElement>,
-  ReasoningInfoStatusTextRenderProps
->;
+export type ReasoningInfoStatusTextProps =
+  BasePropsWithChildrenOrRenderFunction<
+    React.HTMLAttributes<HTMLSpanElement>,
+    ReasoningInfoStatusTextRenderProps
+  >;
 
 /**
  * Displays the reasoning status text.

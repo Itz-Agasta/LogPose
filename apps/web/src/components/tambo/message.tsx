@@ -25,7 +25,10 @@ import {
   type ToolcallInfoRootProps as ToolcallInfoBaseRootProps,
 } from "@/components/tambo/base/toolcall-info";
 import { getSafeContent } from "../../lib/thread-hooks";
-import { createMarkdownComponents, markdownComponents } from "./markdown-components";
+import {
+  createMarkdownComponents,
+  markdownComponents,
+} from "./markdown-components";
 
 /**
  * CSS variants for the message container
@@ -103,7 +106,10 @@ Message.displayName = "Message";
  * @param props.className - Optional CSS classes to apply
  * @returns Animated loading indicator component
  */
-const LoadingIndicator: React.FC<MessageLoadingIndicatorProps> = ({ className, ...props }) => {
+const LoadingIndicator: React.FC<MessageLoadingIndicatorProps> = ({
+  className,
+  ...props
+}) => {
   return (
     <MessageBase.LoadingIndicator
       className={cn(
@@ -141,7 +147,9 @@ function MessageContentRenderer({
     return contentToRender;
   }
   if (markdown) {
-    return <Streamdown components={markdownComponents}>{markdownContent}</Streamdown>;
+    return (
+      <Streamdown components={markdownComponents}>{markdownContent}</Streamdown>
+    );
   }
   return markdownContent;
 }
@@ -149,7 +157,10 @@ function MessageContentRenderer({
 /**
  * Props for the MessageImages component.
  */
-export type MessageImagesProps = Omit<MessageBaseImagesProps, "renderImage" | "children">;
+export type MessageImagesProps = Omit<
+  MessageBaseImagesProps,
+  "renderImage" | "children"
+>;
 
 /**
  * Displays images from message content horizontally.
@@ -226,7 +237,10 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
 
           return (
             <div
-              className={cn("wrap-break-word", !markdown && "whitespace-pre-wrap")}
+              className={cn(
+                "wrap-break-word",
+                !markdown && "whitespace-pre-wrap",
+              )}
               data-slot="message-content-text"
             >
               <MessageContentRenderer
@@ -234,7 +248,9 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
                 markdownContent={markdownContent}
                 markdown={markdown}
               />
-              {isCancelled && <span className="text-muted-foreground text-xs">cancelled</span>}
+              {isCancelled && (
+                <span className="text-muted-foreground text-xs">cancelled</span>
+              )}
             </div>
           );
         }}
@@ -248,7 +264,10 @@ MessageContent.displayName = "MessageContent";
 /**
  * Props for the ToolcallInfo component.
  */
-export interface ToolcallInfoProps extends Omit<ToolcallInfoBaseRootProps, "children" | "message"> {
+export interface ToolcallInfoProps extends Omit<
+  ToolcallInfoBaseRootProps,
+  "children" | "message"
+> {
   /** Optional flag to render response content as Markdown. Default is true. */
   markdown?: boolean;
 }
@@ -294,7 +313,9 @@ function ToolResultDisplay({
   if (!content) {
     return null;
   }
-  return <ToolResultContent content={content} enableMarkdown={enableMarkdown} />;
+  return (
+    <ToolResultContent content={content} enableMarkdown={enableMarkdown} />
+  );
 }
 
 function ToolcallInfoContent({
@@ -340,23 +361,26 @@ function ToolcallInfoContent({
   );
 }
 
-type ToolcallInfoTriggerProps = React.ComponentProps<typeof ToolcallInfoBase.Trigger>;
-const ToolcallInfoTrigger = React.forwardRef<HTMLButtonElement, ToolcallInfoTriggerProps>(
-  function ToolcallInfoTrigger({ children, className, ...props }, ref) {
-    return (
-      <ToolcallInfoBase.Trigger
-        ref={ref}
-        className={cn(
-          "group/trigger flex items-center gap-1 cursor-pointer hover:bg-muted rounded-md p-1 select-none w-fit",
-          className,
-        )}
-        {...props}
-      >
-        {children}
-      </ToolcallInfoBase.Trigger>
-    );
-  },
-);
+type ToolcallInfoTriggerProps = React.ComponentProps<
+  typeof ToolcallInfoBase.Trigger
+>;
+const ToolcallInfoTrigger = React.forwardRef<
+  HTMLButtonElement,
+  ToolcallInfoTriggerProps
+>(function ToolcallInfoTrigger({ children, className, ...props }, ref) {
+  return (
+    <ToolcallInfoBase.Trigger
+      ref={ref}
+      className={cn(
+        "group/trigger flex items-center gap-1 cursor-pointer hover:bg-muted rounded-md p-1 select-none w-fit",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </ToolcallInfoBase.Trigger>
+  );
+});
 ToolcallInfoTrigger.displayName = "ToolcallInfoTrigger";
 
 /**
@@ -371,7 +395,10 @@ const ToolcallInfo = React.forwardRef<HTMLDivElement, ToolcallInfoProps>(
       <ToolcallInfoBase.Root
         ref={ref}
         message={message}
-        className={cn("flex flex-col items-start text-xs opacity-50", className)}
+        className={cn(
+          "flex flex-col items-start text-xs opacity-50",
+          className,
+        )}
         {...props}
       >
         <div className="flex flex-col w-full">
@@ -423,14 +450,19 @@ const SamplingSubThread = ({
       >
         <span>{titleText}</span>
         <ChevronDown
-          className={cn("w-3 h-3 transition-transform duration-200", !isExpanded && "-rotate-90")}
+          className={cn(
+            "w-3 h-3 transition-transform duration-200",
+            !isExpanded && "-rotate-90",
+          )}
         />
       </button>
       <div
         id={samplingDetailsId}
         className={cn(
           "transition-[max-height,opacity] duration-300",
-          isExpanded ? "max-h-96 opacity-100 overflow-auto" : "max-h-0 opacity-0 overflow-hidden",
+          isExpanded
+            ? "max-h-96 opacity-100 overflow-auto"
+            : "max-h-0 opacity-0 overflow-hidden",
         )}
         aria-hidden={!isExpanded}
       >
@@ -441,7 +473,8 @@ const SamplingSubThread = ({
                 <span
                   className={cn(
                     "whitespace-pre-wrap",
-                    m.role === "assistant" && "bg-muted/50 rounded-md p-2 inline-block w-fit",
+                    m.role === "assistant" &&
+                      "bg-muted/50 rounded-md p-2 inline-block w-fit",
                   )}
                 >
                   {getSafeContent(m.content)}
@@ -459,7 +492,10 @@ SamplingSubThread.displayName = "SamplingSubThread";
 /**
  * Props for the ReasoningInfo component.
  */
-export type ReasoningInfoProps = Omit<ReasoningInfoRootProps, "children" | "message">;
+export type ReasoningInfoProps = Omit<
+  ReasoningInfoRootProps,
+  "children" | "message"
+>;
 
 /**
  * Displays reasoning information in a collapsible dropdown.
@@ -472,7 +508,10 @@ const ReasoningInfo = React.forwardRef<HTMLDivElement, ReasoningInfoProps>(
     return (
       <ReasoningInfoBase.Root
         ref={ref}
-        className={cn("flex flex-col items-start text-xs opacity-50", className)}
+        className={cn(
+          "flex flex-col items-start text-xs opacity-50",
+          className,
+        )}
         isLoading={isLoading}
         message={message}
         {...props}
@@ -483,7 +522,9 @@ const ReasoningInfo = React.forwardRef<HTMLDivElement, ReasoningInfoProps>(
               "group/trigger flex items-center gap-1 cursor-pointer hover:bg-muted-foreground/10 rounded-md px-3 py-1 select-none w-fit"
             }
           >
-            <ReasoningInfoBase.StatusText className={"data-loading:animate-thinking-gradient"} />
+            <ReasoningInfoBase.StatusText
+              className={"data-loading:animate-thinking-gradient"}
+            />
             <ChevronDown className="h-3 w-3 transition-transform duration-200 group-data-[state=closed]/trigger:-rotate-90" />
           </ReasoningInfoBase.Trigger>
           <ReasoningInfoBase.Content
@@ -507,7 +548,9 @@ const ReasoningInfo = React.forwardRef<HTMLDivElement, ReasoningInfoProps>(
                     {reasoningStep && (
                       <div className="bg-muted/50 rounded-md p-3 text-xs overflow-x-auto overflow-y-auto max-w-full">
                         <div className="whitespace-pre-wrap wrap-break-word">
-                          <Streamdown components={markdownComponents}>{reasoningStep}</Streamdown>
+                          <Streamdown components={markdownComponents}>
+                            {reasoningStep}
+                          </Streamdown>
                         </div>
                       </div>
                     )}
@@ -577,7 +620,9 @@ function ToolResultResource({ resource, index }: ToolResultResourceProps) {
     return (
       <div className="whitespace-pre-wrap">
         {resource.name && (
-          <span className="font-medium text-muted-foreground">{resource.name}: </span>
+          <span className="font-medium text-muted-foreground">
+            {resource.name}:{" "}
+          </span>
         )}
         {resource.text}
       </div>
@@ -588,7 +633,9 @@ function ToolResultResource({ resource, index }: ToolResultResourceProps) {
   if (resource.uri) {
     return (
       <div className="flex items-center gap-1">
-        <span className="font-medium text-muted-foreground">{resource.name ?? "Resource"}:</span>
+        <span className="font-medium text-muted-foreground">
+          {resource.name ?? "Resource"}:
+        </span>
         <span className="font-mono text-xs truncate">{resource.uri}</span>
       </div>
     );
@@ -649,13 +696,19 @@ function ToolResultContent({
     // If we have mixed content, render in a flex container
     return (
       <div className="flex flex-col gap-2">
-        {combinedText && <ToolResultText text={combinedText} enableMarkdown={enableMarkdown} />}
+        {combinedText && (
+          <ToolResultText text={combinedText} enableMarkdown={enableMarkdown} />
+        )}
         <div className="flex flex-wrap gap-2">
           {nonTextItems.map((item) => {
             switch (item.type) {
               case "image":
                 return item.url ? (
-                  <ToolResultImage key={`image-${item.index}`} url={item.url} index={item.index} />
+                  <ToolResultImage
+                    key={`image-${item.index}`}
+                    url={item.url}
+                    index={item.index}
+                  />
                 ) : null;
               case "resource":
                 return item.resource ? (
@@ -679,7 +732,13 @@ function ToolResultContent({
 /**
  * Renders text content, attempting JSON parsing for pretty-printing.
  */
-function ToolResultText({ text, enableMarkdown }: { text: string; enableMarkdown: boolean }) {
+function ToolResultText({
+  text,
+  enableMarkdown,
+}: {
+  text: string;
+  enableMarkdown: boolean;
+}) {
   if (!text) return null;
 
   try {
@@ -705,7 +764,10 @@ function ToolResultText({ text, enableMarkdown }: { text: string; enableMarkdown
 /**
  * Props for the MessageRenderedComponent component.
  */
-export type MessageRenderedComponentAreaProps = Omit<MessageBaseRenderedComponentProps, "children">;
+export type MessageRenderedComponentAreaProps = Omit<
+  MessageBaseRenderedComponentProps,
+  "children"
+>;
 
 /**
  * Displays the `renderedComponent` associated with an assistant message.
@@ -717,7 +779,11 @@ const MessageRenderedComponentArea = React.forwardRef<
   MessageRenderedComponentAreaProps
 >(({ className, ...props }, ref) => {
   return (
-    <MessageBase.RenderedComponent ref={ref} className={cn(className)} {...props}>
+    <MessageBase.RenderedComponent
+      ref={ref}
+      className={cn(className)}
+      {...props}
+    >
       <div className="flex justify-start pl-4">
         <MessageBase.RenderedComponentCanvasButton className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors duration-200 cursor-pointer group">
           View component

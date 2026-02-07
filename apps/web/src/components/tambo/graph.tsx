@@ -19,24 +19,30 @@ type GraphSize = "default" | "sm" | "lg";
 /**
  * Variants for the Graph component
  */
-export const graphVariants = cva("w-full rounded-lg overflow-hidden transition-all duration-200", {
-  variants: {
-    variant: {
-      default: "bg-background",
-      solid: ["shadow-lg shadow-zinc-900/10 dark:shadow-zinc-900/20", "bg-muted"].join(" "),
-      bordered: ["border-2", "border-border"].join(" "),
+export const graphVariants = cva(
+  "w-full rounded-lg overflow-hidden transition-all duration-200",
+  {
+    variants: {
+      variant: {
+        default: "bg-background",
+        solid: [
+          "shadow-lg shadow-zinc-900/10 dark:shadow-zinc-900/20",
+          "bg-muted",
+        ].join(" "),
+        bordered: ["border-2", "border-border"].join(" "),
+      },
+      size: {
+        default: "h-64",
+        sm: "h-48",
+        lg: "h-96",
+      },
     },
-    size: {
-      default: "h-64",
-      sm: "h-48",
-      lg: "h-96",
+    defaultVariants: {
+      variant: "default",
+      size: "default",
     },
   },
-  defaultVariants: {
-    variant: "default",
-    size: "default",
-  },
-});
+);
 
 /**
  * Props for the error boundary
@@ -83,7 +89,9 @@ class GraphErrorBoundary extends React.Component<
           <div className="p-4 flex items-center justify-center h-full">
             <div className="text-destructive text-center">
               <p className="font-medium">Error loading chart</p>
-              <p className="text-sm mt-1">An error occurred while rendering. Please try again.</p>
+              <p className="text-sm mt-1">
+                An error occurred while rendering. Please try again.
+              </p>
             </div>
           </div>
         </div>
@@ -115,15 +123,26 @@ export const graphDataSchema = z.object({
  * Zod schema for Graph
  */
 export const graphSchema = z.object({
-  data: graphDataSchema.describe("Data object containing chart configuration and values"),
+  data: graphDataSchema.describe(
+    "Data object containing chart configuration and values",
+  ),
   title: z.string().describe("Title for the chart"),
-  showLegend: z.boolean().optional().describe("Whether to show the legend (default: true)"),
+  showLegend: z
+    .boolean()
+    .optional()
+    .describe("Whether to show the legend (default: true)"),
   variant: z
     .enum(["default", "solid", "bordered"])
     .optional()
     .describe("Visual style variant of the graph"),
-  size: z.enum(["default", "sm", "lg"]).optional().describe("Size of the graph"),
-  className: z.string().optional().describe("Additional CSS classes for styling"),
+  size: z
+    .enum(["default", "sm", "lg"])
+    .optional()
+    .describe("Size of the graph"),
+  className: z
+    .string()
+    .optional()
+    .describe("Additional CSS classes for styling"),
 });
 
 /**
@@ -173,11 +192,18 @@ const defaultColors = [
  * ```
  */
 export const Graph = React.forwardRef<HTMLDivElement, GraphProps>(
-  ({ className, variant, size, data, title, showLegend = true, ...props }, ref) => {
+  (
+    { className, variant, size, data, title, showLegend = true, ...props },
+    ref,
+  ) => {
     // If no data received yet, show loading
     if (!data) {
       return (
-        <div ref={ref} className={cn(graphVariants({ variant, size }), className)} {...props}>
+        <div
+          ref={ref}
+          className={cn(graphVariants({ variant, size }), className)}
+          {...props}
+        >
           <div className="p-4 h-full flex items-center justify-center">
             <div className="flex flex-col items-center gap-2 text-muted-foreground">
               <div className="flex items-center gap-1 h-4">
@@ -204,7 +230,11 @@ export const Graph = React.forwardRef<HTMLDivElement, GraphProps>(
 
     if (!hasValidStructure) {
       return (
-        <div ref={ref} className={cn(graphVariants({ variant, size }), className)} {...props}>
+        <div
+          ref={ref}
+          className={cn(graphVariants({ variant, size }), className)}
+          {...props}
+        >
           <div className="p-4 h-full flex items-center justify-center">
             <div className="text-muted-foreground text-center">
               <p className="text-sm">Building chart...</p>
@@ -217,12 +247,19 @@ export const Graph = React.forwardRef<HTMLDivElement, GraphProps>(
     // Filter datasets to only include those with valid data
     const validDatasets = data.datasets.filter(
       (dataset) =>
-        dataset.label && dataset.data && Array.isArray(dataset.data) && dataset.data.length > 0,
+        dataset.label &&
+        dataset.data &&
+        Array.isArray(dataset.data) &&
+        dataset.data.length > 0,
     );
 
     if (validDatasets.length === 0) {
       return (
-        <div ref={ref} className={cn(graphVariants({ variant, size }), className)} {...props}>
+        <div
+          ref={ref}
+          className={cn(graphVariants({ variant, size }), className)}
+          {...props}
+        >
           <div className="p-4 h-full flex items-center justify-center">
             <div className="text-muted-foreground text-center">
               <p className="text-sm">Preparing datasets...</p>
@@ -239,12 +276,17 @@ export const Graph = React.forwardRef<HTMLDivElement, GraphProps>(
     );
 
     // Transform data for Recharts using only available data points
-    const chartData = data.labels.slice(0, maxDataPoints).map((label, index) => ({
-      name: label,
-      ...Object.fromEntries(
-        validDatasets.map((dataset) => [dataset.label, dataset.data[index] ?? 0]),
-      ),
-    }));
+    const chartData = data.labels
+      .slice(0, maxDataPoints)
+      .map((label, index) => ({
+        name: label,
+        ...Object.fromEntries(
+          validDatasets.map((dataset) => [
+            dataset.label,
+            dataset.data[index] ?? 0,
+          ]),
+        ),
+      }));
 
     const renderChart = () => {
       if (!["bar", "line", "pie"].includes(data.type)) {
@@ -301,7 +343,9 @@ export const Graph = React.forwardRef<HTMLDivElement, GraphProps>(
                 <RechartsCore.Bar
                   key={dataset.label}
                   dataKey={dataset.label}
-                  fill={dataset.color ?? defaultColors[index % defaultColors.length]}
+                  fill={
+                    dataset.color ?? defaultColors[index % defaultColors.length]
+                  }
                   radius={[4, 4, 0, 0]}
                 />
               ))}
@@ -352,7 +396,9 @@ export const Graph = React.forwardRef<HTMLDivElement, GraphProps>(
                   key={dataset.label}
                   type="monotone"
                   dataKey={dataset.label}
-                  stroke={dataset.color ?? defaultColors[index % defaultColors.length]}
+                  stroke={
+                    dataset.color ?? defaultColors[index % defaultColors.length]
+                  }
                   dot={false}
                 />
               ))}
@@ -375,11 +421,13 @@ export const Graph = React.forwardRef<HTMLDivElement, GraphProps>(
           return (
             <RechartsCore.PieChart>
               <RechartsCore.Pie
-                data={pieDataset.data.slice(0, maxDataPoints).map((value, index) => ({
-                  name: data.labels[index],
-                  value,
-                  fill: defaultColors[index % defaultColors.length],
-                }))}
+                data={pieDataset.data
+                  .slice(0, maxDataPoints)
+                  .map((value, index) => ({
+                    name: data.labels[index],
+                    value,
+                    fill: defaultColors[index % defaultColors.length],
+                  }))}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
@@ -418,9 +466,17 @@ export const Graph = React.forwardRef<HTMLDivElement, GraphProps>(
 
     return (
       <GraphErrorBoundary className={className} variant={variant} size={size}>
-        <div ref={ref} className={cn(graphVariants({ variant, size }), className)} {...props}>
+        <div
+          ref={ref}
+          className={cn(graphVariants({ variant, size }), className)}
+          {...props}
+        >
           <div className="p-4 h-full">
-            {title && <h3 className="text-lg font-medium mb-4 text-foreground">{title}</h3>}
+            {title && (
+              <h3 className="text-lg font-medium mb-4 text-foreground">
+                {title}
+              </h3>
+            )}
             <div className="w-full h-[calc(100%-2rem)]">
               <RechartsCore.ResponsiveContainer width="100%" height="100%">
                 {renderChart()}

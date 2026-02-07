@@ -5,7 +5,6 @@ import React, { useEffect, useRef } from "react";
 
 /**
  * Button for dictating speech into the message input.
- * ChatGPT-style icon button with subtle hover state.
  */
 export default function DictationButton() {
   const {
@@ -37,37 +36,35 @@ export default function DictationButton() {
 
   if (isTranscribing) {
     return (
-      <div className="w-8 h-8 flex items-center justify-center">
-        <Loader2Icon className="h-4 w-4 animate-spin text-muted-foreground" />
+      <div className="p-2 rounded-md">
+        <Loader2Icon className="h-5 w-5 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-row items-center gap-1">
-      {transcriptionError && (
-        <span className="text-xs text-destructive">{transcriptionError}</span>
-      )}
+    <div className="flex flex-row items-center gap-2">
+      <span className="text-sm text-red-500">{transcriptionError}</span>
       {isRecording ? (
         <Tooltip content="Stop">
           <button
             type="button"
             onClick={handleStopRecording}
             aria-label="Stop dictation"
-            className="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-muted transition-colors text-destructive"
+            className="p-2 rounded-md cursor-pointer hover:bg-muted"
           >
-            <Square className="h-3.5 w-3.5 fill-current animate-pulse" />
+            <Square className="h-4 w-4 text-red-500 fill-current animate-pulse" />
           </button>
         </Tooltip>
       ) : (
-        <Tooltip content="Voice input">
+        <Tooltip content="Dictate">
           <button
             type="button"
             onClick={handleStartRecording}
             aria-label="Start dictation"
-            className="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+            className="p-2 rounded-md cursor-pointer hover:bg-muted"
           >
-            <Mic className="h-4 w-4" />
+            <Mic className="h-5 w-5" />
           </button>
         </Tooltip>
       )}
