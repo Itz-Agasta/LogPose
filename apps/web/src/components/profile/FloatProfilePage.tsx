@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Sidebar, SidebarContent, SidebarProvider } from "@/components/ui/sidebar";
 import { fetchCycleProfile, fetchFloatProfile } from "@/lib/utils";
+import { FloatMessagePanel } from "@/components/tambo/float-message-panel";
 
 interface FloatProfilePageProps {
   floatId: string;
@@ -193,36 +194,17 @@ function FloatProfileContent({
             hasOxygen={hasOxygen}
             hasChlorophyll={hasChlorophyll}
             hasNitrate={hasNitrate}
+            isAiSidebarOpen={isAiSidebarOpen}
           />
         </main>
       </div>
 
       {/* AI Assistant Sidebar */}
-      {isAiSidebarOpen && (
-        <div className="fixed right-0 top-0 h-screen w-96 bg-background border-l border-border shadow-lg z-50 flex flex-col">
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <h2 className="text-lg font-semibold text-foreground">AI Assistant</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsAiSidebarOpen(false)}
-              className="h-8 w-8 p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-
-          <div className="flex-1 overflow-hidden p-4">
-            <p className="text-sm text-muted-foreground">
-              Use the chat page to ask questions about this float&apos;s data. Navigate to{" "}
-              <a href="/chat" className="text-primary underline">
-                /chat
-              </a>{" "}
-              for the full AI assistant experience.
-            </p>
-          </div>
-        </div>
-      )}
+      <FloatMessagePanel
+        isOpen={isAiSidebarOpen}
+        onClose={() => setIsAiSidebarOpen(false)}
+        floatId={metadata.floatId}
+      />
     </div>
   );
 }

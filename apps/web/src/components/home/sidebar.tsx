@@ -220,8 +220,9 @@ export function Sidebar({ className, onFiltersChange, floatLocations = [] }: Sid
         border: "1px solid var(--border)",
       }}
     >
-      {/* Close button */}
-      <div className="flex items-center justify-end p-3 pb-0">
+      {/* Header with Logo and Close button */}
+      <div className="flex items-center justify-between p-3 pb-0">
+        <span className="text-xl font-bold text-green-500 ml-2">LogPose</span>
         <button
           aria-label="Close sidebar"
           className="rounded-md p-1.5 transition-colors hover:bg-[var(--accent)]"
@@ -294,9 +295,8 @@ export function Sidebar({ className, onFiltersChange, floatLocations = [] }: Sid
             >
               {timePeriodOptions.map((option) => (
                 <button
-                  className={`transition-colors hover:opacity-80 ${
-                    filters.timePeriod === option.id ? "font-semibold" : ""
-                  }`}
+                  className={`transition-colors hover:opacity-80 ${filters.timePeriod === option.id ? "font-semibold" : ""
+                    }`}
                   key={option.id}
                   onClick={() => handleTimePeriodChange(option.id)}
                   style={{

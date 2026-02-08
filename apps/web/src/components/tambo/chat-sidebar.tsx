@@ -80,7 +80,11 @@ export function ChatSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" render={<Link href="/" />}>
+                        <SidebarMenuButton
+                            size="lg"
+                            render={<Link href="/" />}
+                            className="hover:bg-transparent hover:text-sidebar-foreground"
+                        >
                             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                                 <IconHome className="size-5" />
                             </div>
@@ -93,7 +97,7 @@ export function ChatSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             onClick={handleNewThread}
-                            className="bg-transparent h-10 mt-2 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            className="bg-transparent h-10 mt-2 rounded-lg hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         >
                             <IconPlus className="mr-2 size-5" />
                             <span className="font-medium text-sm">New Thread</span>
@@ -107,7 +111,7 @@ export function ChatSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
                             placeholder="Search threads..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-8 h-9 text-sm"
+                            className="pl-8 h-9 text-sm rounded-lg"
                         />
                     </div>
                 </div>

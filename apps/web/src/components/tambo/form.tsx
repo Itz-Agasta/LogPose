@@ -61,6 +61,7 @@ export const formSchema = z.object({
   fields: z.array(formFieldSchema).describe("Array of form fields to display"),
   onSubmit: z
     .function()
+    .optional()
     .describe(
       "Callback function called when the form is submitted with form data as argument",
     ),
@@ -231,7 +232,11 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
       const data = Object.fromEntries(
         Array.from(formData.entries()).map(([k, v]) => [k, v.toString()]),
       );
-      onSubmit(data);
+      if (onSubmit) {
+        onSubmit(data);
+      } else {
+        console.warn("Form submitted but no onSubmit handler provided", data);
+      }
     };
 
     /**
@@ -540,7 +545,7 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                             "hover:bg-muted focus:bg-muted outline-none",
                             "transition-colors duration-200",
                             state.selectedValues[field.id] === option &&
-                              "bg-muted/50 font-medium",
+                            "bg-muted/50 font-medium",
                           )}
                         >
                           {option}
@@ -630,8 +635,8 @@ export const FormComponent = React.forwardRef<HTMLFormElement, FormProps>(
                       field.sliderDefault?.toString() ??
                       (field.sliderLabels && field.sliderLabels.length > 0
                         ? Math.floor(
-                            (field.sliderLabels.length - 1) / 2,
-                          ).toString()
+                          (field.sliderLabels.length - 1) / 2,
+                        ).toString()
                         : "5")
                     }
                     required={field.required}
