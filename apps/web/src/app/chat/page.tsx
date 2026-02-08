@@ -40,11 +40,6 @@ export default function ChatPage() {
   return (
     <TamboProvider apiKey={apiKey} components={components} tools={tools}>
       <div className="relative flex flex-col h-svh">
-        {/* Floating Mode Toggle */}
-        <div className="absolute top-4 right-4 z-50">
-          <ModeToggle />
-        </div>
-
         {/* Chat Interface */}
         <ChatContainer
           showSidebar={true}

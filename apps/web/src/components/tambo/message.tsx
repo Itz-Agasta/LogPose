@@ -1,24 +1,26 @@
 "use client";
 
-import { TamboThreadMessage, useTambo } from "@tambo-ai/react";
+import { type TamboThreadMessage, useTambo } from "@tambo-ai/react";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { Check, ChevronDown, ExternalLink, Loader2, X } from "lucide-react";
+import { Check, ChevronDown, ExternalLink, X } from "lucide-react";
 import * as React from "react";
 import { Streamdown } from "streamdown";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Message as MessageBase,
-  MessageContentProps as MessageBaseContentProps,
-  MessageContentRenderProps as MessageBaseContentRenderProps,
-  MessageImagesProps as MessageBaseImagesProps,
-  MessageRenderedComponentProps as MessageBaseRenderedComponentProps,
+  type MessageContentProps as MessageBaseContentProps,
+  type MessageContentRenderProps as MessageBaseContentRenderProps,
+  type MessageImagesProps as MessageBaseImagesProps,
+  type MessageRenderedComponentProps as MessageBaseRenderedComponentProps,
 } from "@/components/tambo/base/message";
-import { MessageLoadingIndicatorProps } from "@/components/tambo/base/message/loading-indicator/message-loading-indicator";
-import { MessageRootProps } from "@/components/tambo/base/message/root/message-root";
+import { type MessageLoadingIndicatorProps } from "@/components/tambo/base/message/loading-indicator/message-loading-indicator";
+import { type MessageRootProps } from "@/components/tambo/base/message/root/message-root";
 import { useMessageRootContext } from "@/components/tambo/base/message/root/message-root-context";
 import {
   ReasoningInfo as ReasoningInfoBase,
-  ReasoningInfoRootProps,
+  type ReasoningInfoRootProps,
 } from "@/components/tambo/base/reasoning-info";
 import {
   ToolcallInfo as ToolcallInfoBase,
@@ -226,11 +228,9 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
         }: MessageBaseContentRenderProps) => {
           if (isLoading && !isReasoning) {
             return (
-              <div
-                className="flex items-center justify-start h-4 py-1"
-                data-slot="message-loading-indicator"
-              >
-                <LoadingIndicator />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
               </div>
             );
           }
@@ -289,9 +289,11 @@ function ToolcallStatusIcon() {
   return (
     <ToolcallInfoBase.StatusIcon
       render={({ status }) => {
+        if (status === "loading") {
+          return <Spinner className={toolStatusIconClassName({ status })} />;
+        }
         let Icon = Check;
         if (status === "error") Icon = X;
-        if (status === "loading") Icon = Loader2;
         return <Icon className={toolStatusIconClassName({ status })} />;
       }}
     />
