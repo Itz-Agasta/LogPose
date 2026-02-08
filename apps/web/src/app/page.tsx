@@ -35,9 +35,6 @@ export default function LandingPage() {
         {/* Header */}
         <header className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-primary-foreground font-bold font-mono">
-              LP
-            </div>
             <span className="text-xl font-bold tracking-tight">LogPose</span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
