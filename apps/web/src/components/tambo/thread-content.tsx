@@ -146,21 +146,21 @@ const ThreadContentMessages = React.forwardRef<
               `${message.role}-${message.createdAt ?? `${index}`}-${message.content?.toString().substring(0, 10)}`
             }
             data-slot="thread-content-item"
+            className={cn(
+              "flex w-full",
+              message.role === "assistant" ? "justify-start" : "justify-end",
+            )}
           >
             <Message
               role={message.role === "assistant" ? "assistant" : "user"}
               message={message}
               variant={variant}
               isLoading={isGenerating && index === filteredMessages.length - 1}
-              className={cn(
-                "flex w-full",
-                message.role === "assistant" ? "justify-start" : "justify-end",
-              )}
             >
               <div
                 className={cn(
                   "flex flex-col",
-                  message.role === "assistant" ? "w-full" : "max-w-3xl",
+                  message.role === "assistant" ? "w-full max-w-4xl" : "max-w-2xl",
                 )}
               >
                 <ReasoningInfo />

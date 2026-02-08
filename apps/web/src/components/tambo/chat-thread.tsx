@@ -8,6 +8,7 @@ import {
 } from "@tambo-ai/react";
 import * as React from "react";
 import { Copy, Check, RefreshCw } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Message,
   MessageContent,
@@ -41,12 +42,12 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
     const handleCopy = React.useCallback(async () => {
       const textContent = Array.isArray(message.content)
         ? message.content
-            .filter(
-              (part): part is { type: "text"; text: string } =>
-                part.type === "text",
-            )
-            .map((part) => part.text)
-            .join("\n")
+          .filter(
+            (part): part is { type: "text"; text: string } =>
+              part.type === "text",
+          )
+          .map((part) => part.text)
+          .join("\n")
         : String(message.content || "");
 
       if (textContent) {
@@ -155,6 +156,23 @@ const ThinkingIndicator = () => {
 };
 
 /**
+ * Skeleton loading indicator for streaming responses
+ */
+const StreamingSkeletonIndicator = () => {
+  return (
+    <div className="w-full py-6 border-b border-border/50">
+      <div className="max-w-3xl mx-auto px-4">
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-2/3" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
  * Message thread with centered layout and modern design
  */
 export const ChatThread = React.forwardRef<HTMLDivElement, ChatThreadProps>(
@@ -251,6 +269,13 @@ export const ChatThread = React.forwardRef<HTMLDivElement, ChatThreadProps>(
               messages[messages.length - 1]?.role === "user" &&
               generationStage !== GenerationStage.STREAMING_RESPONSE && (
                 <ThinkingIndicator />
+              )}
+
+            {/* Show skeleton when streaming response */}
+            {isGenerating &&
+              generationStage === GenerationStage.STREAMING_RESPONSE &&
+              messages[messages.length - 1]?.role === "user" && (
+                <StreamingSkeletonIndicator />
               )}
 
             {/* Bottom padding */}
