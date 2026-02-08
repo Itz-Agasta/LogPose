@@ -67,9 +67,7 @@ export type RAGAgentParams = {
  * RAG Agent for Research Paper Retrieval
  * @NOTE: Currently uses mock data - integrate with Qdrant for production
  */
-export async function RAGAgent(
-  params: RAGAgentParams,
-): Promise<RAGAgentResult> {
+export async function RAGAgent(params: RAGAgentParams): Promise<RAGAgentResult> {
   const { query, topK = DEFAULT_TOP_K } = params;
   const startTime = Date.now();
 
@@ -103,8 +101,7 @@ Provide ${topK} relevant papers.`,
     } catch {
       return {
         success: false,
-        error:
-          "Failed to retrieve research papers. Server busy, please try again later.",
+        error: "Failed to retrieve research papers. Server busy, please try again later.",
         tokensUsed: usage.totalTokens,
         timings: {
           total: Date.now() - startTime,
@@ -125,8 +122,7 @@ Provide ${topK} relevant papers.`,
   } catch (error) {
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : "Unknown RAG search error",
+      error: error instanceof Error ? error.message : "Unknown RAG search error",
       timings: {
         total: Date.now() - startTime,
       },

@@ -1,5 +1,5 @@
 import React from "react";
-import { BasePropsWithChildrenOrRenderFunction } from "../types/component-render-or-children";
+import type { BasePropsWithChildrenOrRenderFunction } from "../types/component-render-or-children";
 
 function useRender<RenderFunctionProps>(
   props: BasePropsWithChildrenOrRenderFunction<unknown, RenderFunctionProps>,

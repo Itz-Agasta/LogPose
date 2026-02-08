@@ -108,10 +108,7 @@ Respond in this exact JSON format:
 
     // Validate that at least one agent is selected
     const anyAgentSelected =
-      parsed.sqlAgent ||
-      parsed.duckdbAgent ||
-      parsed.ragAgent ||
-      parsed.generalAgent;
+      parsed.sqlAgent || parsed.duckdbAgent || parsed.ragAgent || parsed.generalAgent;
 
     // To handle edge cases
     if (!anyAgentSelected) {

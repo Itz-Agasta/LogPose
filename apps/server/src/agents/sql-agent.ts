@@ -157,9 +157,7 @@ export type SQLAgentParams = {
  * Text-to-SQL Agent
  * Converts natural language queries to SQL for Argo float data
  */
-export async function SQLAgent(
-  params: SQLAgentParams,
-): Promise<SQLAgentResult> {
+export async function SQLAgent(params: SQLAgentParams): Promise<SQLAgentResult> {
   const { query, dryRun = false } = params;
   const startTime = Date.now();
   const timings = {
@@ -226,8 +224,7 @@ export async function SQLAgent(
     timings.total = Date.now() - startTime;
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : "Unknown SQL execution error",
+      error: error instanceof Error ? error.message : "Unknown SQL execution error",
       timings,
     };
   }

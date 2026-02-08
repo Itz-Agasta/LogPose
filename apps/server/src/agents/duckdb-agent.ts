@@ -136,9 +136,7 @@ export type DuckDBAgentParams = {
  * DuckDB Agent for Argo Profile Data Analysis
  * Queries Parquet files stored in R2 using DuckDB
  */
-export async function DuckDBAgent(
-  params: DuckDBAgentParams,
-): Promise<DuckDBAgentResult> {
+export async function DuckDBAgent(params: DuckDBAgentParams): Promise<DuckDBAgentResult> {
   const { query, dryRun = false } = params;
   const startTime = Date.now();
   const timings = {
@@ -227,10 +225,7 @@ export async function DuckDBAgent(
     timings.total = Date.now() - startTime;
     return {
       success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Unknown DuckDB execution error",
+      error: error instanceof Error ? error.message : "Unknown DuckDB execution error",
       timings,
     };
   }

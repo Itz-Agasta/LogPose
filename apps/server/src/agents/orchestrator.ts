@@ -88,9 +88,7 @@ Answer only what is asked. Be truthful. If data is missing or ambiguous, say so 
  * Response Orchestrator
  * Combines SQL and RAG results into comprehensive scientific response
  */
-export async function responseOrchestrator(
-  results: AgentResults,
-): Promise<ScientificResponse> {
+export async function responseOrchestrator(results: AgentResults): Promise<ScientificResponse> {
   try {
     const { text, usage } = await generateText({
       model: groq(config.AGENT),

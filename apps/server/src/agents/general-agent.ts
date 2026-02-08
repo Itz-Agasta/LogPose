@@ -44,9 +44,7 @@ export type GeneralAgentResult = {
  * Handles casual conversations, greetings, and off-topic queries
  * Provides personalized responses and politely redirects to Atlas Agent's purpose
  */
-export async function executeGeneralAgent(
-  query: string,
-): Promise<GeneralAgentResult> {
+export async function executeGeneralAgent(query: string): Promise<GeneralAgentResult> {
   const startTime = Date.now();
 
   try {
@@ -72,8 +70,7 @@ export async function executeGeneralAgent(
       timings: {
         total: Date.now() - startTime,
       },
-      error:
-        error instanceof Error ? error.message : "Failed to generate response",
+      error: error instanceof Error ? error.message : "Failed to generate response",
     };
   }
 }
