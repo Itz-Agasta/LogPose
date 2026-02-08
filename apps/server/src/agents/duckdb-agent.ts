@@ -1,7 +1,7 @@
 import { createGroq } from "@ai-sdk/groq";
 import { DuckDBInstance } from "@duckdb/node-api";
 import { generateText } from "ai";
-import { env } from "@LogPose/env/server";
+import { env } from "env/server";
 import { validateSQL } from "@/utils/helper";
 
 const groq = createGroq({
@@ -57,7 +57,7 @@ RULES — NEVER VIOLATE THESE:
    Use COALESCE(salinity_adj, salinity) AS sal
    Use COALESCE(pressure_adj, pressure) AS pressure
    And filter with:
-     WHERE (temperature_adj IS NOT NULL AND temp_adj_qc IN ('1','2')) 
+     WHERE (temperature_adj IS NOT NULL AND temp_adj_qc IN ('1','2'))
         OR (temperature IS NOT NULL AND temp_qc IN ('1','2'))
 5. Prefer data_mode IN ('D','A') but fall back to 'R' if no delayed data exists
 6. For depth ranges (memorize these):
@@ -72,7 +72,7 @@ BEST-PRACTICE QUERY TEMPLATES (follow exactly):
 Abyssal:      pressure >= 4000
 
 -- 1. Single vertical profile (T/S vs pressure)
-SELECT 
+SELECT
   COALESCE(pressure_adj, pressure) AS pressure,
   COALESCE(temperature_adj, temperature) AS temperature,
   COALESCE(salinity_adj, salinity) AS salinity
@@ -83,7 +83,7 @@ WHERE cycle_number = 42
 ORDER BY level;
 
 -- 2. Surface temperature time series
-SELECT 
+SELECT
   cycle_number,
   profile_timestamp,
   AVG(COALESCE(temperature_adj, temperature)) AS surface_temp
@@ -94,7 +94,7 @@ GROUP BY cycle_number, profile_timestamp
 ORDER BY cycle_number;
 
 -- 3. Temperature at 1000 m over time
-SELECT 
+SELECT
   cycle_number,
   AVG(COALESCE(temperature_adj, temperature)) AS temp_1000m
 FROM read_parquet('s3://atlas/profiles/2902235/data.parquet')
@@ -104,7 +104,7 @@ GROUP BY cycle_number
 ORDER BY cycle_number;
 
 -- 4. Full float summary (latest good surface values)
-SELECT 
+SELECT
   MAX(profile_timestamp) AS last_profile,
   AVG(COALESCE(temperature_adj, temperature)) FILTER (WHERE pressure <= 10) AS latest_surface_temp,
   AVG(COALESCE(salinity_adj, salinity)) FILTER (WHERE pressure <= 10) AS latest_surface_sal
@@ -136,7 +136,9 @@ export type DuckDBAgentParams = {
  * DuckDB Agent for Argo Profile Data Analysis
  * Queries Parquet files stored in R2 using DuckDB
  */
-export async function DuckDBAgent(params: DuckDBAgentParams): Promise<DuckDBAgentResult> {
+export async function DuckDBAgent(
+  params: DuckDBAgentParams,
+): Promise<DuckDBAgentResult> {
   const { query, dryRun = false } = params;
   const startTime = Date.now();
   const timings = {
@@ -225,7 +227,10 @@ export async function DuckDBAgent(params: DuckDBAgentParams): Promise<DuckDBAgen
     timings.total = Date.now() - startTime;
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown DuckDB execution error",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unknown DuckDB execution error",
       timings,
     };
   }

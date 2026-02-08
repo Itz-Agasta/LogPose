@@ -1,7 +1,7 @@
 import { createGroq } from "@ai-sdk/groq";
 import { db } from "@LogPose/db";
 import { generateText } from "ai";
-import { env } from "@LogPose/env/server";
+import { env } from "env/server";
 import { validateSQL } from "@/utils/helper";
 
 const groq = createGroq({

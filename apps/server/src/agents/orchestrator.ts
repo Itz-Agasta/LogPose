@@ -1,7 +1,7 @@
 import { createGroq } from "@ai-sdk/groq";
 import type { ScientificResponse } from "@LogPose/schema/api/agent";
 import { generateText } from "ai";
-import { env } from "@LogPose/env/server";
+import { env } from "env/server";
 import {
   type AgentResults,
   extractCitations,

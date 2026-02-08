@@ -1,4 +1,4 @@
-import { env } from "@LogPose/env/server";
+import { env } from "env/server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { apiRouter } from "./routes/router";

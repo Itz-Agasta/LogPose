@@ -28,7 +28,7 @@
     "check": "oxlint && oxfmt --write"
   },
   "dependencies": {
-    "@LogPose/env": "workspace:*",
+    "env": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },

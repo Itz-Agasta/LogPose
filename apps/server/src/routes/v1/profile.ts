@@ -5,7 +5,7 @@ import type { CycleProfileResponse, FloatProfileResponse } from "@LogPose/schema
 import { DuckDBInstance } from "@duckdb/node-api";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { env } from "@LogPose/env/server";
+import { env } from "env/server";
 import { logger } from "../../middlewares/logger";
 
 const HTTP_STATUS_BAD_REQUEST = 400;
