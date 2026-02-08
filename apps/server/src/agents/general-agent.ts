@@ -1,9 +1,9 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateText } from "ai";
-import { env } from "env/server";
+import { config } from "../config";
 
 const groq = createGroq({
-  apiKey: env.GROQ_API_KEY,
+  apiKey: config.GROQ_API_KEY,
 });
 
 const GENERAL_AGENT_SYSTEM_PROMPT = `You are Atlas Agent, a specialized AI assistant for oceanographic research focusing on Argo float data analysis and scientific literature review.
@@ -44,12 +44,14 @@ export type GeneralAgentResult = {
  * Handles casual conversations, greetings, and off-topic queries
  * Provides personalized responses and politely redirects to Atlas Agent's purpose
  */
-export async function executeGeneralAgent(query: string): Promise<GeneralAgentResult> {
+export async function executeGeneralAgent(
+  query: string,
+): Promise<GeneralAgentResult> {
   const startTime = Date.now();
 
   try {
     const { text, usage } = await generateText({
-      model: groq(env.AGENT),
+      model: groq(config.AGENT),
       system: GENERAL_AGENT_SYSTEM_PROMPT,
       prompt: query,
       maxOutputTokens: 200,
@@ -70,7 +72,8 @@ export async function executeGeneralAgent(query: string): Promise<GeneralAgentRe
       timings: {
         total: Date.now() - startTime,
       },
-      error: error instanceof Error ? error.message : "Failed to generate response",
+      error:
+        error instanceof Error ? error.message : "Failed to generate response",
     };
   }
 }

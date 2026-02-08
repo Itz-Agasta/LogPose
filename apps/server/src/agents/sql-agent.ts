@@ -1,11 +1,11 @@
 import { createGroq } from "@ai-sdk/groq";
 import { db } from "@LogPose/db";
 import { generateText } from "ai";
-import { env } from "env/server";
+import { config } from "../config";
 import { validateSQL } from "@/utils/helper";
 
 const groq = createGroq({
-  apiKey: env.GROQ_API_KEY,
+  apiKey: config.GROQ_API_KEY,
 });
 
 const SQL_AGENT_SYSTEM_PROMPT = `You are an expert PostgreSQL + PostGIS analyst for Argo float METADATA only.
@@ -157,7 +157,9 @@ export type SQLAgentParams = {
  * Text-to-SQL Agent
  * Converts natural language queries to SQL for Argo float data
  */
-export async function SQLAgent(params: SQLAgentParams): Promise<SQLAgentResult> {
+export async function SQLAgent(
+  params: SQLAgentParams,
+): Promise<SQLAgentResult> {
   const { query, dryRun = false } = params;
   const startTime = Date.now();
   const timings = {
@@ -170,7 +172,7 @@ export async function SQLAgent(params: SQLAgentParams): Promise<SQLAgentResult> 
     // Generate SQL query using LLM
     const llmStart = Date.now();
     const { text: sqlQuery, usage } = await generateText({
-      model: groq(env.AGENT),
+      model: groq(config.AGENT),
       system: SQL_AGENT_SYSTEM_PROMPT,
       prompt: `Generate PostgreSQL query for: ${query}`,
       maxOutputTokens: 500,
@@ -224,7 +226,8 @@ export async function SQLAgent(params: SQLAgentParams): Promise<SQLAgentResult> 
     timings.total = Date.now() - startTime;
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown SQL execution error",
+      error:
+        error instanceof Error ? error.message : "Unknown SQL execution error",
       timings,
     };
   }

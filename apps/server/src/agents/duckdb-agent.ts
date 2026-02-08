@@ -1,11 +1,11 @@
 import { createGroq } from "@ai-sdk/groq";
 import { DuckDBInstance } from "@duckdb/node-api";
 import { generateText } from "ai";
-import { env } from "env/server";
+import { config } from "../config";
 import { validateSQL } from "@/utils/helper";
 
 const groq = createGroq({
-  apiKey: env.GROQ_API_KEY,
+  apiKey: config.GROQ_API_KEY,
 });
 
 const DUCKDB_AGENT_SYSTEM_PROMPT = `You are an expert oceanographer and DuckDB SQL specialist analyzing Argo float profile data stored in highly optimized Parquet files.
@@ -151,7 +151,7 @@ export async function DuckDBAgent(
     // Generate SQL using LLM
     const llmStart = Date.now();
     const { text: sqlQuery, usage } = await generateText({
-      model: groq(env.AGENT),
+      model: groq(config.AGENT),
       system: DUCKDB_AGENT_SYSTEM_PROMPT,
       prompt: `Generate DuckDB query for: ${query}`,
       maxOutputTokens: 600,
@@ -197,10 +197,10 @@ export async function DuckDBAgent(
     await connection.run(`
       CREATE SECRET IF NOT EXISTS r2_secret (
         TYPE S3,
-        KEY_ID '${env.S3_ACCESS_KEY}',
-        SECRET '${env.S3_SECRET_KEY}',
-        REGION '${env.S3_REGION}',
-        ENDPOINT '${env.S3_ENDPOINT.replace("https://", "")}',
+        KEY_ID '${config.S3_ACCESS_KEY}',
+        SECRET '${config.S3_SECRET_KEY}',
+        REGION '${config.S3_REGION}',
+        ENDPOINT '${config.S3_ENDPOINT?.replace("https://", "") || ""}',
         URL_STYLE 'path'
       );
     `);

@@ -1,10 +1,10 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateText } from "ai";
-import { env } from "env/server";
+import { config } from "../config";
 import { logger } from "@/middlewares/logger";
 
 const groq = createGroq({
-  apiKey: env.GROQ_API_KEY,
+  apiKey: config.GROQ_API_KEY,
 });
 
 // Regex for parsing JSON from text responses
@@ -82,7 +82,7 @@ CRITICAL: At least ONE agent must be true. Never return all false.`;
 export async function routeQuery(query: string): Promise<RoutingDecision> {
   try {
     const { text, usage } = await generateText({
-      model: groq(env.AGENT),
+      model: groq(config.AGENT),
       system: ROUTER_SYSTEM_PROMPT,
       prompt: `Route this query to appropriate agents: "${query}"
 
@@ -108,7 +108,10 @@ Respond in this exact JSON format:
 
     // Validate that at least one agent is selected
     const anyAgentSelected =
-      parsed.sqlAgent || parsed.duckdbAgent || parsed.ragAgent || parsed.generalAgent;
+      parsed.sqlAgent ||
+      parsed.duckdbAgent ||
+      parsed.ragAgent ||
+      parsed.generalAgent;
 
     // To handle edge cases
     if (!anyAgentSelected) {

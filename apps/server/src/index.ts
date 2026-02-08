@@ -1,4 +1,4 @@
-import { env } from "env/server";
+import { config } from "./config";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { apiRouter } from "./routes/router";
@@ -10,7 +10,7 @@ const app = new Hono().use(pinoLogger).basePath("/api");
 app.use(
   "/*",
   cors({
-    origin: env.CORS_ORIGIN,
+    origin: config.CORS_ORIGIN || "*",
     allowMethods: ["GET", "POST", "OPTIONS"],
   }),
 );
@@ -43,7 +43,7 @@ app.onError((err, c) => {
       success: false,
       message: err.message,
       error: err,
-      stack: process.env.NODE_ENV === "production" ? null : err.stack,
+      stack: config.NODE_ENV === "production" ? null : err.stack,
     },
     500,
   );

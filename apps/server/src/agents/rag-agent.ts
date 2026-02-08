@@ -1,9 +1,9 @@
 import { createGroq } from "@ai-sdk/groq";
-import { env } from "env/server";
+import { config } from "../config";
 import { generateText } from "ai";
 
 const groq = createGroq({
-  apiKey: env.GROQ_API_KEY,
+  apiKey: config.GROQ_API_KEY,
 });
 
 // FIX: move it zod schema and infer it
@@ -67,7 +67,9 @@ export type RAGAgentParams = {
  * RAG Agent for Research Paper Retrieval
  * @NOTE: Currently uses mock data - integrate with Qdrant for production
  */
-export async function RAGAgent(params: RAGAgentParams): Promise<RAGAgentResult> {
+export async function RAGAgent(
+  params: RAGAgentParams,
+): Promise<RAGAgentResult> {
   const { query, topK = DEFAULT_TOP_K } = params;
   const startTime = Date.now();
 
@@ -75,7 +77,7 @@ export async function RAGAgent(params: RAGAgentParams): Promise<RAGAgentResult> 
     // TODO: Integrate with Qdrant vector database
     // For now, use LLM to generate mock research context
     const { text: summary, usage } = await generateText({
-      model: groq(env.AGENT),
+      model: groq(config.AGENT),
       system: RAG_AGENT_SYSTEM_PROMPT,
       prompt: `Find research papers about: ${query}
 Provide ${topK} relevant papers.`,
@@ -101,7 +103,8 @@ Provide ${topK} relevant papers.`,
     } catch {
       return {
         success: false,
-        error: "Failed to retrieve research papers. Server busy, please try again later.",
+        error:
+          "Failed to retrieve research papers. Server busy, please try again later.",
         tokensUsed: usage.totalTokens,
         timings: {
           total: Date.now() - startTime,
@@ -122,7 +125,8 @@ Provide ${topK} relevant papers.`,
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown RAG search error",
+      error:
+        error instanceof Error ? error.message : "Unknown RAG search error",
       timings: {
         total: Date.now() - startTime,
       },

@@ -1,11 +1,17 @@
 import { db } from "@LogPose/db";
-import { argo_float_metadata, argo_float_status } from "@LogPose/db/schema/index";
-import type { CycleProfileResponse, FloatProfileResponse } from "@LogPose/schema/api/profile";
+import {
+  argo_float_metadata,
+  argo_float_status,
+} from "@LogPose/db/schema/index";
+import type {
+  CycleProfileResponse,
+  FloatProfileResponse,
+} from "@LogPose/schema/api/profile";
 
 import { DuckDBInstance } from "@duckdb/node-api";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { env } from "env/server";
+import { config } from "../../config";
 import { logger } from "../../middlewares/logger";
 
 const HTTP_STATUS_BAD_REQUEST = 400;
@@ -28,10 +34,10 @@ async function createDuckDBConnection() {
   await connection.run(`
     CREATE SECRET IF NOT EXISTS r2_secret (
       TYPE S3,
-      KEY_ID '${env.S3_ACCESS_KEY}',
-      SECRET '${env.S3_SECRET_KEY}',
-      REGION '${env.S3_REGION}',
-      ENDPOINT '${env.S3_ENDPOINT.replace("https://", "")}',
+      KEY_ID '${config.S3_ACCESS_KEY}',
+      SECRET '${config.S3_SECRET_KEY}',
+      REGION '${config.S3_REGION}',
+      ENDPOINT '${config.S3_ENDPOINT?.replace("https://", "") || ""}',
       URL_STYLE 'path'
     );
   `);
@@ -71,7 +77,10 @@ profileRouter.get("/:floatId", async (c) => {
     const floatId = Number.parseInt(c.req.param("floatId"), RADIX_DECIMAL);
 
     if (Number.isNaN(floatId)) {
-      return c.json({ success: false, error: "Invalid float ID" }, HTTP_STATUS_BAD_REQUEST);
+      return c.json(
+        { success: false, error: "Invalid float ID" },
+        HTTP_STATUS_BAD_REQUEST,
+      );
     }
 
     // 1. Fetch metadata from PostgreSQL
@@ -92,12 +101,18 @@ profileRouter.get("/:floatId", async (c) => {
         lastUpdate: argo_float_status.last_update,
       })
       .from(argo_float_metadata)
-      .innerJoin(argo_float_status, eq(argo_float_metadata.float_id, argo_float_status.float_id))
+      .innerJoin(
+        argo_float_status,
+        eq(argo_float_metadata.float_id, argo_float_status.float_id),
+      )
       .where(eq(argo_float_metadata.float_id, floatId))
       .limit(1);
 
     if (!metadataResult.length) {
-      return c.json({ success: false, error: "Float not found" }, HTTP_STATUS_NOT_FOUND);
+      return c.json(
+        { success: false, error: "Float not found" },
+        HTTP_STATUS_NOT_FOUND,
+      );
     }
 
     const meta = metadataResult[0] as (typeof metadataResult)[0] & {
@@ -108,7 +123,7 @@ profileRouter.get("/:floatId", async (c) => {
     const parquetPath = `s3://atlas/profiles/${floatId}/data.parquet`;
 
     const summarySQL = `
-      SELECT 
+      SELECT
         COUNT(DISTINCT cycle_number) AS total_cycles,
         COUNT(*) AS total_levels
       FROM read_parquet('${parquetPath}')
@@ -124,7 +139,7 @@ profileRouter.get("/:floatId", async (c) => {
     // Use ORDER BY DESC + LIMIT to avoid PlainSkip error from subqueries
     // Note: Selecting both base and _adj columns causes PlainSkip error, so use COALESCE
     const latestCycleSQL = `
-      SELECT 
+      SELECT
         cycle_number,
         profile_timestamp,
         latitude,
@@ -144,8 +159,11 @@ profileRouter.get("/:floatId", async (c) => {
     `;
 
     // Execute all DuckDB queries sequentially on a single connection
-    let instance: Awaited<ReturnType<typeof DuckDBInstance.create>> | null = null;
-    let connection: Awaited<ReturnType<typeof createDuckDBConnection>>["connection"] | null = null;
+    let instance: Awaited<ReturnType<typeof DuckDBInstance.create>> | null =
+      null;
+    let connection:
+      | Awaited<ReturnType<typeof createDuckDBConnection>>["connection"]
+      | null = null;
 
     try {
       const dbConnection = await createDuckDBConnection();
@@ -171,9 +189,13 @@ profileRouter.get("/:floatId", async (c) => {
       const latestTimestamp = firstRow?.profile_timestamp
         ? String(firstRow.profile_timestamp)
         : undefined;
-      const latestLat = firstRow?.latitude != null ? Number(firstRow.latitude) : null;
-      const latestLon = firstRow?.longitude != null ? Number(firstRow.longitude) : null;
-      const latestDataMode = firstRow?.data_mode ? String(firstRow.data_mode) : undefined;
+      const latestLat =
+        firstRow?.latitude != null ? Number(firstRow.latitude) : null;
+      const latestLon =
+        firstRow?.longitude != null ? Number(firstRow.longitude) : null;
+      const latestDataMode = firstRow?.data_mode
+        ? String(firstRow.data_mode)
+        : undefined;
 
       const measurements = latestCycleRows
         .filter((r) => r.pressure != null && r.temperature != null)
@@ -263,7 +285,10 @@ profileRouter.get("/:floatId", async (c) => {
 profileRouter.get("/:floatId/cycle/:cycleNumber", async (c) => {
   try {
     const floatId = Number.parseInt(c.req.param("floatId"), RADIX_DECIMAL);
-    const cycleNumber = Number.parseInt(c.req.param("cycleNumber"), RADIX_DECIMAL);
+    const cycleNumber = Number.parseInt(
+      c.req.param("cycleNumber"),
+      RADIX_DECIMAL,
+    );
 
     if (Number.isNaN(floatId) || Number.isNaN(cycleNumber)) {
       return c.json(
@@ -276,7 +301,7 @@ profileRouter.get("/:floatId/cycle/:cycleNumber", async (c) => {
 
     // Note: Selecting both base and _adj columns causes PlainSkip error, so use COALESCE
     const cycleSQL = `
-      SELECT 
+      SELECT
         cycle_number,
         profile_timestamp,
         latitude,
@@ -297,8 +322,11 @@ profileRouter.get("/:floatId/cycle/:cycleNumber", async (c) => {
 
     logger.info({ cycleSQL }, "Executing cycle query");
 
-    let instance: Awaited<ReturnType<typeof DuckDBInstance.create>> | null = null;
-    let connection: Awaited<ReturnType<typeof createDuckDBConnection>>["connection"] | null = null;
+    let instance: Awaited<ReturnType<typeof DuckDBInstance.create>> | null =
+      null;
+    let connection:
+      | Awaited<ReturnType<typeof createDuckDBConnection>>["connection"]
+      | null = null;
     let rows: Record<string, unknown>[] = [];
 
     try {
@@ -309,8 +337,12 @@ profileRouter.get("/:floatId/cycle/:cycleNumber", async (c) => {
       rows = await runQuery(connection, cycleSQL);
       logger.info({ rowCount: rows.length }, "Query executed successfully");
     } catch (duckErr) {
-      const errorMessage = duckErr instanceof Error ? duckErr.message : String(duckErr);
-      logger.error({ error: errorMessage, sql: cycleSQL }, "DuckDB error in cycle fetch");
+      const errorMessage =
+        duckErr instanceof Error ? duckErr.message : String(duckErr);
+      logger.error(
+        { error: errorMessage, sql: cycleSQL },
+        "DuckDB error in cycle fetch",
+      );
       throw duckErr;
     } finally {
       if (connection) {
@@ -351,9 +383,12 @@ profileRouter.get("/:floatId/cycle/:cycleNumber", async (c) => {
       success: true,
       data: {
         cycleNumber,
-        timestamp: rows[0]?.profile_timestamp ? String(rows[0].profile_timestamp) : undefined,
+        timestamp: rows[0]?.profile_timestamp
+          ? String(rows[0].profile_timestamp)
+          : undefined,
         latitude: rows[0]?.latitude != null ? Number(rows[0].latitude) : null,
-        longitude: rows[0]?.longitude != null ? Number(rows[0].longitude) : null,
+        longitude:
+          rows[0]?.longitude != null ? Number(rows[0].longitude) : null,
         dataMode: rows[0]?.data_mode ? String(rows[0].data_mode) : undefined,
         measurements,
       },
