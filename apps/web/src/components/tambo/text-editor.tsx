@@ -8,7 +8,12 @@ import Mention from "@tiptap/extension-mention";
 import Paragraph from "@tiptap/extension-paragraph";
 import Placeholder from "@tiptap/extension-placeholder";
 import Text from "@tiptap/extension-text";
-import { EditorContent, Extension, useEditor, type Editor } from "@tiptap/react";
+import {
+  EditorContent,
+  Extension,
+  useEditor,
+  type Editor,
+} from "@tiptap/react";
 import type { SuggestionOptions } from "@tiptap/suggestion";
 import Suggestion from "@tiptap/suggestion";
 import { Cuboid, FileText } from "lucide-react";
@@ -28,7 +33,9 @@ export interface ImageItems {
  * @param clipboardData - The clipboard data from a paste event
  * @returns Object containing extracted images array and whether text was present
  */
-export function getImageItems(clipboardData: DataTransfer | null | undefined): ImageItems {
+export function getImageItems(
+  clipboardData: DataTransfer | null | undefined,
+): ImageItems {
   const items = Array.from(clipboardData?.items ?? []);
   const imageItems: File[] = [];
 
@@ -191,7 +198,10 @@ function SuggestionPopover<T extends SuggestionItem>({
   const sideOffset = state.position.lineHeight + 4;
 
   return (
-    <Popover.Root open={state.isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Popover.Root
+      open={state.isOpen}
+      onOpenChange={(open) => !open && onClose()}
+    >
       <Popover.Anchor asChild>
         <div
           style={{
@@ -217,7 +227,9 @@ function SuggestionPopover<T extends SuggestionItem>({
         }}
       >
         {state.items.length === 0 ? (
-          <div className="px-3 py-2 text-sm text-muted-foreground">{emptyMessage}</div>
+          <div className="px-3 py-2 text-sm text-muted-foreground">
+            {emptyMessage}
+          </div>
         ) : (
           <div className="flex flex-col gap-0.5 p-1">
             {state.items.map((item, index) => (
@@ -227,7 +239,8 @@ function SuggestionPopover<T extends SuggestionItem>({
                 className={cn(
                   "flex items-start gap-2 px-2 py-2 text-sm rounded-md text-left",
                   "hover:bg-accent hover:text-accent-foreground transition-colors",
-                  index === state.selectedIndex && "bg-accent text-accent-foreground",
+                  index === state.selectedIndex &&
+                    "bg-accent text-accent-foreground",
                 )}
                 onClick={() => state.command?.(item)}
               >
@@ -289,7 +302,10 @@ function createResourceMentionConfig(
 
     render: () => {
       const createWrapCommand =
-        (editor: Editor, tiptapCommand: (attrs: { id: string; label: string }) => void) =>
+        (
+          editor: Editor,
+          tiptapCommand: (attrs: { id: string; label: string }) => void,
+        ) =>
         (item: ResourceItem) => {
           if (checkMentionExists(editor, item.name)) return;
           tiptapCommand({ id: item.id, label: item.name });
@@ -320,7 +336,9 @@ function createResourceMentionConfig(
             ArrowUp: () => {
               if (state.items.length === 0) return false;
               setState({
-                selectedIndex: (state.selectedIndex - 1 + state.items.length) % state.items.length,
+                selectedIndex:
+                  (state.selectedIndex - 1 + state.items.length) %
+                  state.items.length,
               });
               return true;
             },
@@ -431,14 +449,16 @@ function createPromptCommandExtension(
                     if (state.items.length === 0) return false;
                     setState({
                       selectedIndex:
-                        (state.selectedIndex - 1 + state.items.length) % state.items.length,
+                        (state.selectedIndex - 1 + state.items.length) %
+                        state.items.length,
                     });
                     return true;
                   },
                   ArrowDown: () => {
                     if (state.items.length === 0) return false;
                     setState({
-                      selectedIndex: (state.selectedIndex + 1) % state.items.length,
+                      selectedIndex:
+                        (state.selectedIndex + 1) % state.items.length,
                     });
                     return true;
                   },
@@ -539,7 +559,10 @@ function useSuggestionState<T extends SuggestionItem>(
         }
 
         const previousMaxIndex = Math.max(prev.items.length - 1, 0);
-        const safePrevIndex = Math.min(Math.max(prev.selectedIndex, 0), previousMaxIndex);
+        const safePrevIndex = Math.min(
+          Math.max(prev.selectedIndex, 0),
+          previousMaxIndex,
+        );
 
         const selectedItem = prev.items[safePrevIndex];
         const matchedIndex = selectedItem
@@ -587,7 +610,8 @@ export const TextEditor = React.forwardRef<TamboEditor, TextEditorProps>(
     ref,
   ) => {
     // Suggestion states with refs for TipTap access
-    const [resourceState, resourceRef] = useSuggestionState<ResourceItem>(resources);
+    const [resourceState, resourceRef] =
+      useSuggestionState<ResourceItem>(resources);
     const [promptState, promptRef] = useSuggestionState<PromptItem>(prompts);
 
     // Consolidated ref for callbacks that TipTap needs to access
@@ -660,7 +684,11 @@ export const TextEditor = React.forwardRef<TamboEditor, TextEditorProps>(
           ),
           renderLabel: ({ node }) => `@${(node.attrs.label as string) ?? ""}`,
         }),
-        createPromptCommandExtension(stableSearchPrompts, handlePromptSelect, promptRef),
+        createPromptCommandExtension(
+          stableSearchPrompts,
+          handlePromptSelect,
+          promptRef,
+        ),
       ],
       content: value,
       editable: !disabled,

@@ -1,6 +1,9 @@
 import { Slot } from "@radix-ui/react-slot";
 import type { TamboThreadMessage } from "@tambo-ai/react";
-import { checkHasContent, convertContentToMarkdown } from "@/lib/thread-hooks";
+import {
+  checkHasContent,
+  convertContentToMarkdown,
+} from "@/lib/thread-hooks";
 import * as React from "react";
 import type { BasePropsWithChildrenOrRenderFunction } from "../../types/component-render-or-children";
 import { useRender } from "../../use-render/use-render";

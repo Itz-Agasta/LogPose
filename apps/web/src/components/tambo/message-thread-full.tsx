@@ -18,7 +18,10 @@ import {
 } from "@/components/tambo/message-suggestions";
 import { ScrollableMessageContainer } from "@/components/tambo/scrollable-message-container";
 import { ThreadContainer, useThreadContainerContext } from "./thread-container";
-import { ThreadContent, ThreadContentMessages } from "@/components/tambo/thread-content";
+import {
+  ThreadContent,
+  ThreadContentMessages,
+} from "@/components/tambo/thread-content";
 import {
   ThreadHistory,
   ThreadHistoryHeader,
@@ -31,7 +34,7 @@ import { useMergeRefs } from "@/lib/thread-hooks";
 import type { Suggestion } from "@tambo-ai/react";
 import { useTambo, useTamboThreadInput } from "@tambo-ai/react";
 import type { VariantProps } from "class-variance-authority";
-import { IconMap, IconChartLine, IconDatabase } from "@tabler/icons-react";
+import { IconAnchor, IconMap, IconChartLine, IconDatabase, IconWaveSine } from "@tabler/icons-react";
 import * as React from "react";
 
 /**
@@ -66,89 +69,17 @@ function AbstractOrb() {
         </defs>
 
         {/* Multiple wave paths creating an orb-like effect */}
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="80"
-          ry="60"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.5"
-          fill="none"
-          opacity="0.3"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="70"
-          ry="52"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.5"
-          fill="none"
-          opacity="0.4"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="60"
-          ry="44"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.5"
-          fill="none"
-          opacity="0.5"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="50"
-          ry="36"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.5"
-          fill="none"
-          opacity="0.6"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="40"
-          ry="28"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.7"
-          fill="none"
-          opacity="0.7"
-        />
-        <ellipse
-          cx="100"
-          cy="75"
-          rx="30"
-          ry="20"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.8"
-          fill="none"
-          opacity="0.8"
-        />
+        <ellipse cx="100" cy="75" rx="80" ry="60" stroke="url(#waveGradient)" strokeWidth="0.5" fill="none" opacity="0.3" />
+        <ellipse cx="100" cy="75" rx="70" ry="52" stroke="url(#waveGradient)" strokeWidth="0.5" fill="none" opacity="0.4" />
+        <ellipse cx="100" cy="75" rx="60" ry="44" stroke="url(#waveGradient)" strokeWidth="0.5" fill="none" opacity="0.5" />
+        <ellipse cx="100" cy="75" rx="50" ry="36" stroke="url(#waveGradient)" strokeWidth="0.5" fill="none" opacity="0.6" />
+        <ellipse cx="100" cy="75" rx="40" ry="28" stroke="url(#waveGradient)" strokeWidth="0.7" fill="none" opacity="0.7" />
+        <ellipse cx="100" cy="75" rx="30" ry="20" stroke="url(#waveGradient)" strokeWidth="0.8" fill="none" opacity="0.8" />
 
         {/* Horizontal wave lines */}
-        <path
-          d="M20,75 Q60,55 100,75 T180,75"
-          stroke="url(#waveGradient)"
-          strokeWidth="1"
-          fill="none"
-          opacity="0.6"
-        />
-        <path
-          d="M20,85 Q60,65 100,85 T180,85"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.8"
-          fill="none"
-          opacity="0.5"
-        />
-        <path
-          d="M20,65 Q60,45 100,65 T180,65"
-          stroke="url(#waveGradient)"
-          strokeWidth="0.8"
-          fill="none"
-          opacity="0.5"
-        />
+        <path d="M20,75 Q60,55 100,75 T180,75" stroke="url(#waveGradient)" strokeWidth="1" fill="none" opacity="0.6" />
+        <path d="M20,85 Q60,65 100,85 T180,85" stroke="url(#waveGradient)" strokeWidth="0.8" fill="none" opacity="0.5" />
+        <path d="M20,65 Q60,45 100,65 T180,65" stroke="url(#waveGradient)" strokeWidth="0.8" fill="none" opacity="0.5" />
 
         {/* Center highlight */}
         <circle cx="100" cy="75" r="15" fill="url(#waveGradient)" opacity="0.15" />
@@ -228,7 +159,7 @@ function WelcomeScreen({ onSuggestionClick }: { onSuggestionClick: (text: string
             linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px),
             linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)
           `,
-          backgroundSize: "40px 40px",
+          backgroundSize: '40px 40px',
         }}
       />
 
@@ -266,108 +197,111 @@ function WelcomeScreen({ onSuggestionClick }: { onSuggestionClick: (text: string
 /**
  * A full-screen chat thread component with message history, input, and suggestions
  */
-export const MessageThreadFull = React.forwardRef<HTMLDivElement, MessageThreadFullProps>(
-  ({ className, variant, ...props }, ref) => {
-    const { containerRef, historyPosition } = useThreadContainerContext();
-    const { thread } = useTambo();
-    const { setValue, submit } = useTamboThreadInput();
-    const mergedRef = useMergeRefs<HTMLDivElement | null>(ref, containerRef);
+export const MessageThreadFull = React.forwardRef<
+  HTMLDivElement,
+  MessageThreadFullProps
+>(({ className, variant, ...props }, ref) => {
+  const { containerRef, historyPosition } = useThreadContainerContext();
+  const { thread } = useTambo();
+  const { setValue, submit } = useTamboThreadInput();
+  const mergedRef = useMergeRefs<HTMLDivElement | null>(ref, containerRef);
 
-    const hasMessages =
-      thread?.messages && thread.messages.filter((m) => m.role !== "system").length > 0;
+  const hasMessages = thread?.messages && thread.messages.filter(m => m.role !== "system").length > 0;
 
-    const handleSuggestionClick = React.useCallback(
-      (text: string) => {
-        setValue(text);
-        submit({ streamResponse: true });
-      },
-      [setValue, submit],
-    );
+  const handleSuggestionClick = React.useCallback((text: string) => {
+    setValue(text);
+    submit({ streamResponse: true });
+  }, [setValue, submit]);
 
-    const threadHistorySidebar = (
-      <ThreadHistory position={historyPosition}>
-        <ThreadHistoryHeader />
-        <ThreadHistoryHomeButton />
-        <ThreadHistoryNewButton />
-        <ThreadHistorySearch />
-        <ThreadHistoryList />
-      </ThreadHistory>
-    );
+  const threadHistorySidebar = (
+    <ThreadHistory position={historyPosition}>
+      <ThreadHistoryHeader />
+      <ThreadHistoryHomeButton />
+      <ThreadHistoryNewButton />
+      <ThreadHistorySearch />
+      <ThreadHistoryList />
+    </ThreadHistory>
+  );
 
-    const defaultSuggestions: Suggestion[] = [
-      {
-        id: "suggestion-1",
-        title: "Active floats",
-        detailedSuggestion: "Show me all active Argo floats in the network",
-        messageId: "active-floats-query",
-      },
-      {
-        id: "suggestion-2",
-        title: "Network statistics",
-        detailedSuggestion: "What's the current status of the Argo network?",
-        messageId: "network-status-query",
-      },
-      {
-        id: "suggestion-3",
-        title: "Find floats",
-        detailedSuggestion: "Find BGC floats in the Pacific Ocean",
-        messageId: "find-floats-query",
-      },
-      {
-        id: "suggestion-4",
-        title: "Temperature data",
-        detailedSuggestion: "Show temperature profiles for recent float measurements",
-        messageId: "temperature-query",
-      },
-    ];
+  const defaultSuggestions: Suggestion[] = [
+    {
+      id: "suggestion-1",
+      title: "Active floats",
+      detailedSuggestion: "Show me all active Argo floats in the network",
+      messageId: "active-floats-query",
+    },
+    {
+      id: "suggestion-2",
+      title: "Network statistics",
+      detailedSuggestion: "What's the current status of the Argo network?",
+      messageId: "network-status-query",
+    },
+    {
+      id: "suggestion-3",
+      title: "Find floats",
+      detailedSuggestion: "Find BGC floats in the Pacific Ocean",
+      messageId: "find-floats-query",
+    },
+    {
+      id: "suggestion-4",
+      title: "Temperature data",
+      detailedSuggestion:
+        "Show temperature profiles for recent float measurements",
+      messageId: "temperature-query",
+    },
+  ];
 
-    return (
-      <div className="flex h-full w-full">
-        {/* Thread History Sidebar - rendered first if history is on the left */}
-        {historyPosition === "left" && threadHistorySidebar}
+  return (
+    <div className="flex h-full w-full">
+      {/* Thread History Sidebar - rendered first if history is on the left */}
+      {historyPosition === "left" && threadHistorySidebar}
 
-        <ThreadContainer ref={mergedRef} disableSidebarSpacing className={className} {...props}>
-          <ScrollableMessageContainer className="p-4">
-            {hasMessages ? (
-              <ThreadContent variant={variant}>
-                <ThreadContentMessages />
-              </ThreadContent>
-            ) : (
-              <WelcomeScreen onSuggestionClick={handleSuggestionClick} />
-            )}
-          </ScrollableMessageContainer>
-
-          {/* Message suggestions status */}
-          <MessageSuggestions>
-            <MessageSuggestionsStatus />
-          </MessageSuggestions>
-
-          {/* Message input */}
-          <div className="px-4 pb-4 max-w-3xl mx-auto w-full">
-            <MessageInput>
-              <MessageInputTextarea placeholder="Ask me anything......." />
-              <MessageInputToolbar>
-                <MessageInputFileButton />
-                <MessageInputMcpPromptButton />
-                <MessageInputMcpResourceButton />
-                <MessageInputSubmitButton />
-              </MessageInputToolbar>
-              <MessageInputError />
-            </MessageInput>
-          </div>
-
-          {/* Message suggestions - only show when there are messages */}
-          {hasMessages && (
-            <MessageSuggestions initialSuggestions={defaultSuggestions}>
-              <MessageSuggestionsList />
-            </MessageSuggestions>
+      <ThreadContainer
+        ref={mergedRef}
+        disableSidebarSpacing
+        className={className}
+        {...props}
+      >
+        <ScrollableMessageContainer className="p-4">
+          {hasMessages ? (
+            <ThreadContent variant={variant}>
+              <ThreadContentMessages />
+            </ThreadContent>
+          ) : (
+            <WelcomeScreen onSuggestionClick={handleSuggestionClick} />
           )}
-        </ThreadContainer>
+        </ScrollableMessageContainer>
 
-        {/* Thread History Sidebar - rendered last if history is on the right */}
-        {historyPosition === "right" && threadHistorySidebar}
-      </div>
-    );
-  },
-);
+        {/* Message suggestions status */}
+        <MessageSuggestions>
+          <MessageSuggestionsStatus />
+        </MessageSuggestions>
+
+        {/* Message input */}
+        <div className="px-4 pb-4 max-w-3xl mx-auto w-full">
+          <MessageInput>
+            <MessageInputTextarea placeholder="Ask me anything......." />
+            <MessageInputToolbar>
+              <MessageInputFileButton />
+              <MessageInputMcpPromptButton />
+              <MessageInputMcpResourceButton />
+              <MessageInputSubmitButton />
+            </MessageInputToolbar>
+            <MessageInputError />
+          </MessageInput>
+        </div>
+
+        {/* Message suggestions - only show when there are messages */}
+        {hasMessages && (
+          <MessageSuggestions initialSuggestions={defaultSuggestions}>
+            <MessageSuggestionsList />
+          </MessageSuggestions>
+        )}
+      </ThreadContainer>
+
+      {/* Thread History Sidebar - rendered last if history is on the right */}
+      {historyPosition === "right" && threadHistorySidebar}
+    </div>
+  );
+});
 MessageThreadFull.displayName = "MessageThreadFull";

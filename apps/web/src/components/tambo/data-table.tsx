@@ -23,7 +23,12 @@ type DataTableProps = {
   maxRows?: number;
 };
 
-export default function DataTable({ title, columns, rows, maxRows = 10 }: DataTableProps) {
+export default function DataTable({
+  title,
+  columns,
+  rows,
+  maxRows = 10,
+}: DataTableProps) {
   const displayRows = rows?.slice(0, maxRows) ?? [];
   const hasMore = (rows?.length ?? 0) > maxRows;
 

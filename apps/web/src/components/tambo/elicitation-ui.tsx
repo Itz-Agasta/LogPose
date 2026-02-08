@@ -1,11 +1,15 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { type TamboElicitationRequest, type TamboElicitationResponse } from "@tambo-ai/react/mcp";
+import {
+  type TamboElicitationRequest,
+  type TamboElicitationResponse,
+} from "@tambo-ai/react/mcp";
 import * as React from "react";
 import { useMemo, useState } from "react";
 
-type FieldSchema = TamboElicitationRequest["requestedSchema"]["properties"][string];
+type FieldSchema =
+  TamboElicitationRequest["requestedSchema"]["properties"][string];
 
 /**
  * Props for individual field components
@@ -85,7 +89,8 @@ const EnumField: React.FC<FieldProps> = ({
     return null;
   }
   const options = schema.enum ?? [];
-  const optionNames = "enumNames" in schema ? (schema.enumNames ?? []) : options;
+  const optionNames =
+    "enumNames" in schema ? (schema.enumNames ?? []) : options;
   const stringValue = value as string | undefined;
 
   return (
@@ -225,7 +230,11 @@ const NumberField: React.FC<FieldProps> = ({
         value={numberValue ?? ""}
         onChange={(e) => {
           const { value, valueAsNumber } = e.currentTarget;
-          onChange(value === "" || Number.isNaN(valueAsNumber) ? undefined : valueAsNumber);
+          onChange(
+            value === "" || Number.isNaN(valueAsNumber)
+              ? undefined
+              : valueAsNumber,
+          );
         }}
         className={cn(
           "w-full px-3 py-2 rounded-lg border bg-background text-foreground focus:outline-none focus:ring-2",
@@ -288,7 +297,9 @@ function isSingleEntryMode(request: TamboElicitationRequest): boolean {
 
   const [, schema] = fields[0];
 
-  return schema.type === "boolean" || (schema.type === "string" && "enum" in schema);
+  return (
+    schema.type === "boolean" || (schema.type === "string" && "enum" in schema)
+  );
 }
 
 /**
@@ -382,14 +393,20 @@ function validateField(
       return { valid: false, error: "Please enter a valid number" };
     }
 
-    if (numberSchema.minimum !== undefined && numberValue < numberSchema.minimum) {
+    if (
+      numberSchema.minimum !== undefined &&
+      numberValue < numberSchema.minimum
+    ) {
       return {
         valid: false,
         error: `Minimum value is ${numberSchema.minimum}`,
       };
     }
 
-    if (numberSchema.maximum !== undefined && numberValue > numberSchema.maximum) {
+    if (
+      numberSchema.maximum !== undefined &&
+      numberValue > numberSchema.maximum
+    ) {
       return {
         valid: false,
         error: `Maximum value is ${numberSchema.maximum}`,
@@ -405,7 +422,11 @@ function validateField(
 }
 
 // Backwards-compatible helpers that delegate to the unified validator
-function getValidationError(value: unknown, schema: FieldSchema, required: boolean): string | null {
+function getValidationError(
+  value: unknown,
+  schema: FieldSchema,
+  required: boolean,
+): string | null {
   return validateField(value, schema, required).error;
 }
 
@@ -422,7 +443,11 @@ export interface ElicitationUIProps {
  * Main elicitation UI component
  * Handles both single-entry and multiple-entry modes
  */
-export const ElicitationUI: React.FC<ElicitationUIProps> = ({ request, onResponse, className }) => {
+export const ElicitationUI: React.FC<ElicitationUIProps> = ({
+  request,
+  onResponse,
+  className,
+}) => {
   const singleEntry = isSingleEntryMode(request);
   const fields = useMemo(
     () => Object.entries(request.requestedSchema.properties),
@@ -489,7 +514,11 @@ export const ElicitationUI: React.FC<ElicitationUIProps> = ({ request, onRespons
   if (singleEntry) {
     const [fieldName, fieldSchema] = fields[0];
     const validationError = touchedFields.has(fieldName)
-      ? getValidationError(formData[fieldName], fieldSchema, requiredFields.includes(fieldName))
+      ? getValidationError(
+          formData[fieldName],
+          fieldSchema,
+          requiredFields.includes(fieldName),
+        )
       : null;
 
     return (
@@ -499,7 +528,9 @@ export const ElicitationUI: React.FC<ElicitationUIProps> = ({ request, onRespons
           className,
         )}
       >
-        <div className="text-base font-semibold text-foreground mb-2">{request.message}</div>
+        <div className="text-base font-semibold text-foreground mb-2">
+          {request.message}
+        </div>
         <Field
           name={fieldName}
           schema={fieldSchema}
@@ -537,11 +568,17 @@ export const ElicitationUI: React.FC<ElicitationUIProps> = ({ request, onRespons
         className,
       )}
     >
-      <div className="text-base font-semibold text-foreground">{request.message}</div>
+      <div className="text-base font-semibold text-foreground">
+        {request.message}
+      </div>
       <div className="space-y-3">
         {fields.map(([name, schema], index) => {
           const validationError = touchedFields.has(name)
-            ? getValidationError(formData[name], schema, requiredFields.includes(name))
+            ? getValidationError(
+                formData[name],
+                schema,
+                requiredFields.includes(name),
+              )
             : null;
 
           return (

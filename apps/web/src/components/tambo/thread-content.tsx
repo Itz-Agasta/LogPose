@@ -32,7 +32,8 @@ interface ThreadContentContextValue {
  * React Context for sharing thread data among sub-components.
  * @internal
  */
-const ThreadContentContext = React.createContext<ThreadContentContextValue | null>(null);
+const ThreadContentContext =
+  React.createContext<ThreadContentContextValue | null>(null);
 
 /**
  * Hook to access the thread content context.
@@ -43,7 +44,9 @@ const ThreadContentContext = React.createContext<ThreadContentContextValue | nul
 const useThreadContentContext = () => {
   const context = React.useContext(ThreadContentContext);
   if (!context) {
-    throw new Error("ThreadContent sub-components must be used within a ThreadContent");
+    throw new Error(
+      "ThreadContent sub-components must be used within a ThreadContent",
+    );
   }
   return context;
 };
@@ -118,66 +121,67 @@ export type ThreadContentMessagesProps = React.HTMLAttributes<HTMLDivElement>;
  * </ThreadContent>
  * ```
  */
-const ThreadContentMessages = React.forwardRef<HTMLDivElement, ThreadContentMessagesProps>(
-  ({ className, ...props }, ref) => {
-    const { messages, isGenerating, variant } = useThreadContentContext();
+const ThreadContentMessages = React.forwardRef<
+  HTMLDivElement,
+  ThreadContentMessagesProps
+>(({ className, ...props }, ref) => {
+  const { messages, isGenerating, variant } = useThreadContentContext();
 
-    const filteredMessages = messages.filter(
-      (message) => message.role !== "system" && !message.parentMessageId,
-    );
+  const filteredMessages = messages.filter(
+    (message) => message.role !== "system" && !message.parentMessageId,
+  );
 
-    return (
-      <div
-        ref={ref}
-        className={cn("flex flex-col gap-2", className)}
-        data-slot="thread-content-messages"
-        {...props}
-      >
-        {filteredMessages.map((message, index) => {
-          return (
-            <div
-              key={
-                message.id ??
-                `${message.role}-${message.createdAt ?? `${index}`}-${message.content?.toString().substring(0, 10)}`
-              }
-              data-slot="thread-content-item"
+  return (
+    <div
+      ref={ref}
+      className={cn("flex flex-col gap-2", className)}
+      data-slot="thread-content-messages"
+      {...props}
+    >
+      {filteredMessages.map((message, index) => {
+        return (
+          <div
+            key={
+              message.id ??
+              `${message.role}-${message.createdAt ?? `${index}`}-${message.content?.toString().substring(0, 10)}`
+            }
+            data-slot="thread-content-item"
+            className={cn(
+              "flex w-full",
+              message.role === "assistant" ? "justify-start" : "justify-end",
+            )}
+          >
+            <Message
+              role={message.role === "assistant" ? "assistant" : "user"}
+              message={message}
+              variant={variant}
+              isLoading={isGenerating && index === filteredMessages.length - 1}
             >
-              <Message
-                role={message.role === "assistant" ? "assistant" : "user"}
-                message={message}
-                variant={variant}
-                isLoading={isGenerating && index === filteredMessages.length - 1}
+              <div
                 className={cn(
-                  "flex w-full",
-                  message.role === "assistant" ? "justify-start" : "justify-end",
+                  "flex flex-col",
+                  message.role === "assistant" ? "w-full max-w-4xl" : "max-w-2xl",
                 )}
               >
-                <div
-                  className={cn(
-                    "flex flex-col",
-                    message.role === "assistant" ? "w-full" : "max-w-3xl",
-                  )}
-                >
-                  <ReasoningInfo />
-                  <MessageImages />
-                  <MessageContent
-                    className={
-                      message.role === "assistant"
-                        ? "text-foreground font-sans"
-                        : "text-foreground bg-container hover:bg-backdrop font-sans"
-                    }
-                  />
-                  <ToolcallInfo />
-                  <MessageRenderedComponentArea className="w-full" />
-                </div>
-              </Message>
-            </div>
-          );
-        })}
-      </div>
-    );
-  },
-);
+                <ReasoningInfo />
+                <MessageImages />
+                <MessageContent
+                  className={
+                    message.role === "assistant"
+                      ? "text-foreground font-sans"
+                      : "text-foreground bg-container hover:bg-backdrop font-sans"
+                  }
+                />
+                <ToolcallInfo />
+                <MessageRenderedComponentArea className="w-full" />
+              </div>
+            </Message>
+          </div>
+        );
+      })}
+    </div>
+  );
+});
 ThreadContentMessages.displayName = "ThreadContent.Messages";
 
 export { ThreadContent, ThreadContentMessages };

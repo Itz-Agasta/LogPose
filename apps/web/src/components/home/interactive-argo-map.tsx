@@ -20,6 +20,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 import type { ArgoFloat, PopupData, TooltipData } from "@LogPose/schema/web/float";
 import type { FloatLocationsResponse } from "@LogPose/schema/api/home-page";
+import { ModeToggle } from "../mode-toggle";
 import Starfield from "../ui/starfield";
 import FloatPopup from "./float-popup";
 import FloatTooltip from "./float-tooltip";
@@ -352,6 +353,11 @@ export default function InteractiveArgoMap({
 
   return (
     <div className="relative h-full w-full">
+      {/* Dark Mode Toggle - top right */}
+      <div className="absolute top-4 right-14 z-10">
+        <ModeToggle />
+      </div>
+
       {/* Starfield background for globe view */}
       <Starfield isVisible={isGlobe} />
 

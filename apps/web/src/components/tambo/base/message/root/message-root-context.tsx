@@ -1,4 +1,4 @@
-import { TamboThreadMessage } from "@tambo-ai/react";
+import type { TamboThreadMessage } from "@tambo-ai/react";
 import React from "react";
 
 /**
@@ -10,7 +10,9 @@ interface MessageRootContextValue {
   isLoading?: boolean;
 }
 
-const MessageRootContext = React.createContext<MessageRootContextValue | null>(null);
+const MessageRootContext = React.createContext<MessageRootContextValue | null>(
+  null,
+);
 
 /**
  * Hook to access the message context.

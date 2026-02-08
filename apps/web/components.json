@@ -20,5 +20,8 @@
   },
   "menuColor": "default",
   "menuAccent": "subtle",
-  "registries": {}
+  "registries": {
+    "@react-bits": "https://reactbits.dev/r/{name}.json",
+    "@acme": "https://acme.com/r/{name}.json"
+  }
 }

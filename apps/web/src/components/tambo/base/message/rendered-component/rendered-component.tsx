@@ -17,7 +17,11 @@ export const MessageRenderedComponent = React.forwardRef<
 >(({ asChild, children, ...props }, ref) => {
   const { message, role } = useMessageRootContext();
 
-  if (!message.renderedComponent || role !== "assistant" || message.isCancelled) {
+  if (
+    !message.renderedComponent ||
+    role !== "assistant" ||
+    message.isCancelled
+  ) {
     return null;
   }
 

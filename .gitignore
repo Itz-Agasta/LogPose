@@ -50,9 +50,11 @@ coverage
 tmp
 temp
 .infisical.json
-.agent
-.claude
 
+#Agents
+.claude
+.agent
+.mcp.json
 
 
 
@@ -73,3 +75,5 @@ override.tf.json
 *_override.tf.json
 .terraformrc
 terraform.rc
+.goose
+.cursor

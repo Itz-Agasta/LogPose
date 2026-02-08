@@ -11,6 +11,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Sidebar, SidebarContent, SidebarProvider } from "@/components/ui/sidebar";
 import { fetchCycleProfile, fetchFloatProfile } from "@/lib/utils";
+import { FloatMessagePanel } from "@/components/tambo/float-message-panel";
+import { FloatDisplayProvider, useFloatDisplay } from "@/components/profile/float-display-context";
 
 interface FloatProfilePageProps {
   floatId: string;
@@ -98,17 +100,19 @@ export function FloatProfilePage({ floatId }: FloatProfilePageProps) {
   }
 
   return (
-    <SidebarProvider>
-      <FloatProfileContent
-        metadata={metadata}
-        currentCycle={currentCycle}
-        availableCycles={availableCycles}
-        onCycleChange={handleCycleChange}
-        hasOxygen={hasOxygen}
-        hasChlorophyll={hasChlorophyll}
-        hasNitrate={hasNitrate}
-      />
-    </SidebarProvider>
+    <FloatDisplayProvider metadata={metadata} currentCycle={currentCycle}>
+      <SidebarProvider>
+        <FloatProfileContent
+          metadata={metadata}
+          currentCycle={currentCycle}
+          availableCycles={availableCycles}
+          onCycleChange={handleCycleChange}
+          hasOxygen={hasOxygen}
+          hasChlorophyll={hasChlorophyll}
+          hasNitrate={hasNitrate}
+        />
+      </SidebarProvider>
+    </FloatDisplayProvider>
   );
 }
 
@@ -130,6 +134,7 @@ function FloatProfileContent({
   hasNitrate: boolean;
 }) {
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false);
+  const { activeTab, setActiveTab, aiGraphConfig } = useFloatDisplay();
 
   return (
     <div className="min-h-screen bg-background flex w-full">
@@ -153,7 +158,7 @@ function FloatProfileContent({
         <header className="border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
           <div className="flex h-16 items-center justify-between px-6">
             <div className="flex items-center gap-4">
-              <Link href="/">
+              <Link href="/home">
                 <Button variant="ghost" size="icon-sm">
                   <ArrowLeft className="h-4 w-4" />
                   <span className="sr-only">Back to Home</span>
@@ -179,7 +184,7 @@ function FloatProfileContent({
                 onClick={() => setIsAiSidebarOpen(!isAiSidebarOpen)}
               >
                 <MessageSquare className="h-4 w-4" />
-                {isAiSidebarOpen ? "Hide" : "Ask"} AI Assistant
+                {isAiSidebarOpen ? "Hide" : "Ask"} Poseidon
               </Button>
             </div>
           </div>
@@ -193,36 +198,20 @@ function FloatProfileContent({
             hasOxygen={hasOxygen}
             hasChlorophyll={hasChlorophyll}
             hasNitrate={hasNitrate}
+            isAiSidebarOpen={isAiSidebarOpen}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            aiGraphConfig={aiGraphConfig}
           />
         </main>
       </div>
 
       {/* AI Assistant Sidebar */}
-      {isAiSidebarOpen && (
-        <div className="fixed right-0 top-0 h-screen w-96 bg-background border-l border-border shadow-lg z-50 flex flex-col">
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <h2 className="text-lg font-semibold text-foreground">AI Assistant</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsAiSidebarOpen(false)}
-              className="h-8 w-8 p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-
-          <div className="flex-1 overflow-hidden p-4">
-            <p className="text-sm text-muted-foreground">
-              Use the chat page to ask questions about this float&apos;s data. Navigate to{" "}
-              <a href="/chat" className="text-primary underline">
-                /chat
-              </a>{" "}
-              for the full AI assistant experience.
-            </p>
-          </div>
-        </div>
-      )}
+      <FloatMessagePanel
+        isOpen={isAiSidebarOpen}
+        onClose={() => setIsAiSidebarOpen(false)}
+        floatId={metadata.floatId}
+      />
     </div>
   );
 }

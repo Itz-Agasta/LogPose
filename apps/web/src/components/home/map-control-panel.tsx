@@ -168,15 +168,16 @@ export default function MapControlPanel({
             >
               <p className="mb-2 font-medium"></p>
               <div className="mb-1 flex items-center">
-                <div
-                  className="mr-2 h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: "var(--primary)" }}
-                />
-                <span>Active Float</span>
+                <div className="mr-2 h-2.5 w-2.5 rounded-full bg-green-500" />
+                <span>BGC Argo</span>
+              </div>
+              <div className="mb-1 flex items-center">
+                <div className="mr-2 h-2.5 w-2.5 rounded-full bg-yellow-500" />
+                <span>Core Argo</span>
               </div>
               <div className="flex items-center">
-                <div className="mr-2 h-2.5 w-2.5 rounded-full bg-yellow-500" />
-                <span>Selected Float</span>
+                <div className="mr-2 h-2.5 w-2.5 rounded-full bg-blue-500" />
+                <span>Deep Argo</span>
               </div>
             </div>
           </div>

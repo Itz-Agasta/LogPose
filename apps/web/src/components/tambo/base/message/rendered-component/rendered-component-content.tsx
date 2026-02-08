@@ -17,4 +17,5 @@ export const MessageRenderedComponentContent = React.forwardRef<
     </div>
   );
 });
-MessageRenderedComponentContent.displayName = "Message.RenderedComponentContent";
+MessageRenderedComponentContent.displayName =
+  "Message.RenderedComponentContent";

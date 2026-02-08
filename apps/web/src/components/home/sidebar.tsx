@@ -95,14 +95,14 @@ export function Sidebar({ className, onFiltersChange, floatLocations = [] }: Sid
       inactive: false,
     },
     network: {
-      bgcArgo: false,
-      coreArgo: false,
-      deepArgo: false,
+      bgcArgo: true,
+      coreArgo: true,
+      deepArgo: true,
     },
     overlays: {
-      bathymetry: true,
+      bathymetry: false,
       sst: false,
-      salinityGradients: true,
+      salinityGradients: false,
     },
   });
 
@@ -220,8 +220,9 @@ export function Sidebar({ className, onFiltersChange, floatLocations = [] }: Sid
         border: "1px solid var(--border)",
       }}
     >
-      {/* Close button */}
-      <div className="flex items-center justify-end p-3 pb-0">
+      {/* Header with Logo and Close button */}
+      <div className="flex items-center justify-between p-3 pb-0">
+        <span className="text-xl font-bold text-green-500 ml-2">LogPose</span>
         <button
           aria-label="Close sidebar"
           className="rounded-md p-1.5 transition-colors hover:bg-[var(--accent)]"
