@@ -1,7 +1,5 @@
 "use client";
 
-import { TamboProvider } from "@tambo-ai/react";
-import { components, tools } from "@/lib/tambo";
 import { ChatContainer } from "@/components/tambo/chat-container";
 import { ModeToggle } from "@/components/mode-toggle";
 import { IconAnchor, IconArrowLeft } from "@tabler/icons-react";
@@ -38,32 +36,30 @@ export default function ChatPage() {
   }
 
   return (
-    <TamboProvider apiKey={apiKey} components={components} tools={tools}>
-      <div className="relative flex flex-col h-svh">
-        {/* Chat Interface */}
-        <ChatContainer
-          showSidebar={true}
-          suggestions={[
-            {
-              title: "Active floats",
-              message: "Show me all active Argo floats in the network",
-            },
-            {
-              title: "Network statistics",
-              message: "What's the current status of the Argo network?",
-            },
-            {
-              title: "Find floats",
-              message: "Find BGC floats in the Pacific Ocean",
-            },
-            {
-              title: "Temperature data",
-              message:
-                "Show temperature profiles for recent float measurements",
-            },
-          ]}
-        />
-      </div>
-    </TamboProvider>
+    <div className="relative flex flex-col h-svh font-sans">
+      {/* Chat Interface */}
+      <ChatContainer
+        showSidebar={true}
+        suggestions={[
+          {
+            title: "Active floats",
+            message: "Show me all active Argo floats in the network",
+          },
+          {
+            title: "Network statistics",
+            message: "What's the current status of the Argo network?",
+          },
+          {
+            title: "Find floats",
+            message: "Find BGC floats in the Pacific Ocean",
+          },
+          {
+            title: "Temperature data",
+            message:
+              "Show temperature profiles for recent float measurements",
+          },
+        ]}
+      />
+    </div>
   );
 }

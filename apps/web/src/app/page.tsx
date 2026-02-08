@@ -6,10 +6,13 @@ import { Sidebar, type SidebarFilters } from "@/components/home/sidebar";
 import { fetchFloatLocations } from "@/lib/utils";
 import type { FloatLocationsResponse } from "@LogPose/schema/api/home-page";
 
+import { FloatMessagePanel } from "@/components/tambo/float-message-panel";
+
 export default function Home() {
   const [floatLocations, setFloatLocations] = useState<FloatLocationsResponse["data"]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState<SidebarFilters | null>(null);
+  const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false);
 
   // Fetch float locations once at the top level
   useEffect(() => {
@@ -122,7 +125,13 @@ export default function Home() {
       />
 
       {/* Floating Dock Navbar - high z-index to be above map */}
-      <HomeNavbar />
+      <HomeNavbar onChatClick={() => setIsAiSidebarOpen(true)} />
+
+      {/* AI Assistant Panel */}
+      <FloatMessagePanel
+        isOpen={isAiSidebarOpen}
+        onClose={() => setIsAiSidebarOpen(false)}
+      />
     </div>
   );
 }

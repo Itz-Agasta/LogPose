@@ -14,6 +14,7 @@ interface DashboardProps {
   hasOxygen: boolean;
   hasChlorophyll: boolean;
   hasNitrate: boolean;
+  isAiSidebarOpen?: boolean;
 }
 
 export function Dashboard({
@@ -22,14 +23,28 @@ export function Dashboard({
   hasOxygen,
   hasChlorophyll,
   hasNitrate,
+  isAiSidebarOpen = false,
 }: DashboardProps) {
   const hasBGC = hasChlorophyll || hasNitrate || hasOxygen;
 
   const numProfiles = 2 + (hasOxygen ? 1 : 0) + (hasChlorophyll ? 1 : 0) + (hasNitrate ? 1 : 0);
-  const profileWidth = numProfiles <= 2 ? 450 : 350;
-
   const numBGC = (hasChlorophyll ? 1 : 0) + (hasOxygen ? 1 : 0) + (hasNitrate ? 1 : 0);
-  const bgcWidth = numBGC <= 1 ? 500 : 400;
+
+  // Adjust widths based on sidebar state
+  // On 13" screen (~1280px), sidepanel is 384px (96 * 4).
+  // Remaining space roughly 850px. minus padding ~800px.
+  // We need to fit 2 profiles or 3 profiles.
+
+  // Base width calculations
+  const baseProfileWidth = numProfiles <= 2 ? 450 : 350;
+  const baseBgcWidth = numBGC <= 1 ? 500 : 400;
+
+  // Reduced widths when sidebar is open
+  const reducedProfileWidth = numProfiles <= 2 ? 380 : 280;
+  const reducedBgcWidth = numBGC <= 1 ? 400 : 300;
+
+  const profileWidth = isAiSidebarOpen ? reducedProfileWidth : baseProfileWidth;
+  const bgcWidth = isAiSidebarOpen ? reducedBgcWidth : baseBgcWidth;
 
   return (
     <div className="space-y-6 w-full">
@@ -65,7 +80,7 @@ export function Dashboard({
                 unit="°C"
                 color="#dc2626"
                 width={profileWidth}
-                height={400}
+                height={isAiSidebarOpen ? 300 : 400}
               />
               <OceanographicProfile
                 data={currentCycle.measurements}
@@ -74,7 +89,7 @@ export function Dashboard({
                 unit="PSU"
                 color="#2563eb"
                 width={profileWidth}
-                height={400}
+                height={isAiSidebarOpen ? 300 : 400}
               />
               {hasOxygen && (
                 <OceanographicProfile
@@ -84,7 +99,7 @@ export function Dashboard({
                   unit="μmol/kg"
                   color="#059669"
                   width={profileWidth}
-                  height={400}
+                  height={isAiSidebarOpen ? 300 : 400}
                 />
               )}
               {hasNitrate && (
@@ -95,7 +110,7 @@ export function Dashboard({
                   unit="μmol/kg"
                   color="#ea580c"
                   width={profileWidth}
-                  height={400}
+                  height={isAiSidebarOpen ? 300 : 400}
                 />
               )}
               {hasChlorophyll && (
@@ -106,7 +121,7 @@ export function Dashboard({
                   unit="mg/m³"
                   color="#16a34a"
                   width={profileWidth}
-                  height={400}
+                  height={isAiSidebarOpen ? 300 : 400}
                 />
               )}
             </div>
@@ -124,8 +139,8 @@ export function Dashboard({
                 <CardContent className="flex justify-center overflow-x-auto">
                   <TemperatureSalinityDiagram
                     data={currentCycle.measurements}
-                    width={800}
-                    height={600}
+                    width={isAiSidebarOpen ? 600 : 800}
+                    height={isAiSidebarOpen ? 400 : 600}
                   />
                 </CardContent>
               </Card>
@@ -144,8 +159,8 @@ export function Dashboard({
                 <CardContent className="flex justify-center overflow-x-auto">
                   <MultiParameterProfile
                     data={currentCycle.measurements}
-                    width={1000}
-                    height={600}
+                    width={isAiSidebarOpen ? 550 : 1000}
+                    height={isAiSidebarOpen ? 350 : 600}
                   />
                 </CardContent>
               </Card>
@@ -163,7 +178,7 @@ export function Dashboard({
                     unit="mg/m³"
                     color="#16a34a"
                     width={bgcWidth}
-                    height={450}
+                    height={isAiSidebarOpen ? 350 : 450}
                   />
                 )}
                 {hasOxygen && (
@@ -174,7 +189,7 @@ export function Dashboard({
                     unit="μmol/kg"
                     color="#059669"
                     width={bgcWidth}
-                    height={450}
+                    height={isAiSidebarOpen ? 350 : 450}
                   />
                 )}
                 {hasNitrate && (
@@ -185,7 +200,7 @@ export function Dashboard({
                     unit="μmol/kg"
                     color="#ea580c"
                     width={bgcWidth}
-                    height={450}
+                    height={isAiSidebarOpen ? 350 : 450}
                   />
                 )}
               </div>
