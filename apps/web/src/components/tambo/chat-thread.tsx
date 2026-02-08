@@ -24,6 +24,8 @@ import {
 export interface ChatThreadProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Optional welcome component to show when no messages */
   welcomeComponent?: React.ReactNode;
+  /** Whether the thread is currently being switched */
+  isSwitchingThread?: boolean;
 }
 
 /**
@@ -173,10 +175,29 @@ const StreamingSkeletonIndicator = () => {
 };
 
 /**
+ * Loading skeleton for thread switching
+ */
+const ThreadSwitchingSkeleton = () => {
+  return (
+    <div className="flex-1 flex flex-col justify-center items-center p-8">
+      <div className="max-w-3xl w-full space-y-6">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="space-y-3">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/**
  * Message thread with centered layout and modern design
  */
 export const ChatThread = React.forwardRef<HTMLDivElement, ChatThreadProps>(
-  ({ className, welcomeComponent, ...props }, ref) => {
+  ({ className, welcomeComponent, isSwitchingThread = false, ...props }, ref) => {
     const { thread, generationStage, isIdle } = useTambo();
     const scrollContainerRef = React.useRef<HTMLDivElement>(null);
     const [shouldAutoscroll, setShouldAutoscroll] = React.useState(true);
@@ -253,8 +274,10 @@ export const ChatThread = React.forwardRef<HTMLDivElement, ChatThreadProps>(
         )}
         {...props}
       >
-        {/* Messages */}
-        {hasMessages ? (
+        {/* Show loading skeleton when switching threads */}
+        {isSwitchingThread ? (
+          <ThreadSwitchingSkeleton />
+        ) : hasMessages ? (
           <div className="min-h-full">
             {messages.map((message, index) => (
               <ChatMessage

@@ -17,6 +17,8 @@ export interface ChatContainerProps extends React.HTMLAttributes<HTMLDivElement>
   showSidebar?: boolean;
   /** Custom suggestions for the input */
   suggestions?: Array<{ title: string; message: string }>;
+  /** Whether the thread is currently being switched */
+  isSwitchingThread?: boolean;
 }
 
 /**
@@ -25,9 +27,10 @@ export interface ChatContainerProps extends React.HTMLAttributes<HTMLDivElement>
 export const ChatContainer = React.forwardRef<
   HTMLDivElement,
   ChatContainerProps
->(({ className, showSidebar = true, suggestions, ...props }, ref) => {
+>(({ className, showSidebar = true, suggestions, isSwitchingThread = false, ...props }, ref) => {
   const { thread } = useTamboThread();
   const hasMessages = thread?.messages && thread.messages.length > 0;
+  const showEmptyState = !hasMessages && !isSwitchingThread;
 
   return (
     <SidebarProvider
@@ -62,18 +65,19 @@ export const ChatContainer = React.forwardRef<
           {/* Thread area - expands to fill space when no messages */}
           <ChatThread
             className={cn("relative z-10", !hasMessages && "flex-none")}
+            isSwitchingThread={isSwitchingThread}
           />
 
           {/* Input area - centered at bottom, or centered in middle when no messages */}
           <div
             className={cn(
               "relative z-10 w-full",
-              !hasMessages
+              showEmptyState
                 ? "flex-1 flex flex-col justify-center items-center"
                 : "bg-linear-to-t from-background via-background to-transparent pt-6",
             )}
           >
-            <ChatInput suggestions={suggestions} showSuggestions={!hasMessages} />
+            <ChatInput suggestions={suggestions} showSuggestions={showEmptyState} isSwitchingThread={isSwitchingThread} />
 
             {/* Bottom padding when has messages */}
             {hasMessages && <div className="h-4" />}
