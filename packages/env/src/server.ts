@@ -4,8 +4,10 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    CORS_ORIGIN: z.url(),
-    NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    CORS_ORIGIN: z.string(),
+    NODE_ENV: z
+      .enum(["development", "production", "test"])
+      .default("development"),
 
     // Db Related
     PG_READ_URL: z.string().min(1),
@@ -13,7 +15,7 @@ export const env = createEnv({
     // QDRANT_API_KEY: z.string(),
     S3_ACCESS_KEY: z.string(),
     S3_SECRET_KEY: z.string(),
-    S3_ENDPOINT: z.url(),
+    S3_ENDPOINT: z.string(),
     S3_BUCKET_NAME: z.string().default("atlas"),
     S3_REGION: z.string().default("auto"),
 
