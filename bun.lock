@@ -99,7 +99,7 @@
         "react-markdown": "^10.1.0",
         "recharts": "^3.7.0",
         "remark-gfm": "^4.0.1",
-        "shadcn": "^3.6.2",
+        "shadcn": "^3.8.4",
         "sonner": "^2.0.5",
         "streamdown": "^2.1.0",
         "tailwind-merge": "^3.3.1",

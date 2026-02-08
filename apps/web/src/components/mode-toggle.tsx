@@ -79,7 +79,7 @@ export function ModeToggle() {
   if (!mounted) {
     return (
       <button
-        className="relative h-10 w-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20"
+        className="relative h-8 w-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20"
         aria-label="Toggle theme"
       >
         <span className="sr-only">Toggle theme</span>
@@ -121,7 +121,7 @@ export function ModeToggle() {
         onClick={toggleTheme}
         disabled={isAnimating}
         className={`
-          relative h-10 w-10 rounded-full
+          relative h-8 w-8 rounded-full
           flex items-center justify-center
           transition-all duration-300 ease-out
           border-2
@@ -139,7 +139,7 @@ export function ModeToggle() {
         {/* Sun icon */}
         <Sun
           className={`
-            absolute h-5 w-5 transition-all duration-300
+            absolute h-4 w-4 transition-all duration-300
             ${isDark
               ? "rotate-90 scale-0 opacity-0 text-amber-400"
               : "rotate-0 scale-100 opacity-100 text-zinc-600"
@@ -150,7 +150,7 @@ export function ModeToggle() {
         {/* Moon icon */}
         <Moon
           className={`
-            absolute h-5 w-5 transition-all duration-300
+            absolute h-4 w-4 transition-all duration-300
             ${isDark
               ? "rotate-0 scale-100 opacity-100 text-zinc-300"
               : "-rotate-90 scale-0 opacity-0 text-zinc-600"

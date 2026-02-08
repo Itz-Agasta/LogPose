@@ -304,7 +304,7 @@ const ThreadHistoryHomeButton = React.forwardRef<
   return (
     <Link
       ref={ref}
-      href="/"
+      href="/home"
       className={cn(
         "flex items-center rounded-lg mb-3 hover:bg-primary/10 transition-colors cursor-pointer relative group",
         isCollapsed ? "p-2.5 justify-center" : "p-2.5 gap-3",
@@ -549,7 +549,7 @@ const ThreadHistoryList = React.forwardRef<
     );
   } else {
     content = (
-      <div className="space-y-1">
+      <div className="space-y-4">
         {filteredThreads.map((thread: TamboThread) => (
           <div
             key={thread.id}

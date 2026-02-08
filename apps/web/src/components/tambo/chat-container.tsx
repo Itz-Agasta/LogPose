@@ -69,7 +69,7 @@ export const ChatContainer = React.forwardRef<
             className={cn(
               "relative z-10 w-full",
               !hasMessages
-                ? "flex-1 flex flex-col justify-center"
+                ? "flex-1 flex flex-col justify-center items-center"
                 : "bg-linear-to-t from-background via-background to-transparent pt-6",
             )}
           >

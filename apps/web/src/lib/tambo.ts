@@ -8,6 +8,10 @@ import FloatLocationMap from "@/components/tambo/float-location-map";
 import DataTable from "@/components/tambo/data-table";
 import { Graph, graphSchema } from "@/components/tambo/graph";
 import { FormComponent as Form, formSchema } from "@/components/tambo/form";
+import {
+  RenderFloatGraph,
+  renderFloatGraphSchema,
+} from "@/components/tambo/render-float-graph";
 
 // Import the agent query functions
 import { queryAgent, querySQLAgent, queryDuckDBAgent } from "@/lib/utils";
@@ -26,8 +30,16 @@ export const components: TamboComponent[] = [
       "Displays detailed information about a specific Argo float including its ID, status, location, type, and recent measurements. Use this when the user asks about a specific float's details, status, or measurements.",
     component: FloatDataCard,
     propsSchema: z.object({
-      floatId: z.number().nullable().optional().describe("The unique identifier of the float"),
-      wmoNumber: z.string().nullable().optional().describe("WMO number of the float"),
+      floatId: z
+        .number()
+        .nullable()
+        .optional()
+        .describe("The unique identifier of the float"),
+      wmoNumber: z
+        .string()
+        .nullable()
+        .optional()
+        .describe("WMO number of the float"),
       status: z
         .string()
         .nullable()
@@ -39,20 +51,54 @@ export const components: TamboComponent[] = [
         .string()
         .nullable()
         .optional()
-        .describe("Type of Argo float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'"),
-      latitude: z.number().nullable().optional().describe("Current latitude position"),
-      longitude: z.number().nullable().optional().describe("Current longitude position"),
-      cycleNumber: z.number().nullable().optional().describe("Current cycle number"),
-      lastUpdate: z.string().nullable().optional().describe("ISO date string of last update"),
+        .describe(
+          "Type of Argo float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'",
+        ),
+      latitude: z
+        .number()
+        .nullable()
+        .optional()
+        .describe("Current latitude position"),
+      longitude: z
+        .number()
+        .nullable()
+        .optional()
+        .describe("Current longitude position"),
+      cycleNumber: z
+        .number()
+        .nullable()
+        .optional()
+        .describe("Current cycle number"),
+      lastUpdate: z
+        .string()
+        .nullable()
+        .optional()
+        .describe("ISO date string of last update"),
       temperature: z
         .number()
         .nullable()
         .optional()
         .describe("Last recorded temperature in Celsius"),
-      salinity: z.number().nullable().optional().describe("Last recorded salinity in PSU"),
-      depth: z.number().nullable().optional().describe("Last recorded depth in meters"),
-      piName: z.string().nullable().optional().describe("Principal investigator name"),
-      institution: z.string().nullable().optional().describe("Operating institution"),
+      salinity: z
+        .number()
+        .nullable()
+        .optional()
+        .describe("Last recorded salinity in PSU"),
+      depth: z
+        .number()
+        .nullable()
+        .optional()
+        .describe("Last recorded depth in meters"),
+      piName: z
+        .string()
+        .nullable()
+        .optional()
+        .describe("Principal investigator name"),
+      institution: z
+        .string()
+        .nullable()
+        .optional()
+        .describe("Operating institution"),
     }),
   },
   {
@@ -61,17 +107,29 @@ export const components: TamboComponent[] = [
       "Displays aggregated statistics about ocean data or Argo float network. Use this when the user asks about overall statistics, summaries, or network-wide data.",
     component: OceanStatsCard,
     propsSchema: z.object({
-      title: z.string().nullable().optional().describe("Title of the statistics card"),
+      title: z
+        .string()
+        .nullable()
+        .optional()
+        .describe("Title of the statistics card"),
       stats: z
         .array(
           z.object({
-            label: z.string().nullable().optional().describe("Label for the statistic"),
+            label: z
+              .string()
+              .nullable()
+              .optional()
+              .describe("Label for the statistic"),
             value: z
               .union([z.string(), z.number()])
               .nullable()
               .optional()
               .describe("Value of the statistic"),
-            unit: z.string().nullable().optional().describe("Unit of measurement"),
+            unit: z
+              .string()
+              .nullable()
+              .optional()
+              .describe("Unit of measurement"),
             change: z
               .number()
               .nullable()
@@ -87,31 +145,51 @@ export const components: TamboComponent[] = [
         .nullable()
         .optional()
         .describe("Array of statistics to display"),
-      description: z.string().nullable().optional().describe("Optional description or context"),
+      description: z
+        .string()
+        .nullable()
+        .optional()
+        .describe("Optional description or context"),
     }),
   },
   {
     name: "FloatLocationMap",
     description:
-      "Displays a Mapbox satellite map showing the location of one or more floats with proper map textures and zoom. Use this when the user asks about float locations, wants to visualize where floats are positioned in a specific region (like Bay of Bengal, Arabian Sea, etc.), or asks to show floats in a certain area. The map will automatically zoom to fit the floats and show satellite imagery.",
+      "Displays a Mapbox satellite map showing the location of one or more floats with proper map textures and zoom. MUST USE THIS when the user asks to 'show float locations', 'where are floats', 'map of floats', or wants to visualize where floats are positioned. Also use for regional queries like 'floats in Bay of Bengal', 'Arabian Sea floats', etc. The map will automatically zoom to fit the floats and show satellite imagery. After calling query-float-metadata tool and getting location data (latitude/longitude), ALWAYS render this component with the locations array.",
     component: FloatLocationMap,
     propsSchema: z.object({
       locations: z
         .array(
           z.object({
-            floatId: z.number().nullable().optional().describe("Float identifier"),
-            latitude: z.number().nullable().optional().describe("Latitude coordinate"),
-            longitude: z.number().nullable().optional().describe("Longitude coordinate"),
+            floatId: z
+              .number()
+              .nullable()
+              .optional()
+              .describe("Float identifier"),
+            latitude: z
+              .number()
+              .nullable()
+              .optional()
+              .describe("Latitude coordinate"),
+            longitude: z
+              .number()
+              .nullable()
+              .optional()
+              .describe("Longitude coordinate"),
             status: z
               .string()
               .nullable()
               .optional()
-              .describe("Float status: 'ACTIVE', 'INACTIVE', 'UNKNOWN', or 'DEAD'"),
+              .describe(
+                "Float status: 'ACTIVE', 'INACTIVE', 'UNKNOWN', or 'DEAD'",
+              ),
             floatType: z
               .string()
               .nullable()
               .optional()
-              .describe("Type of float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'"),
+              .describe(
+                "Type of float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'",
+              ),
           }),
         )
         .nullable()
@@ -135,32 +213,50 @@ export const components: TamboComponent[] = [
         .number()
         .nullable()
         .optional()
-        .describe("Initial zoom level 1-18 (optional, auto-calculated based on location spread)"),
-      title: z.string().nullable().optional().describe("Custom title for the map card"),
+        .describe(
+          "Initial zoom level 1-18 (optional, auto-calculated based on location spread)",
+        ),
+      title: z
+        .string()
+        .nullable()
+        .optional()
+        .describe("Custom title for the map card"),
       regionName: z
         .string()
         .nullable()
         .optional()
-        .describe("Name of the region being displayed (e.g., 'Bay of Bengal', 'Arabian Sea')"),
+        .describe(
+          "Name of the region being displayed (e.g., 'Bay of Bengal', 'Arabian Sea')",
+        ),
     }),
   },
   {
     name: "DataTable",
     description:
-      "Displays tabular data with columns and rows. Use this when the user asks for data in a table format or when comparing multiple items. Each row should have a cells array with values corresponding to each column in order.",
+      "Displays tabular data with columns and rows. Use this to RENDER results from query-float-metadata tool when the user asks for a list, table, or comparison of multiple floats. Also use for any data that needs structured table display. Each row should have a cells array with values corresponding to each column in order. IMPORTANT: Use this component to display query results, not just tool output!",
     component: DataTable,
     propsSchema: z.object({
       title: z.string().nullable().optional().describe("Title for the table"),
       columns: z
         .array(
           z.object({
-            key: z.string().nullable().optional().describe("Optional key for the column"),
-            label: z.string().nullable().optional().describe("Display label for the column header"),
+            key: z
+              .string()
+              .nullable()
+              .optional()
+              .describe("Optional key for the column"),
+            label: z
+              .string()
+              .nullable()
+              .optional()
+              .describe("Display label for the column header"),
             align: z
               .string()
               .nullable()
               .optional()
-              .describe("Text alignment: 'left', 'center', or 'right'. Defaults to 'left'"),
+              .describe(
+                "Text alignment: 'left', 'center', or 'right'. Defaults to 'left'",
+              ),
           }),
         )
         .nullable()
@@ -181,13 +277,17 @@ export const components: TamboComponent[] = [
         .nullable()
         .optional()
         .describe("Array of row objects, each containing a cells array"),
-      maxRows: z.number().nullable().optional().describe("Maximum number of rows to display"),
+      maxRows: z
+        .number()
+        .nullable()
+        .optional()
+        .describe("Maximum number of rows to display"),
     }),
   },
   {
     name: "Graph",
     description:
-      "Displays data as charts (bar, line, or pie) using Recharts. Use this for visualizing oceanographic data such as temperature/salinity profiles over depth, time-series data over cycles, trends, and comparisons. Best for numerical data that benefits from visual representation.",
+      "Displays data as charts (bar, line, or pie) INLINE WITHIN THE CHAT. Use this for general queries or when the user specifically asks for a quick chart in the chat history. For float/profile analysis on the dashboard, use 'RenderFloatGraph' instead.",
     component: Graph,
     propsSchema: graphSchema,
   },
@@ -197,6 +297,13 @@ export const components: TamboComponent[] = [
       "An AI-powered form component for collecting user input. Use this when you need to gather structured information from the user, such as search filters, data entry, or configuration options. Supports various field types including text, number, select, textarea, radio, checkbox, slider, and yes/no inputs.",
     component: Form,
     propsSchema: formSchema,
+  },
+  {
+    name: "RenderFloatGraph",
+    description:
+      "PRIMARY GRAPHING TOOL FOR FLOAT PAGES. Renders a graph ON THE MAIN DASHBOARD (outside the chat), in the 'Agent Analysis' tab. ALWAYS use this instead of the 'Graph' component when the user asks to see/plot/graph data related to the float while on the float profile page. The graph will appear beside the other tabs.",
+    component: RenderFloatGraph,
+    propsSchema: renderFloatGraphSchema,
   },
 ];
 
@@ -245,21 +352,79 @@ EXAMPLE QUERIES THIS HANDLES:
 - "List floats operated by INCOIS"
 - "Find floats within 500km of Mumbai"
 
-DO NOT USE FOR: Historical profiles, time-series data, trends over multiple cycles`,
-    tool: async ({ query }: { query: string }) => {
-      const result = await querySQLAgent(query);
+AFTER GETTING DATA, YOU MUST RENDER IT:
+- If query asks for LOCATIONS/MAP (e.g., "show float locations", "where are floats"), use FloatLocationMap component with the location data
+- If query asks for a LIST/TABLE (e.g., "list all floats", "show float details"), use DataTable component to display the results
+- If query asks about a SINGLE FLOAT, use FloatDataCard component
+- Always render a component - never just show tool results!
 
-      return {
-        success: result.success,
-        response: result.success
-          ? `Found ${result.rowCount ?? 0} results from metadata query`
-          : result.error,
-        data: result.data ?? null,
-        rowCount: result.rowCount ?? 0,
-        sql: result.sql ?? null,
-        error: result.error,
-        timestamp: result.timestamp,
-      };
+DO NOT USE FOR: Historical profiles, time-series data, trends over multiple cycles`,
+    tool: async ({
+      query,
+      floatId,
+    }: {
+      query: string;
+      floatId?: number | string;
+    }) => {
+      try {
+        // Augment query with context if floatId is provided
+        const finalQuery =
+          floatId && !query.includes(`${floatId}`)
+            ? `${query} (Context: current float ID is ${floatId})`
+            : query;
+
+        const result = await querySQLAgent(finalQuery);
+
+        // Limit results to 20 for faster streaming and rendering performance
+        const MAX_ROWS = 20;
+        const limitedData = result.data?.slice(0, MAX_ROWS) ?? null;
+        const resultCount = limitedData?.length ?? 0;
+        const totalCount = result.rowCount ?? 0;
+
+        // Provide rendering hints based on query intent and data structure
+        let renderingHint = "";
+        const queryLower = query.toLowerCase();
+        
+        if (resultCount > 0 && limitedData) {
+          // Check if data has location fields
+          const hasLocationData = limitedData.some(
+            (row: any) => row.latitude !== undefined && row.longitude !== undefined
+          );
+          
+          if ((queryLower.includes("location") || queryLower.includes("where") || queryLower.includes("show") || queryLower.includes("map")) && hasLocationData) {
+            renderingHint = "\n\nUse FloatLocationMap to render the locations.";
+          } else if (resultCount > 1) {
+            renderingHint = "\n\nUse DataTable to display the results.";
+          } else if (resultCount === 1) {
+            renderingHint = "\n\nUse FloatDataCard to show this float.";
+          }
+        }
+
+        return {
+          success: result.success,
+          response: result.success
+            ? `Found ${resultCount} results from metadata query${totalCount > MAX_ROWS ? ` (showing top ${MAX_ROWS} of ${totalCount})` : ""}${renderingHint}`
+            : result.error,
+          data: limitedData,
+          rowCount: resultCount,
+          sql: result.sql ?? null,
+          error: result.error,
+          timestamp: result.timestamp,
+        };
+      } catch (error) {
+        return {
+          success: false,
+          response: null,
+          data: null,
+          rowCount: 0,
+          sql: null,
+          error:
+            error instanceof Error
+              ? error.message
+              : "Unknown error in metadata query",
+          timestamp: new Date().toISOString(),
+        };
+      }
     },
     inputSchema: z.object({
       query: z
@@ -310,38 +475,65 @@ GRAPHING: When user asks to plot/graph/visualize profile data:
 2. Use the Graph component to visualize it with type='line' for profiles/trends, type='bar' for comparisons
 
 DO NOT USE FOR: Current float status, location, battery, fleet counts, metadata`,
-    tool: async ({ query }: { query: string }) => {
-      const result = await queryDuckDBAgent(query);
+    tool: async ({
+      query,
+      floatId,
+    }: {
+      query: string;
+      floatId?: number | string;
+    }) => {
+      try {
+        // Augment query with context if floatId is provided
+        const finalQuery =
+          floatId && !query.includes(`${floatId}`)
+            ? `${query} (Context: current float ID is ${floatId})`
+            : query;
 
-      // Transform data for easier graph rendering
-      const graphReadyData = result.data?.map((row) => {
-        // Try to extract common oceanographic fields for graphing
-        const depth = row.pressure ?? row.depth ?? row.level;
-        const temp = row.temperature ?? row.temp ?? row.temperature_adj;
-        const sal = row.salinity ?? row.sal ?? row.salinity_adj;
-        const cycle = row.cycle_number ?? row.cycle;
+        const result = await queryDuckDBAgent(finalQuery);
+
+        // Transform data for easier graph rendering
+        const graphReadyData = result.data?.map((row) => {
+          // Try to extract common oceanographic fields for graphing
+          const depth = row.pressure ?? row.depth ?? row.level;
+          const temp = row.temperature ?? row.temp ?? row.temperature_adj;
+          const sal = row.salinity ?? row.sal ?? row.salinity_adj;
+          const cycle = row.cycle_number ?? row.cycle;
+
+          return {
+            ...row,
+            // Normalized fields for graphing
+            _depth: typeof depth === "number" ? depth : null,
+            _temperature: typeof temp === "number" ? temp : null,
+            _salinity: typeof sal === "number" ? sal : null,
+            _cycle: typeof cycle === "number" ? cycle : null,
+          };
+        });
 
         return {
-          ...row,
-          // Normalized fields for graphing
-          _depth: typeof depth === "number" ? depth : null,
-          _temperature: typeof temp === "number" ? temp : null,
-          _salinity: typeof sal === "number" ? sal : null,
-          _cycle: typeof cycle === "number" ? cycle : null,
+          success: result.success,
+          response: result.success
+            ? `Retrieved ${result.rowCount ?? 0} profile measurements. Data is ready for visualization with the Graph component.`
+            : result.error,
+          data: graphReadyData ?? null,
+          rowCount: result.rowCount ?? 0,
+          sql: result.sql ?? null,
+          error: result.error,
+          timestamp: result.timestamp,
         };
-      });
-
-      return {
-        success: result.success,
-        response: result.success
-          ? `Retrieved ${result.rowCount ?? 0} profile measurements. Data is ready for visualization with the Graph component.`
-          : result.error,
-        data: graphReadyData ?? null,
-        rowCount: result.rowCount ?? 0,
-        sql: result.sql ?? null,
-        error: result.error,
-        timestamp: result.timestamp,
-      };
+      } catch (error) {
+        return {
+          success: false,
+          response: null,
+          data: null,
+          rowCount: 0,
+          sql: null,
+          error:
+            error instanceof Error
+              ? error.message
+              : "Unknown error in profile query",
+          timestamp: new Date().toISOString(),
+        };
+      }
     },
     inputSchema: z.object({
       query: z
@@ -352,13 +544,19 @@ DO NOT USE FOR: Current float status, location, battery, fleet counts, metadata`
     }),
     outputSchema: z.object({
       success: z.boolean().describe("Whether the query was successful"),
-      response: z.string().nullable().describe("Summary of the profile data retrieved"),
+      response: z
+        .string()
+        .nullable()
+        .describe("Summary of the profile data retrieved"),
       data: z
         .array(z.record(z.string(), z.unknown()))
         .nullable()
         .describe("Profile data from DuckDB/Parquet files"),
       rowCount: z.number().describe("Number of measurements returned"),
-      sql: z.string().nullable().describe("The DuckDB SQL query that was executed"),
+      sql: z
+        .string()
+        .nullable()
+        .describe("The DuckDB SQL query that was executed"),
       error: z.string().optional().describe("Error message if query failed"),
       timestamp: z.string().optional().describe("Timestamp of the response"),
     }),
@@ -389,7 +587,9 @@ DO NOT USE FOR: Current float status, location, battery, fleet counts, metadata`
     inputSchema: z.object({
       query: z
         .string()
-        .describe("Research topic or question to search for in oceanographic literature"),
+        .describe(
+          "Research topic or question to search for in oceanographic literature",
+        ),
     }),
     outputSchema: z.object({
       success: z.boolean().describe("Whether the search was successful"),

@@ -82,7 +82,7 @@ export function ChatSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             size="lg"
-                            render={<Link href="/" />}
+                            render={<Link href="/home" />}
                             className="hover:bg-transparent hover:text-sidebar-foreground"
                         >
                             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
@@ -104,7 +104,7 @@ export function ChatSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-                <div className="px-2 py-2 mt-2">
+                <div className="px-2 py-2 mt-2 group-data-[collapsible=icon]:hidden">
                     <div className="relative">
                         <IconSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input

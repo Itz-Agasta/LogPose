@@ -57,6 +57,7 @@ export interface ChatInputProps extends React.HTMLAttributes<HTMLDivElement> {
   placeholder?: string;
   suggestions?: Array<{ title: string; message: string }>;
   showSuggestions?: boolean;
+  floatId?: string | number;
 }
 
 /**
@@ -69,6 +70,7 @@ export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
       placeholder = "Ask anything",
       suggestions,
       showSuggestions = true,
+      floatId,
       ...props
     },
     ref,
@@ -199,15 +201,6 @@ export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
           )}
           {...props}
         >
-          {/* Welcome message when no messages */}
-          {!hasMessages && (
-            <div className="mb-8 text-center">
-              <h1 className="text-2xl font-semibold text-foreground mb-2">
-                What can I help with?
-              </h1>
-            </div>
-          )}
-
           {/* Elicitation UI */}
           {elicitation && resolveElicitation && (
             <div className="w-full max-w-3xl mb-4 px-4">
@@ -217,6 +210,14 @@ export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
                   resolveElicitation(response)
                 }
               />
+            </div>
+          )}
+
+          {/* Poseidon heading - only show when no messages */}
+          {!hasMessages && (
+            <div className="mb-4 text-center">
+              <h1 className="text-4xl font-bold mb-2">Poseidon</h1>
+              <p className="text-lg text-green-600 dark:text-green-500">The Argo Float Agent</p>
             </div>
           )}
 
@@ -372,12 +373,6 @@ export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
             </div>
           )}
 
-          {/* Footer text */}
-          {!hasMessages && (
-            <p className="mt-6 text-xs text-muted-foreground text-center">
-              LogPose can make mistakes. Check important info.
-            </p>
-          )}
         </div>
       </ChatInputContext.Provider>
     );

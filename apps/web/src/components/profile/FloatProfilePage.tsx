@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Sidebar, SidebarContent, SidebarProvider } from "@/components/ui/sidebar";
 import { fetchCycleProfile, fetchFloatProfile } from "@/lib/utils";
 import { FloatMessagePanel } from "@/components/tambo/float-message-panel";
+import { FloatDisplayProvider, useFloatDisplay } from "@/components/profile/float-display-context";
 
 interface FloatProfilePageProps {
   floatId: string;
@@ -99,17 +100,19 @@ export function FloatProfilePage({ floatId }: FloatProfilePageProps) {
   }
 
   return (
-    <SidebarProvider>
-      <FloatProfileContent
-        metadata={metadata}
-        currentCycle={currentCycle}
-        availableCycles={availableCycles}
-        onCycleChange={handleCycleChange}
-        hasOxygen={hasOxygen}
-        hasChlorophyll={hasChlorophyll}
-        hasNitrate={hasNitrate}
-      />
-    </SidebarProvider>
+    <FloatDisplayProvider metadata={metadata} currentCycle={currentCycle}>
+      <SidebarProvider>
+        <FloatProfileContent
+          metadata={metadata}
+          currentCycle={currentCycle}
+          availableCycles={availableCycles}
+          onCycleChange={handleCycleChange}
+          hasOxygen={hasOxygen}
+          hasChlorophyll={hasChlorophyll}
+          hasNitrate={hasNitrate}
+        />
+      </SidebarProvider>
+    </FloatDisplayProvider>
   );
 }
 
@@ -131,6 +134,7 @@ function FloatProfileContent({
   hasNitrate: boolean;
 }) {
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false);
+  const { activeTab, setActiveTab, aiGraphConfig } = useFloatDisplay();
 
   return (
     <div className="min-h-screen bg-background flex w-full">
@@ -154,7 +158,7 @@ function FloatProfileContent({
         <header className="border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
           <div className="flex h-16 items-center justify-between px-6">
             <div className="flex items-center gap-4">
-              <Link href="/">
+              <Link href="/home">
                 <Button variant="ghost" size="icon-sm">
                   <ArrowLeft className="h-4 w-4" />
                   <span className="sr-only">Back to Home</span>
@@ -180,7 +184,7 @@ function FloatProfileContent({
                 onClick={() => setIsAiSidebarOpen(!isAiSidebarOpen)}
               >
                 <MessageSquare className="h-4 w-4" />
-                {isAiSidebarOpen ? "Hide" : "Ask"} AI Assistant
+                {isAiSidebarOpen ? "Hide" : "Ask"} Poseidon
               </Button>
             </div>
           </div>
@@ -195,6 +199,9 @@ function FloatProfileContent({
             hasChlorophyll={hasChlorophyll}
             hasNitrate={hasNitrate}
             isAiSidebarOpen={isAiSidebarOpen}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            aiGraphConfig={aiGraphConfig}
           />
         </main>
       </div>
