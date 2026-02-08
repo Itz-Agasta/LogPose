@@ -2,7 +2,7 @@
 
 import type { MapMouseEvent, GeoJSONSource } from "mapbox-gl";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   FullscreenControl,
   GeolocateControl,
@@ -139,7 +139,7 @@ export default function InteractiveArgoMap({
   floatLocations = [],
   isLoading: _isLoading = false,
 }: InteractiveArgoMapProps) {
-  const _router = useRouter();
+  const router = useRouter();
   const mapRef = useRef<MapRef>(null);
   const [selectedFloat, setSelectedFloat] = useState<ArgoFloat | null>(null);
   const [hoveredFloat, setHoveredFloat] = useState<ArgoFloat | null>(null);
@@ -174,13 +174,6 @@ export default function InteractiveArgoMap({
       })),
     [floatLocations],
   );
-
-  // Create a lookup map for quick float retrieval by ID
-  const floatLookup = useMemo(() => {
-    const lookup = new Map<string, ArgoFloat>();
-    floats.forEach((f) => lookup.set(f.id, f));
-    return lookup;
-  }, [floats]);
 
   // Convert floats to GeoJSON FeatureCollection for clustering
   const geojsonData: GeoJSON.FeatureCollection<GeoJSON.Point> = useMemo(
@@ -328,8 +321,7 @@ export default function InteractiveArgoMap({
 
   const handleShowProfile = () => {
     if (selectedFloat) {
-      // Navigate to the float profile page
-      //router.push(`/float/${selectedFloat.floatNumber}`);
+      router.push(`/float/${selectedFloat.floatNumber}` as string & {});
     }
   };
 
