@@ -5,7 +5,7 @@ import type { CycleProfileResponse, FloatProfileResponse } from "@LogPose/schema
 import { DuckDBInstance } from "@duckdb/node-api";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
-import { env } from "@LogPose/env/server";
+import { config } from "../../config";
 import { logger } from "../../middlewares/logger";
 
 const HTTP_STATUS_BAD_REQUEST = 400;
@@ -28,10 +28,10 @@ async function createDuckDBConnection() {
   await connection.run(`
     CREATE SECRET IF NOT EXISTS r2_secret (
       TYPE S3,
-      KEY_ID '${env.S3_ACCESS_KEY}',
-      SECRET '${env.S3_SECRET_KEY}',
-      REGION '${env.S3_REGION}',
-      ENDPOINT '${env.S3_ENDPOINT.replace("https://", "")}',
+      KEY_ID '${config.S3_ACCESS_KEY}',
+      SECRET '${config.S3_SECRET_KEY}',
+      REGION '${config.S3_REGION}',
+      ENDPOINT '${config.S3_ENDPOINT?.replace("https://", "") || ""}',
       URL_STYLE 'path'
     );
   `);
@@ -108,7 +108,7 @@ profileRouter.get("/:floatId", async (c) => {
     const parquetPath = `s3://atlas/profiles/${floatId}/data.parquet`;
 
     const summarySQL = `
-      SELECT 
+      SELECT
         COUNT(DISTINCT cycle_number) AS total_cycles,
         COUNT(*) AS total_levels
       FROM read_parquet('${parquetPath}')
@@ -124,7 +124,7 @@ profileRouter.get("/:floatId", async (c) => {
     // Use ORDER BY DESC + LIMIT to avoid PlainSkip error from subqueries
     // Note: Selecting both base and _adj columns causes PlainSkip error, so use COALESCE
     const latestCycleSQL = `
-      SELECT 
+      SELECT
         cycle_number,
         profile_timestamp,
         latitude,
@@ -276,7 +276,7 @@ profileRouter.get("/:floatId/cycle/:cycleNumber", async (c) => {
 
     // Note: Selecting both base and _adj columns causes PlainSkip error, so use COALESCE
     const cycleSQL = `
-      SELECT 
+      SELECT
         cycle_number,
         profile_timestamp,
         latitude,

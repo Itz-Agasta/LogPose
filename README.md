@@ -1,17 +1,48 @@
-# LogPose
+# LogPose: Argo Float Visualization Platform with Tambo AI Orchestration
+
+A comprehensive platform for visualizing Argo float data with integrated AI capabilities, developed for Argo related research. Featuring Tambo as the orchestrator agent to control sub-agents for optimized fetching of Argo NetCDF data from various platforms.
+
+### What are Argo Floats?
+
+Argo floats are autonomous profiling instruments that measure temperature, salinity, and other oceanographic parameters. They drift with ocean currents and periodically dive to collect vertical profiles, providing critical data for climate research and ocean monitoring.
+
 
 ## Features
 
-- **TypeScript** - For type safety and improved developer experience
-- **Next.js** - Full-stack React framework
-- **TailwindCSS** - Utility-first CSS for rapid UI development
-- **shadcn/ui** - Reusable UI components
-- **Hono** - Lightweight, performant server framework
-- **Bun** - Runtime environment
-- **Drizzle** - TypeScript-first ORM
-- **PostgreSQL** - Database engine
-- **Oxlint** - Oxlint + Oxfmt (linting & formatting)
-- **Turborepo** - Optimized monorepo build system
+### AI-Powered Multi-Agent System
+
+- **Tambo Orchestrator**: Coordinates specialized sub-agents based on natural language queries
+- **Data Fetcher Agent**: Optimized streaming of large NetCDF files with spatial-temporal indexing
+- **Spatial Query Agent**: Geographic filtering and trajectory analysis
+- **Visualization Agent**: Dynamic component rendering based on user intent
+- **Export Agent**: Intelligent data formatting and download management
+- **Temporal Analysis Agent**: Time-series operations and trend detection
+
+### Interactive Visualizations
+
+- **Real-time Argo Float Maps**: Live tracking of float deployments and trajectories
+- **Oceanographic Profiles**: Vertical temperature, salinity, and pressure profiles
+- **Trajectory Animation**: Time-based path visualization with playback controls
+- **Multi-parameter Charts**: Comprehensive data analysis with interactive charts
+- **Anomaly Detection**: AI-powered identification of unusual oceanographic patterns
+- **Regional Comparison**: Side-by-side analysis of different ocean regions
+
+### Conversational Interface
+
+Query ocean data naturally:
+- *"Show me all active floats in the Bay of Bengal from 2023"*
+- *"Compare temperature profiles between Arabian Sea and Bay of Bengal"*
+- *"Which floats have critical battery levels?"*
+- *"Export last 6 months of data for float #2902741 as CSV"*
+
+### Advanced Analytics
+
+- **Time Period Selection**: Flexible temporal filtering with custom date ranges
+- **Deployment Year Filtering**: Historical analysis and trend identification
+- **Battery Health Monitoring**: Real-time status tracking of float instrumentation
+- **Quality Control Visualization**: Data quality flags and validation metrics
+- **Multi-float Comparison**: Simultaneous analysis of multiple instruments
+- **Data Download**: Export capabilities with format conversion
 
 ## Getting Started
 
@@ -43,28 +74,18 @@ bun run dev
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
 The API is running at [http://localhost:3000](http://localhost:3000).
 
-## Git Hooks and Formatting
-
-- Format and lint fix: `bun run check`
-
 ## Project Structure
 
 ```
 LogPose/
 ├── apps/
-│   ├── web/         # Frontend application (Next.js)
-│   └── server/      # Backend API (Hono)
+│   ├── web/         # Frontend application (Next.js) with Tambo integration
+│   └── server/      # Backend API (Hono) handling AI orchestration
 ├── packages/
-│   ├── api/         # API layer / business logic
+│   ├── config/     # Monorepo config
+│   └── db/         # Drizzel schema
+│   └── env/        # env var managment
+│   └── schema/     # zod schema
+│   └── worker/     # Worker to fetch float info 
+├── Terraform       
 ```
-
-## Available Scripts
-
-- `bun run dev`: Start all applications in development mode
-- `bun run build`: Build all applications
-- `bun run dev:web`: Start only the web application
-- `bun run dev:server`: Start only the server
-- `bun run check-types`: Check TypeScript types across all apps
-- `bun run db:push`: Push schema changes to database
-- `bun run db:studio`: Open database studio UI
-- `bun run check`: Run Oxlint and Oxfmt

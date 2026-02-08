@@ -2,7 +2,7 @@
 
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
-import { BasePropsWithChildrenOrRenderFunction } from "../../types/component-render-or-children";
+import type { BasePropsWithChildrenOrRenderFunction } from "../../types/component-render-or-children";
 import { useRender } from "../../use-render/use-render";
 import { useToolcallInfoContext } from "../root/toolcall-info-context";
 

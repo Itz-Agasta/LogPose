@@ -1,11 +1,11 @@
 import { createGroq } from "@ai-sdk/groq";
 import { DuckDBInstance } from "@duckdb/node-api";
 import { generateText } from "ai";
-import { env } from "@LogPose/env/server";
+import { config } from "../config";
 import { validateSQL } from "@/utils/helper";
 
 const groq = createGroq({
-  apiKey: env.GROQ_API_KEY,
+  apiKey: config.GROQ_API_KEY,
 });
 
 const DUCKDB_AGENT_SYSTEM_PROMPT = `You are an expert oceanographer and DuckDB SQL specialist analyzing Argo float profile data stored in highly optimized Parquet files.
@@ -57,7 +57,7 @@ RULES — NEVER VIOLATE THESE:
    Use COALESCE(salinity_adj, salinity) AS sal
    Use COALESCE(pressure_adj, pressure) AS pressure
    And filter with:
-     WHERE (temperature_adj IS NOT NULL AND temp_adj_qc IN ('1','2')) 
+     WHERE (temperature_adj IS NOT NULL AND temp_adj_qc IN ('1','2'))
         OR (temperature IS NOT NULL AND temp_qc IN ('1','2'))
 5. Prefer data_mode IN ('D','A') but fall back to 'R' if no delayed data exists
 6. For depth ranges (memorize these):
@@ -72,7 +72,7 @@ BEST-PRACTICE QUERY TEMPLATES (follow exactly):
 Abyssal:      pressure >= 4000
 
 -- 1. Single vertical profile (T/S vs pressure)
-SELECT 
+SELECT
   COALESCE(pressure_adj, pressure) AS pressure,
   COALESCE(temperature_adj, temperature) AS temperature,
   COALESCE(salinity_adj, salinity) AS salinity
@@ -83,7 +83,7 @@ WHERE cycle_number = 42
 ORDER BY level;
 
 -- 2. Surface temperature time series
-SELECT 
+SELECT
   cycle_number,
   profile_timestamp,
   AVG(COALESCE(temperature_adj, temperature)) AS surface_temp
@@ -94,7 +94,7 @@ GROUP BY cycle_number, profile_timestamp
 ORDER BY cycle_number;
 
 -- 3. Temperature at 1000 m over time
-SELECT 
+SELECT
   cycle_number,
   AVG(COALESCE(temperature_adj, temperature)) AS temp_1000m
 FROM read_parquet('s3://atlas/profiles/2902235/data.parquet')
@@ -104,7 +104,7 @@ GROUP BY cycle_number
 ORDER BY cycle_number;
 
 -- 4. Full float summary (latest good surface values)
-SELECT 
+SELECT
   MAX(profile_timestamp) AS last_profile,
   AVG(COALESCE(temperature_adj, temperature)) FILTER (WHERE pressure <= 10) AS latest_surface_temp,
   AVG(COALESCE(salinity_adj, salinity)) FILTER (WHERE pressure <= 10) AS latest_surface_sal
@@ -149,7 +149,7 @@ export async function DuckDBAgent(params: DuckDBAgentParams): Promise<DuckDBAgen
     // Generate SQL using LLM
     const llmStart = Date.now();
     const { text: sqlQuery, usage } = await generateText({
-      model: groq(env.AGENT),
+      model: groq(config.AGENT),
       system: DUCKDB_AGENT_SYSTEM_PROMPT,
       prompt: `Generate DuckDB query for: ${query}`,
       maxOutputTokens: 600,
@@ -195,10 +195,10 @@ export async function DuckDBAgent(params: DuckDBAgentParams): Promise<DuckDBAgen
     await connection.run(`
       CREATE SECRET IF NOT EXISTS r2_secret (
         TYPE S3,
-        KEY_ID '${env.S3_ACCESS_KEY}',
-        SECRET '${env.S3_SECRET_KEY}',
-        REGION '${env.S3_REGION}',
-        ENDPOINT '${env.S3_ENDPOINT.replace("https://", "")}',
+        KEY_ID '${config.S3_ACCESS_KEY}',
+        SECRET '${config.S3_SECRET_KEY}',
+        REGION '${config.S3_REGION}',
+        ENDPOINT '${config.S3_ENDPOINT?.replace("https://", "") || ""}',
         URL_STYLE 'path'
       );
     `);

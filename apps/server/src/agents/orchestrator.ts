@@ -1,7 +1,7 @@
 import { createGroq } from "@ai-sdk/groq";
 import type { ScientificResponse } from "@LogPose/schema/api/agent";
 import { generateText } from "ai";
-import { env } from "@LogPose/env/server";
+import { config } from "../config";
 import {
   type AgentResults,
   extractCitations,
@@ -9,7 +9,7 @@ import {
 } from "../utils/orchestrator-utils";
 
 const groq = createGroq({
-  apiKey: env.GROQ_API_KEY,
+  apiKey: config.GROQ_API_KEY,
 });
 
 const SYSTEM_PROMPT = `You are an expert oceanographer and scientific communicator specialized in Argo float data.
@@ -91,7 +91,7 @@ Answer only what is asked. Be truthful. If data is missing or ambiguous, say so 
 export async function responseOrchestrator(results: AgentResults): Promise<ScientificResponse> {
   try {
     const { text, usage } = await generateText({
-      model: groq(env.AGENT),
+      model: groq(config.AGENT),
       system: SYSTEM_PROMPT,
 
       prompt: formatAgentContext(results),

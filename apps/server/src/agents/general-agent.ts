@@ -1,9 +1,9 @@
 import { createGroq } from "@ai-sdk/groq";
 import { generateText } from "ai";
-import { env } from "@LogPose/env/server";
+import { config } from "../config";
 
 const groq = createGroq({
-  apiKey: env.GROQ_API_KEY,
+  apiKey: config.GROQ_API_KEY,
 });
 
 const GENERAL_AGENT_SYSTEM_PROMPT = `You are Atlas Agent, a specialized AI assistant for oceanographic research focusing on Argo float data analysis and scientific literature review.
@@ -49,7 +49,7 @@ export async function executeGeneralAgent(query: string): Promise<GeneralAgentRe
 
   try {
     const { text, usage } = await generateText({
-      model: groq(env.AGENT),
+      model: groq(config.AGENT),
       system: GENERAL_AGENT_SYSTEM_PROMPT,
       prompt: query,
       maxOutputTokens: 200,

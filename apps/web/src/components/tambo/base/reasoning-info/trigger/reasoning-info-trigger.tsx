@@ -1,6 +1,6 @@
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
-import { BaseProps } from "../../types/component-render-or-children";
+import type { BaseProps } from "../../types/component-render-or-children";
 import { useReasoningInfoRootContext } from "../root/reasoning-info-context";
 
 export type ReasoningInfoTriggerProps = BaseProps<

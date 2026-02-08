@@ -4,8 +4,8 @@
     "": {
       "name": "LogPose",
       "dependencies": {
-        "@LogPose/env": "workspace:*",
         "dotenv": "catalog:",
+        "env": "workspace:*",
         "zod": "catalog:",
       },
       "devDependencies": {
@@ -21,7 +21,6 @@
       "name": "server",
       "dependencies": {
         "@LogPose/db": "workspace:*",
-        "@LogPose/env": "workspace:*",
         "@LogPose/schema": "workspace:*",
         "@ai-sdk/groq": "^3.0.21",
         "@duckdb/node-api": "^1.4.4-r.1",
@@ -29,6 +28,7 @@
         "ai": "^6.0.69",
         "dotenv": "catalog:",
         "drizzle-orm": "^0.45.1",
+        "env": "workspace:*",
         "hono": "^4.8.2",
         "hono-pino": "^0.10.3",
         "pino": "^10.3.0",
@@ -45,7 +45,6 @@
       "name": "web",
       "version": "0.1.0",
       "dependencies": {
-        "@LogPose/env": "workspace:*",
         "@LogPose/schema": "workspace:*",
         "@base-ui/react": "^1.0.0",
         "@radix-ui/react-collapsible": "^1.1.12",
@@ -79,6 +78,7 @@
         "d3": "^7.9.0",
         "dompurify": "^3.3.1",
         "dotenv": "catalog:",
+        "env": "workspace:*",
         "file-saver": "^2.0.5",
         "framer-motion": "^12.33.0",
         "highlight.js": "^11.11.1",
@@ -134,9 +134,9 @@
     "packages/db": {
       "name": "@LogPose/db",
       "dependencies": {
-        "@LogPose/env": "workspace:*",
         "dotenv": "catalog:",
         "drizzle-orm": "^0.45.1",
+        "env": "workspace:*",
         "pg": "^8.17.1",
         "zod": "catalog:",
       },
@@ -148,7 +148,7 @@
       },
     },
     "packages/env": {
-      "name": "@LogPose/env",
+      "name": "env",
       "version": "0.0.0",
       "dependencies": {
         "@t3-oss/env-core": "^0.13.1",
@@ -182,8 +182,6 @@
     "@LogPose/config": ["@LogPose/config@workspace:packages/config"],
 
     "@LogPose/db": ["@LogPose/db@workspace:packages/db"],
-
-    "@LogPose/env": ["@LogPose/env@workspace:packages/env"],
 
     "@LogPose/schema": ["@LogPose/schema@workspace:packages/schema"],
 
@@ -1266,6 +1264,8 @@
     "enhanced-resolve": ["enhanced-resolve@5.19.0", "", { "dependencies": { "graceful-fs": "^4.2.4", "tapable": "^2.3.0" } }, "sha512-phv3E1Xl4tQOShqSte26C7Fl84EwUdZsyOuSSk9qtAGyyQs2s3jJzComh+Abf4g187lUUAvH+H26omrqia2aGg=="],
 
     "entities": ["entities@4.5.0", "", {}, "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw=="],
+
+    "env": ["env@workspace:packages/env"],
 
     "env-paths": ["env-paths@2.2.1", "", {}, "sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A=="],
 

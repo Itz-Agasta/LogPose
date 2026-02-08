@@ -5,7 +5,7 @@ import {
   convertContentToMarkdown,
 } from "@/lib/thread-hooks";
 import * as React from "react";
-import { BasePropsWithChildrenOrRenderFunction } from "../../types/component-render-or-children";
+import type { BasePropsWithChildrenOrRenderFunction } from "../../types/component-render-or-children";
 import { useRender } from "../../use-render/use-render";
 import { useMessageRootContext } from "../root/message-root-context";
 

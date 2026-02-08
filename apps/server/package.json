@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@LogPose/db": "workspace:*",
-    "@LogPose/env": "workspace:*",
+    "env": "workspace:*",
     "@LogPose/schema": "workspace:*",
     "@ai-sdk/groq": "^3.0.21",
     "@duckdb/node-api": "^1.4.4-r.1",
