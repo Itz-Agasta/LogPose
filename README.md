@@ -6,7 +6,6 @@ A comprehensive platform for visualizing Argo float data with integrated AI capa
 
 Argo floats are autonomous profiling instruments that measure temperature, salinity, and other oceanographic parameters. They drift with ocean currents and periodically dive to collect vertical profiles, providing critical data for climate research and ocean monitoring.
 
-
 ## Features
 
 ### AI-Powered Multi-Agent System
@@ -30,10 +29,11 @@ Argo floats are autonomous profiling instruments that measure temperature, salin
 ### Conversational Interface
 
 Query ocean data naturally:
-- *"Show me all active floats in the Bay of Bengal from 2023"*
-- *"Compare temperature profiles between Arabian Sea and Bay of Bengal"*
-- *"Which floats have critical battery levels?"*
-- *"Export last 6 months of data for float #2902741 as CSV"*
+
+- _"Show me all active floats in the Bay of Bengal from 2023"_
+- _"Compare temperature profiles between Arabian Sea and Bay of Bengal"_
+- _"Which floats have critical battery levels?"_
+- _"Export last 6 months of data for float #2902741 as CSV"_
 
 ### Advanced Analytics
 
@@ -84,8 +84,7 @@ LogPose/
 ├── packages/
 │   ├── config/     # Monorepo config
 │   └── db/         # Drizzel schema
-│   └── env/        # env var managment
 │   └── schema/     # zod schema
-│   └── worker/     # Worker to fetch float info 
-├── Terraform       
+│   └── worker/     # Worker to fetch float info
+├── Terraform
 ```
