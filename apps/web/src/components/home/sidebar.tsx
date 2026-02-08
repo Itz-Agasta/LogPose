@@ -295,8 +295,9 @@ export function Sidebar({ className, onFiltersChange, floatLocations = [] }: Sid
             >
               {timePeriodOptions.map((option) => (
                 <button
-                  className={`transition-colors hover:opacity-80 ${filters.timePeriod === option.id ? "font-semibold" : ""
-                    }`}
+                  className={`transition-colors hover:opacity-80 ${
+                    filters.timePeriod === option.id ? "font-semibold" : ""
+                  }`}
                   key={option.id}
                   onClick={() => handleTimePeriodChange(option.id)}
                   style={{

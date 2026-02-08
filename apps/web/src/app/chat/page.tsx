@@ -6,7 +6,7 @@ import { IconAnchor, IconArrowLeft } from "@tabler/icons-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useMemo, useEffect, useRef, useState } from "react";
+import { useMemo, useEffect, useRef, useState, Suspense } from "react";
 import { TamboProvider, useTamboThread } from "@tambo-ai/react";
 import { components, tools as baseTools } from "@/lib/tambo";
 
@@ -81,7 +81,7 @@ function ChatContent({ threadId }: { threadId: string | null }) {
   );
 }
 
-export default function ChatPage() {
+function ChatPageContent() {
   const searchParams = useSearchParams();
   const floatId = searchParams.get("floatId");
   const threadId = searchParams.get("threadId");
@@ -91,10 +91,7 @@ export default function ChatPage() {
     if (!floatId) return baseTools;
 
     return baseTools.map((tool) => {
-      if (
-        tool.name === "query-float-metadata" ||
-        tool.name === "query-oceanographic-profiles"
-      ) {
+      if (tool.name === "query-float-metadata" || tool.name === "query-oceanographic-profiles") {
         // Capture the original tool function
         const originalTool = tool.tool;
         return {
@@ -212,12 +209,20 @@ export default function ChatPage() {
   }
 
   return (
-    <TamboProvider
-      apiKey={apiKey}
-      components={components}
-      tools={baseTools}
-    >
+    <TamboProvider apiKey={apiKey} components={components} tools={baseTools}>
       <ChatContent threadId={threadId} />
     </TamboProvider>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-svh">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    }>
+      <ChatPageContent />
+    </Suspense>
   );
 }

@@ -1,4 +1,4 @@
-import { TamboThreadMessage } from "@tambo-ai/react";
+import type { TamboThreadMessage } from "@tambo-ai/react";
 import React from "react";
 
 /**

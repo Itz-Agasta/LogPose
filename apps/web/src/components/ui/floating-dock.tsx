@@ -85,7 +85,6 @@ const FloatingDockMobile = ({
                                 ) : (
                                     <Link
                                         className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 dark:bg-neutral-900"
-                                        // @ts-expect-error - href type mismatch with typedRoutes
                                         href={item.href}
                                         key={item.title}
                                     >
@@ -235,7 +234,6 @@ function IconContainer({
                     </motion.div>
                 </button>
             ) : (
-                // @ts-expect-error - href type mismatch with typedRoutes
                 <Link href={href}>
                     <motion.div
                         className="relative flex aspect-square items-center justify-center rounded-full bg-gray-200 dark:bg-neutral-800"

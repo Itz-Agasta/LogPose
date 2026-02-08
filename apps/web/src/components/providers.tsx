@@ -14,11 +14,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <TamboProvider
-        apiKey={apiKey || ""}
-        components={components}
-        tools={tools}
-      >
+      <TamboProvider apiKey={apiKey || ""} components={components} tools={tools}>
         {children}
         <Toaster richColors />
       </TamboProvider>

@@ -1,5 +1,5 @@
 import { Slot } from "@radix-ui/react-slot";
-import { TamboThreadMessage } from "@tambo-ai/react";
+import type { TamboThreadMessage } from "@tambo-ai/react";
 import { checkHasContent } from "@/lib/thread-hooks";
 import * as React from "react";
 import { ReasoningInfoRootContext } from "./reasoning-info-context";

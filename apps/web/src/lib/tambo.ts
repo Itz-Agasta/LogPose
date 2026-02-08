@@ -8,10 +8,7 @@ import FloatLocationMap from "@/components/tambo/float-location-map";
 import DataTable from "@/components/tambo/data-table";
 import { Graph, graphSchema } from "@/components/tambo/graph";
 import { FormComponent as Form, formSchema } from "@/components/tambo/form";
-import {
-  RenderFloatGraph,
-  renderFloatGraphSchema,
-} from "@/components/tambo/render-float-graph";
+import { RenderFloatGraph, renderFloatGraphSchema } from "@/components/tambo/render-float-graph";
 
 // Import the agent query functions
 import { queryAgent, querySQLAgent, queryDuckDBAgent } from "@/lib/utils";
@@ -30,16 +27,8 @@ export const components: TamboComponent[] = [
       "Displays detailed information about a specific Argo float including its ID, status, location, type, and recent measurements. Use this when the user asks about a specific float's details, status, or measurements.",
     component: FloatDataCard,
     propsSchema: z.object({
-      floatId: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("The unique identifier of the float"),
-      wmoNumber: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("WMO number of the float"),
+      floatId: z.number().nullable().optional().describe("The unique identifier of the float"),
+      wmoNumber: z.string().nullable().optional().describe("WMO number of the float"),
       status: z
         .string()
         .nullable()
@@ -51,54 +40,20 @@ export const components: TamboComponent[] = [
         .string()
         .nullable()
         .optional()
-        .describe(
-          "Type of Argo float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'",
-        ),
-      latitude: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Current latitude position"),
-      longitude: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Current longitude position"),
-      cycleNumber: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Current cycle number"),
-      lastUpdate: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("ISO date string of last update"),
+        .describe("Type of Argo float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'"),
+      latitude: z.number().nullable().optional().describe("Current latitude position"),
+      longitude: z.number().nullable().optional().describe("Current longitude position"),
+      cycleNumber: z.number().nullable().optional().describe("Current cycle number"),
+      lastUpdate: z.string().nullable().optional().describe("ISO date string of last update"),
       temperature: z
         .number()
         .nullable()
         .optional()
         .describe("Last recorded temperature in Celsius"),
-      salinity: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Last recorded salinity in PSU"),
-      depth: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Last recorded depth in meters"),
-      piName: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Principal investigator name"),
-      institution: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Operating institution"),
+      salinity: z.number().nullable().optional().describe("Last recorded salinity in PSU"),
+      depth: z.number().nullable().optional().describe("Last recorded depth in meters"),
+      piName: z.string().nullable().optional().describe("Principal investigator name"),
+      institution: z.string().nullable().optional().describe("Operating institution"),
     }),
   },
   {
@@ -107,29 +62,17 @@ export const components: TamboComponent[] = [
       "Displays aggregated statistics about ocean data or Argo float network. Use this when the user asks about overall statistics, summaries, or network-wide data.",
     component: OceanStatsCard,
     propsSchema: z.object({
-      title: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Title of the statistics card"),
+      title: z.string().nullable().optional().describe("Title of the statistics card"),
       stats: z
         .array(
           z.object({
-            label: z
-              .string()
-              .nullable()
-              .optional()
-              .describe("Label for the statistic"),
+            label: z.string().nullable().optional().describe("Label for the statistic"),
             value: z
               .union([z.string(), z.number()])
               .nullable()
               .optional()
               .describe("Value of the statistic"),
-            unit: z
-              .string()
-              .nullable()
-              .optional()
-              .describe("Unit of measurement"),
+            unit: z.string().nullable().optional().describe("Unit of measurement"),
             change: z
               .number()
               .nullable()
@@ -145,11 +88,7 @@ export const components: TamboComponent[] = [
         .nullable()
         .optional()
         .describe("Array of statistics to display"),
-      description: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Optional description or context"),
+      description: z.string().nullable().optional().describe("Optional description or context"),
     }),
   },
   {
@@ -161,35 +100,19 @@ export const components: TamboComponent[] = [
       locations: z
         .array(
           z.object({
-            floatId: z
-              .number()
-              .nullable()
-              .optional()
-              .describe("Float identifier"),
-            latitude: z
-              .number()
-              .nullable()
-              .optional()
-              .describe("Latitude coordinate"),
-            longitude: z
-              .number()
-              .nullable()
-              .optional()
-              .describe("Longitude coordinate"),
+            floatId: z.number().nullable().optional().describe("Float identifier"),
+            latitude: z.number().nullable().optional().describe("Latitude coordinate"),
+            longitude: z.number().nullable().optional().describe("Longitude coordinate"),
             status: z
               .string()
               .nullable()
               .optional()
-              .describe(
-                "Float status: 'ACTIVE', 'INACTIVE', 'UNKNOWN', or 'DEAD'",
-              ),
+              .describe("Float status: 'ACTIVE', 'INACTIVE', 'UNKNOWN', or 'DEAD'"),
             floatType: z
               .string()
               .nullable()
               .optional()
-              .describe(
-                "Type of float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'",
-              ),
+              .describe("Type of float: 'core', 'oxygen', 'biogeochemical', 'deep', or 'unknown'"),
           }),
         )
         .nullable()
@@ -213,21 +136,13 @@ export const components: TamboComponent[] = [
         .number()
         .nullable()
         .optional()
-        .describe(
-          "Initial zoom level 1-18 (optional, auto-calculated based on location spread)",
-        ),
-      title: z
-        .string()
-        .nullable()
-        .optional()
-        .describe("Custom title for the map card"),
+        .describe("Initial zoom level 1-18 (optional, auto-calculated based on location spread)"),
+      title: z.string().nullable().optional().describe("Custom title for the map card"),
       regionName: z
         .string()
         .nullable()
         .optional()
-        .describe(
-          "Name of the region being displayed (e.g., 'Bay of Bengal', 'Arabian Sea')",
-        ),
+        .describe("Name of the region being displayed (e.g., 'Bay of Bengal', 'Arabian Sea')"),
     }),
   },
   {
@@ -240,23 +155,13 @@ export const components: TamboComponent[] = [
       columns: z
         .array(
           z.object({
-            key: z
-              .string()
-              .nullable()
-              .optional()
-              .describe("Optional key for the column"),
-            label: z
-              .string()
-              .nullable()
-              .optional()
-              .describe("Display label for the column header"),
+            key: z.string().nullable().optional().describe("Optional key for the column"),
+            label: z.string().nullable().optional().describe("Display label for the column header"),
             align: z
               .string()
               .nullable()
               .optional()
-              .describe(
-                "Text alignment: 'left', 'center', or 'right'. Defaults to 'left'",
-              ),
+              .describe("Text alignment: 'left', 'center', or 'right'. Defaults to 'left'"),
           }),
         )
         .nullable()
@@ -277,11 +182,7 @@ export const components: TamboComponent[] = [
         .nullable()
         .optional()
         .describe("Array of row objects, each containing a cells array"),
-      maxRows: z
-        .number()
-        .nullable()
-        .optional()
-        .describe("Maximum number of rows to display"),
+      maxRows: z.number().nullable().optional().describe("Maximum number of rows to display"),
     }),
   },
   {
@@ -359,13 +260,7 @@ AFTER GETTING DATA, YOU MUST RENDER IT:
 - Always render a component - never just show tool results!
 
 DO NOT USE FOR: Historical profiles, time-series data, trends over multiple cycles`,
-    tool: async ({
-      query,
-      floatId,
-    }: {
-      query: string;
-      floatId?: number | string;
-    }) => {
+    tool: async ({ query, floatId }: { query: string; floatId?: number | string }) => {
       try {
         // Augment query with context if floatId is provided
         const finalQuery =
@@ -384,14 +279,20 @@ DO NOT USE FOR: Historical profiles, time-series data, trends over multiple cycl
         // Provide rendering hints based on query intent and data structure
         let renderingHint = "";
         const queryLower = query.toLowerCase();
-        
+
         if (resultCount > 0 && limitedData) {
           // Check if data has location fields
           const hasLocationData = limitedData.some(
-            (row: any) => row.latitude !== undefined && row.longitude !== undefined
+            (row: any) => row.latitude !== undefined && row.longitude !== undefined,
           );
-          
-          if ((queryLower.includes("location") || queryLower.includes("where") || queryLower.includes("show") || queryLower.includes("map")) && hasLocationData) {
+
+          if (
+            (queryLower.includes("location") ||
+              queryLower.includes("where") ||
+              queryLower.includes("show") ||
+              queryLower.includes("map")) &&
+            hasLocationData
+          ) {
             renderingHint = "\n\nUse FloatLocationMap to render the locations.";
           } else if (resultCount > 1) {
             renderingHint = "\n\nUse DataTable to display the results.";
@@ -418,10 +319,7 @@ DO NOT USE FOR: Historical profiles, time-series data, trends over multiple cycl
           data: null,
           rowCount: 0,
           sql: null,
-          error:
-            error instanceof Error
-              ? error.message
-              : "Unknown error in metadata query",
+          error: error instanceof Error ? error.message : "Unknown error in metadata query",
           timestamp: new Date().toISOString(),
         };
       }
@@ -475,13 +373,7 @@ GRAPHING: When user asks to plot/graph/visualize profile data:
 2. Use the Graph component to visualize it with type='line' for profiles/trends, type='bar' for comparisons
 
 DO NOT USE FOR: Current float status, location, battery, fleet counts, metadata`,
-    tool: async ({
-      query,
-      floatId,
-    }: {
-      query: string;
-      floatId?: number | string;
-    }) => {
+    tool: async ({ query, floatId }: { query: string; floatId?: number | string }) => {
       try {
         // Augment query with context if floatId is provided
         const finalQuery =
@@ -527,10 +419,7 @@ DO NOT USE FOR: Current float status, location, battery, fleet counts, metadata`
           data: null,
           rowCount: 0,
           sql: null,
-          error:
-            error instanceof Error
-              ? error.message
-              : "Unknown error in profile query",
+          error: error instanceof Error ? error.message : "Unknown error in profile query",
           timestamp: new Date().toISOString(),
         };
       }
@@ -544,19 +433,13 @@ DO NOT USE FOR: Current float status, location, battery, fleet counts, metadata`
     }),
     outputSchema: z.object({
       success: z.boolean().describe("Whether the query was successful"),
-      response: z
-        .string()
-        .nullable()
-        .describe("Summary of the profile data retrieved"),
+      response: z.string().nullable().describe("Summary of the profile data retrieved"),
       data: z
         .array(z.record(z.string(), z.unknown()))
         .nullable()
         .describe("Profile data from DuckDB/Parquet files"),
       rowCount: z.number().describe("Number of measurements returned"),
-      sql: z
-        .string()
-        .nullable()
-        .describe("The DuckDB SQL query that was executed"),
+      sql: z.string().nullable().describe("The DuckDB SQL query that was executed"),
       error: z.string().optional().describe("Error message if query failed"),
       timestamp: z.string().optional().describe("Timestamp of the response"),
     }),
@@ -587,9 +470,7 @@ DO NOT USE FOR: Current float status, location, battery, fleet counts, metadata`
     inputSchema: z.object({
       query: z
         .string()
-        .describe(
-          "Research topic or question to search for in oceanographic literature",
-        ),
+        .describe("Research topic or question to search for in oceanographic literature"),
     }),
     outputSchema: z.object({
       success: z.boolean().describe("Whether the search was successful"),

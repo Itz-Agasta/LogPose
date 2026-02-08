@@ -128,10 +128,7 @@ export default function Home() {
       <HomeNavbar onChatClick={() => setIsAiSidebarOpen(true)} />
 
       {/* AI Assistant Panel */}
-      <FloatMessagePanel
-        isOpen={isAiSidebarOpen}
-        onClose={() => setIsAiSidebarOpen(false)}
-      />
+      <FloatMessagePanel isOpen={isAiSidebarOpen} onClose={() => setIsAiSidebarOpen(false)} />
     </div>
   );
 }

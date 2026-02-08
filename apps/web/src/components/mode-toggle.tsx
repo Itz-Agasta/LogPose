@@ -37,7 +37,7 @@ export function ModeToggle() {
       // Calculate the maximum radius needed to cover the entire screen
       const endRadius = Math.hypot(
         Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
+        Math.max(y, window.innerHeight - y),
       );
 
       setIsAnimating(true);
@@ -65,7 +65,7 @@ export function ModeToggle() {
               resolvedTheme === "dark"
                 ? "::view-transition-new(root)"
                 : "::view-transition-old(root)",
-          }
+          },
         );
       });
 
@@ -73,7 +73,7 @@ export function ModeToggle() {
         setIsAnimating(false);
       });
     },
-    [resolvedTheme, setTheme, isHomePage]
+    [resolvedTheme, setTheme, isHomePage],
   );
 
   if (!mounted) {
@@ -98,19 +98,19 @@ export function ModeToggle() {
           animation: none;
           mix-blend-mode: normal;
         }
-
+        
         ::view-transition-old(root) {
           z-index: 1;
         }
-
+        
         ::view-transition-new(root) {
           z-index: 9999;
         }
-
+        
         .dark::view-transition-old(root) {
           z-index: 9999;
         }
-
+        
         .dark::view-transition-new(root) {
           z-index: 1;
         }
@@ -125,9 +125,10 @@ export function ModeToggle() {
           flex items-center justify-center
           transition-all duration-300 ease-out
           border-2
-          ${isDark
-            ? "bg-zinc-900 border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800"
-            : "bg-white border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100"
+          ${
+            isDark
+              ? "bg-zinc-900 border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800"
+              : "bg-white border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100"
           }
           ${isAnimating ? "scale-95" : "hover:scale-105 active:scale-95"}
           focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
@@ -140,9 +141,10 @@ export function ModeToggle() {
         <Sun
           className={`
             absolute h-4 w-4 transition-all duration-300
-            ${isDark
-              ? "rotate-90 scale-0 opacity-0 text-amber-400"
-              : "rotate-0 scale-100 opacity-100 text-zinc-600"
+            ${
+              isDark
+                ? "rotate-90 scale-0 opacity-0 text-amber-400"
+                : "rotate-0 scale-100 opacity-100 text-zinc-600"
             }
           `}
         />
@@ -151,9 +153,10 @@ export function ModeToggle() {
         <Moon
           className={`
             absolute h-4 w-4 transition-all duration-300
-            ${isDark
-              ? "rotate-0 scale-100 opacity-100 text-zinc-300"
-              : "-rotate-90 scale-0 opacity-0 text-zinc-600"
+            ${
+              isDark
+                ? "rotate-0 scale-100 opacity-100 text-zinc-300"
+                : "-rotate-90 scale-0 opacity-0 text-zinc-600"
             }
           `}
         />
