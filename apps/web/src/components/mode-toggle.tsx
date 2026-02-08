@@ -125,14 +125,13 @@ export function ModeToggle() {
           flex items-center justify-center
           transition-all duration-300 ease-out
           border-2
-          ${
-            isDark
-              ? "bg-zinc-900 border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800"
-              : "bg-amber-50 border-amber-200 hover:border-amber-300 hover:bg-amber-100"
+          ${isDark
+            ? "bg-zinc-900 border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800"
+            : "bg-white border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100"
           }
           ${isAnimating ? "scale-95" : "hover:scale-105 active:scale-95"}
           focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-          ${isDark ? "focus-visible:ring-zinc-400" : "focus-visible:ring-amber-400"}
+          ${isDark ? "focus-visible:ring-zinc-400" : "focus-visible:ring-zinc-400"}
           disabled:cursor-wait
         `}
         aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
@@ -141,10 +140,9 @@ export function ModeToggle() {
         <Sun
           className={`
             absolute h-5 w-5 transition-all duration-300
-            ${
-              isDark
-                ? "rotate-90 scale-0 opacity-0 text-amber-400"
-                : "rotate-0 scale-100 opacity-100 text-amber-500"
+            ${isDark
+              ? "rotate-90 scale-0 opacity-0 text-amber-400"
+              : "rotate-0 scale-100 opacity-100 text-zinc-600"
             }
           `}
         />
@@ -153,10 +151,9 @@ export function ModeToggle() {
         <Moon
           className={`
             absolute h-5 w-5 transition-all duration-300
-            ${
-              isDark
-                ? "rotate-0 scale-100 opacity-100 text-zinc-300"
-                : "-rotate-90 scale-0 opacity-0 text-zinc-600"
+            ${isDark
+              ? "rotate-0 scale-100 opacity-100 text-zinc-300"
+              : "-rotate-90 scale-0 opacity-0 text-zinc-600"
             }
           `}
         />
@@ -166,7 +163,7 @@ export function ModeToggle() {
           className={`
             absolute inset-0 rounded-full transition-opacity duration-300
             ${isDark ? "opacity-0" : "opacity-30"}
-            bg-gradient-to-tr from-amber-300 to-yellow-200
+            bg-gradient-to-tr from-zinc-200 to-zinc-100
             blur-md -z-10
           `}
         />
