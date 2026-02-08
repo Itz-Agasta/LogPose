@@ -62,14 +62,20 @@ export function ChatSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
     }, [threads, searchQuery]);
 
     const handleThreadClick = async (threadId: string) => {
-        switchCurrentThread(threadId);
+        // Switch thread first, then update URL to keep them in sync
+        await switchCurrentThread(threadId);
+        router.replace(`/chat?threadId=${threadId}`, { scroll: false });
         if (isMobile) {
             setOpenMobile(false);
         }
     };
 
     const handleNewThread = async () => {
+        // Start a new thread - the thread.id change will trigger URL sync in ChatContent
         await startNewThread();
+        // Clear the threadId from URL to indicate a fresh thread
+        // The ChatContent useEffect will sync the URL once thread.id is set
+        router.push('/chat');
         if (isMobile) {
             setOpenMobile(false);
         }

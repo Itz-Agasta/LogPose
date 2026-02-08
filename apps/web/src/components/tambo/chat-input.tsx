@@ -58,6 +58,8 @@ export interface ChatInputProps extends React.HTMLAttributes<HTMLDivElement> {
   suggestions?: Array<{ title: string; message: string }>;
   showSuggestions?: boolean;
   floatId?: string | number;
+  /** Whether the thread is currently being switched */
+  isSwitchingThread?: boolean;
 }
 
 /**
@@ -71,6 +73,7 @@ export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
       suggestions,
       showSuggestions = true,
       floatId,
+      isSwitchingThread = false,
       ...props
     },
     ref,
@@ -213,8 +216,8 @@ export const ChatInput = React.forwardRef<HTMLDivElement, ChatInputProps>(
             </div>
           )}
 
-          {/* Poseidon heading - only show when no messages */}
-          {!hasMessages && (
+          {/* Poseidon heading - only show when no messages and not switching */}
+          {!hasMessages && !isSwitchingThread && (
             <div className="mb-4 text-center">
               <h1 className="text-4xl font-bold mb-2">Poseidon</h1>
               <p className="text-lg text-green-600 dark:text-green-500">The Argo Float Agent</p>

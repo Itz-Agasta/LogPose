@@ -6,7 +6,7 @@ import { IconAnchor, IconArrowLeft } from "@tabler/icons-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useRef, useState } from "react";
 import { TamboProvider, useTamboThread } from "@tambo-ai/react";
 import { components, tools as baseTools } from "@/lib/tambo";
 
@@ -16,27 +16,48 @@ function ChatContent({ threadId }: { threadId: string | null }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Switch to thread from URL if provided
+  // Ref to track if we're updating the URL programmatically
+  // This prevents the circular dependency between the two useEffects
+  const isUrlUpdatePending = useRef(false);
+
+  // Track whether we're currently switching threads
+  const [isSwitchingThread, setIsSwitchingThread] = useState(false);
+
+  // Switch to thread from URL if provided (URL → Thread sync)
+  // Only runs when threadId is present and not during our own URL updates
   useEffect(() => {
+    // Skip if we just updated the URL ourselves
+    if (isUrlUpdatePending.current) {
+      isUrlUpdatePending.current = false;
+      return;
+    }
+
+    // Only switch if we have a valid threadId from URL and it differs from current
     if (threadId && thread?.id !== threadId) {
-      switchCurrentThread(threadId);
+      setIsSwitchingThread(true);
+      Promise.resolve(switchCurrentThread(threadId)).finally(() => {
+        setIsSwitchingThread(false);
+      });
     }
   }, [threadId, thread?.id, switchCurrentThread]);
 
-  // Sync URL with current thread
+  // Sync URL with current thread (Thread → URL sync)
+  // Only update URL when thread.id changes and differs from URL
   useEffect(() => {
     if (thread?.id && thread.id !== threadId) {
+      isUrlUpdatePending.current = true;
       const params = new URLSearchParams(searchParams.toString());
       params.set("threadId", thread.id);
       router.replace(`/chat?${params.toString()}`, { scroll: false });
     }
-  }, [thread?.id, threadId, searchParams, router]);
+  }, [thread?.id]); // Intentionally minimal deps - only react to thread.id changes
 
   return (
     <div className="relative flex flex-col h-svh font-sans">
       {/* Chat Interface */}
       <ChatContainer
         showSidebar={true}
+        isSwitchingThread={isSwitchingThread}
         suggestions={[
           {
             title: "Active floats",
@@ -74,10 +95,21 @@ export default function ChatPage() {
         tool.name === "query-float-metadata" ||
         tool.name === "query-oceanographic-profiles"
       ) {
+        // Capture the original tool function
+        const originalTool = tool.tool;
         return {
           ...tool,
           tool: async (args: any) => {
-            return tool.tool({ ...args, floatId });
+            try {
+              return await originalTool({ ...args, floatId });
+            } catch (error) {
+              console.error(`Error executing tool ${tool.name}:`, error);
+              return {
+                success: false,
+                error: error instanceof Error ? error.message : "Unknown error",
+                timestamp: new Date().toISOString(),
+              };
+            }
           },
         };
       }
