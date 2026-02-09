@@ -1,4 +1,6 @@
-# LogPose: Argo Float Visualization Platform with Tambo AI Orchestration
+**<h1 align="center">LogPose: Argo Visualization Platform with Tambo AI Orchestration</h1>**
+
+<img width="1840" height="957" alt="logpose" src="https://github.com/user-attachments/assets/d430b1a6-0f94-46c4-95e4-83fd287ce2ed" />
 
 A comprehensive platform for visualizing Argo float data with integrated AI capabilities, developed for Argo related research. Featuring Tambo as the orchestrator agent to control sub-agents for optimized fetching of Argo NetCDF data from various platforms.
 
@@ -14,8 +16,10 @@ Argo floats are autonomous profiling instruments that measure temperature, salin
 - **Data Fetcher Agent**: Optimized streaming of large NetCDF files with spatial-temporal indexing
 - **Spatial Query Agent**: Geographic filtering and trajectory analysis
 - **Visualization Agent**: Dynamic component rendering based on user intent
-- **Export Agent**: Intelligent data formatting and download management
+- **Export Agent**: Intelligent data formatting and download management!
 - **Temporal Analysis Agent**: Time-series operations and trend detection
+<img width="2467" height="1612" alt="logpose2" src="https://github.com/user-attachments/assets/4819f81c-3590-4d3e-9529-6da726b4cb3c" />
+
 
 ### Interactive Visualizations
 
@@ -44,35 +48,6 @@ Query ocean data naturally:
 - **Multi-float Comparison**: Simultaneous analysis of multiple instruments
 - **Data Download**: Export capabilities with format conversion
 
-## Getting Started
-
-First, install the dependencies:
-
-```bash
-bun install
-```
-
-## Database Setup
-
-This project uses PostgreSQL with Drizzle ORM.
-
-1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/server/.env` file with your PostgreSQL connection details.
-
-3. Apply the schema to your database:
-
-```bash
-bun run db:push
-```
-
-Then, run the development server:
-
-```bash
-bun run dev
-```
-
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
 
 ## Project Structure
 
