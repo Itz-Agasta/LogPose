@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, ArrowLeft, Loader2, MessageSquare, X } from "lucide-react";
+import { AlertCircle, ArrowLeft, Loader2, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { CycleProfile, FloatProfileMetadata } from "@LogPose/schema/api/profile";

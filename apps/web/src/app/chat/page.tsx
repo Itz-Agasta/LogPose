@@ -1,7 +1,7 @@
 "use client";
 
 import { ChatContainer } from "@/components/tambo/chat-container";
-import { ModeToggle } from "@/components/mode-toggle";
+
 import { IconAnchor, IconArrowLeft } from "@tabler/icons-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -217,11 +217,13 @@ function ChatPageContent() {
 
 export default function ChatPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center h-svh">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-svh">
+          <div className="text-muted-foreground">Loading...</div>
+        </div>
+      }
+    >
       <ChatPageContent />
     </Suspense>
   );

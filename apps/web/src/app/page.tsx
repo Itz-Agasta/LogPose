@@ -4,15 +4,11 @@ import Link from "next/link";
 import {
   ArrowRight,
   BarChart2,
-  BookOpen,
-  Bot,
   Brain,
   Database,
   FileText,
-  Github,
   Globe,
   Layers,
-  Layout,
   Network,
   Shield,
   Zap,
@@ -112,7 +108,7 @@ export default function LandingPage() {
                 className="h-12 px-8 text-base shadow-[0_0_20px_-5px_var(--color-primary)] hover:shadow-[0_0_30px_-5px_var(--color-primary)] transition-shadow"
                 asChild
               >
-                <Link href="/chat" className="flex items-center gap-2">
+                <Link href="/home" className="flex items-center gap-2">
                   <span>Start Exploring</span> <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>

@@ -46,8 +46,18 @@ const FLOAT_COLORS: Record<string, { bg: string; border: string; glow: string; f
     glow: "bg-yellow-400",
     fill: "#eab308",
   },
-  deep: { bg: "bg-blue-500", border: "border-blue-700", glow: "bg-blue-400", fill: "#3b82f6" },
-  default: { bg: "bg-gray-500", border: "border-gray-700", glow: "bg-gray-400", fill: "#6b7280" },
+  deep: {
+    bg: "bg-blue-500",
+    border: "border-blue-700",
+    glow: "bg-blue-400",
+    fill: "#3b82f6",
+  },
+  default: {
+    bg: "bg-gray-500",
+    border: "border-gray-700",
+    glow: "bg-gray-400",
+    fill: "#6b7280",
+  },
 };
 
 function getMarkerColors(platformType: string) {

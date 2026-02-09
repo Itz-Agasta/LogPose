@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarIcon, MapPinIcon, User2Icon, WifiIcon, X } from "lucide-react";
+import { CalendarIcon, MapPinIcon, User2Icon, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export default function FloatPopup({
   onShowProfile,
   visible,
 }: InlineFloatPopupProps) {
-  const _router = useRouter();
+  const router = useRouter();
 
   if (!(data && position && visible)) {
     return null;
@@ -47,7 +47,7 @@ export default function FloatPopup({
     if (action === "Profile" && onShowProfile) {
       onShowProfile();
     } else if (action === "Trajectory") {
-      //router.push(`/trajectory/${data.floatNumber}`);
+      router.push("/not-implemented");
     }
     // TODO: Implement other actions with custom UI
   };
@@ -83,6 +83,9 @@ export default function FloatPopup({
     };
   };
 
+  // Prepare sensors with placeholders if empty
+  const sensors = data.sensors.length > 0 ? data.sensors : ["CTD", "OXY", "ECO"];
+
   return (
     <Card
       className="fade-in zoom-in fixed z-50 animate-in border shadow-lg duration-200"
@@ -114,11 +117,7 @@ export default function FloatPopup({
           </div>
           <div className="flex items-center gap-2 text-sm">
             <User2Icon className="h-4 w-4 text-muted-foreground" />
-            <span>{data.pi}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <WifiIcon className="h-4 w-4 text-muted-foreground" />
-            <span>{data.telecomCode}</span>
+            <span>{data.pi || "M Ravichandran"}</span>
           </div>
         </div>
 
@@ -128,7 +127,7 @@ export default function FloatPopup({
         <div>
           <p className="mb-2 font-medium text-sm">Sensors</p>
           <div className="flex flex-wrap gap-1">
-            {data.sensors.map((sensor) => (
+            {sensors.map((sensor) => (
               <Badge className="text-xs" key={sensor} variant="secondary">
                 {sensor}
               </Badge>

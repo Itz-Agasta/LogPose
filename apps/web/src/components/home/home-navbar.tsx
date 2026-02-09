@@ -13,17 +13,17 @@ export function HomeNavbar({ onChatClick }: { onChatClick?: () => void }) {
   const navItems = [
     {
       title: "Ocean Data",
-      href: "/profiles",
+      href: "/not-implemented",
       icon: <IconDatabase className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
     },
     {
       title: "Analysis Tools",
-      href: "/tools/statistics",
+      href: "/not-implemented",
       icon: <IconChartLine className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
     },
     {
       title: "Live Floats",
-      href: "/",
+      href: "/not-implemented",
       icon: <IconMapPin className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
     },
     {
@@ -34,12 +34,12 @@ export function HomeNavbar({ onChatClick }: { onChatClick?: () => void }) {
     },
     {
       title: "Research",
-      href: "/research",
+      href: "/not-implemented",
       icon: <IconUsers className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
     },
     {
       title: "Documentation",
-      href: "/documentation",
+      href: "/not-implemented",
       icon: <IconFileText className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
     },
   ];
